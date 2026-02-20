@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastAIAgent — Features</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'DM Sans',sans-serif;background:#f8f9fb;color:#4a4a5a;line-height:1.7;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+:root{
+  --accent-cyan:#0088aa;
+  --accent-violet:#6366f1;
+  --accent-orange:#ea580c;
+  --accent-green:#059669;
+  --accent-rose:#dc2626;
+  --surface:#ffffff;
+  --surface-raised:#f1f3f7;
+  --surface-hover:#e8eaef;
+  --border:#e0e2e8;
+  --border-light:#ccd0d8;
+  --text-primary:#111827;
+  --text-secondary:#4b5563;
+  --text-muted:#9ca3af;
+  --mono:'Space Mono',monospace;
+  --display:'Playfair Display',serif;
+  --body:'DM Sans',sans-serif;
+  --max-w:1200px;
+}
+
+.container{max-width:var(--max-w);margin:0 auto;padding:0 32px}
+.mono{font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;font-size:11px}
+.gradient-text{background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gradient-text-warm{background:linear-gradient(135deg,var(--accent-orange),var(--accent-rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.3}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 32px;
+  background:rgba(255,255,255,.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.topbar-logo{display:flex;align-items:center;gap:10px}
+.topbar-logo svg{width:28px;height:28px}
+.topbar-logo span{font-weight:700;font-size:17px;color:var(--text-primary);letter-spacing:-.3px}
+.topbar-logo .foundry{font-weight:400;color:var(--text-muted);font-size:12px;margin-left:2px}
+.topbar-nav{display:flex;gap:32px;align-items:center}
+.topbar-nav a{font-size:13px;color:var(--text-secondary);transition:color .2s}
+.topbar-nav a:hover{color:var(--text-primary)}
+.topbar-cta{font-size:12px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;
+  padding:8px 20px;border:1px solid var(--accent-cyan);color:var(--accent-cyan);border-radius:6px;transition:all .2s}
+.topbar-cta:hover{background:var(--accent-cyan);color:#fff}
+
+.hero{padding:180px 0 120px;position:relative;text-align:center;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);
+  width:800px;height:800px;background:radial-gradient(circle,rgba(0,136,170,.05) 0%,rgba(99,102,241,.03) 40%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 8px;
+  background:var(--surface);border:1px solid var(--border);border-radius:100px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 8px var(--accent-green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-badge span{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase}
+.hero h1{font-family:var(--display);font-size:clamp(42px,6vw,72px);font-weight:800;color:var(--text-primary);line-height:1.1;margin-bottom:24px;letter-spacing:-1px}
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:18px;color:var(--text-secondary);max-width:640px;margin:0 auto 48px;line-height:1.8;font-weight:300}
+.hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat .val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text-primary)}
+.hero-stat .label{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+section{padding:100px 0;position:relative}
+section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.sec-label{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sec-label::before{content:'';width:24px;height:1px}
+.sec-label.cyan{color:var(--accent-cyan)}.sec-label.cyan::before{background:var(--accent-cyan)}
+.sec-label.violet{color:var(--accent-violet)}.sec-label.violet::before{background:var(--accent-violet)}
+.sec-label.orange{color:var(--accent-orange)}.sec-label.orange::before{background:var(--accent-orange)}
+.sec-label.green{color:var(--accent-green)}.sec-label.green::before{background:var(--accent-green)}
+.sec-label.rose{color:var(--accent-rose)}.sec-label.rose::before{background:var(--accent-rose)}
+.sec-title{font-family:var(--display);font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--text-primary);line-height:1.2;margin-bottom:16px;letter-spacing:-.5px}
+.sec-desc{font-size:16px;color:var(--text-secondary);max-width:560px;line-height:1.8;margin-bottom:48px;font-weight:300}
+
+.card-grid{display:grid;gap:16px}
+.card-grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.card-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.card-grid.cols-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.card-grid.cols-2,.card-grid.cols-3,.card-grid.cols-4{grid-template-columns:1fr}}
+
+.fcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;overflow:hidden;transition:border-color .3s,transform .2s,box-shadow .3s;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.fcard:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.fcard-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px}
+.fcard-icon.cyan{background:rgba(0,136,170,.06);border:1px solid rgba(0,136,170,.12)}
+.fcard-icon.violet{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.12)}
+.fcard-icon.orange{background:rgba(234,88,12,.06);border:1px solid rgba(234,88,12,.12)}
+.fcard-icon.green{background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.12)}
+.fcard-icon.rose{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.12)}
+.fcard h3{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
+.fcard p{font-size:13.5px;color:var(--text-secondary);line-height:1.7}
+.fcard .tag{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:16px;display:inline-block}
+
+.hero-feature-visual{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2px;overflow:hidden;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.hero-feature-visual::before{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,rgba(0,136,170,.06),transparent,rgba(99,102,241,.06));z-index:1;pointer-events:none}
+.visual-inner{background:var(--surface-raised);border-radius:18px;padding:32px;min-height:360px;display:flex;align-items:center;justify-content:center;position:relative}
+.features-list{list-style:none;margin-top:28px}
+.features-list li{padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:12px}
+.features-list li:last-child{border-bottom:none}
+.features-list .check{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.check.cyan{background:rgba(0,136,170,.08);color:var(--accent-cyan);border:1px solid rgba(0,136,170,.15)}
+.check.violet{background:rgba(99,102,241,.08);color:var(--accent-violet);border:1px solid rgba(99,102,241,.15)}
+.check.orange{background:rgba(234,88,12,.08);color:var(--accent-orange);border:1px solid rgba(234,88,12,.15)}
+.check.green{background:rgba(5,150,105,.08);color:var(--accent-green);border:1px solid rgba(5,150,105,.15)}
+
+.arch-diagram{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px;margin-top:48px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.arch-diagram::before{content:'';position:absolute;top:0;right:0;width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,.04),transparent);pointer-events:none}
+.arch-layers{display:flex;flex-direction:column;gap:12px}
+.arch-layer{display:flex;align-items:stretch;gap:12px}
+.arch-block{flex:1;padding:20px 24px;border-radius:12px;border:1px solid;position:relative}
+.arch-block .block-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.arch-block .block-title{font-size:14px;font-weight:700;color:var(--text-primary)}
+.arch-block .block-items{font-size:11.5px;color:var(--text-secondary);margin-top:6px;line-height:1.6}
+.arch-block.cyan{border-color:rgba(0,136,170,.2);background:rgba(0,136,170,.03)}.arch-block.cyan .block-label{color:var(--accent-cyan)}
+.arch-block.violet{border-color:rgba(99,102,241,.2);background:rgba(99,102,241,.03)}.arch-block.violet .block-label{color:var(--accent-violet)}
+.arch-block.orange{border-color:rgba(234,88,12,.2);background:rgba(234,88,12,.03)}.arch-block.orange .block-label{color:var(--accent-orange)}
+.arch-block.green{border-color:rgba(5,150,105,.2);background:rgba(5,150,105,.03)}.arch-block.green .block-label{color:var(--accent-green)}
+.arch-block.rose{border-color:rgba(220,38,38,.2);background:rgba(220,38,38,.03)}.arch-block.rose .block-label{color:var(--accent-rose)}
+.arch-block.neutral{border-color:var(--border);background:var(--surface-raised)}.arch-block.neutral .block-label{color:var(--text-muted)}
+.arch-connector{text-align:center;padding:8px 0;color:var(--text-muted);font-size:18px;letter-spacing:4px}
+
+.connector-showcase{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.conn-chip{padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.conn-chip:hover{border-color:var(--border-light);color:var(--text-primary);background:var(--surface-raised)}
+.conn-chip .conn-dot{width:6px;height:6px;border-radius:50%}
+
+.code-window{background:#1e1e2e;border:1px solid #2a2a3a;border-radius:14px;overflow:hidden;font-family:var(--mono);font-size:12px;line-height:1.8;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.code-titlebar{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid #2a2a3a;background:rgba(255,255,255,.02)}
+.code-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid #3a3a4a}
+.code-title{font-family:var(--mono);font-size:10px;color:#6b6b8a;letter-spacing:1px;margin-left:8px}
+.code-body{padding:20px 24px;overflow-x:auto;white-space:pre;color:#c8c8d0}
+.code-body .kw{color:#c792ea}.code-body .fn{color:#82aaff}.code-body .str{color:#c3e88d}.code-body .cm{color:#546e7a}.code-body .num{color:#f78c6c}.code-body .op{color:#ff5370}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.split.reverse{direction:rtl}.split.reverse>*{direction:ltr}
+@media(max-width:900px){.split{grid-template-columns:1fr;gap:40px}.split.reverse{direction:ltr}.hero-feature{grid-template-columns:1fr;gap:40px}}
+
+.metrics-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin:48px 0}
+.metric{background:var(--surface);padding:32px;text-align:center}
+.metric .val{font-family:var(--display);font-size:32px;font-weight:800;color:var(--text-primary);margin-bottom:4px}
+.metric .lbl{font-size:12px;color:var(--text-muted)}
+@media(max-width:700px){.metrics-bar{grid-template-columns:repeat(2,1fr)}}
+
+.wf-node{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid;font-size:12px;font-weight:600;color:var(--text-primary);position:relative;z-index:2}
+.wf-node.start{background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.2)}
+.wf-node.process{background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.2)}
+.wf-node.llm{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.2)}
+.wf-node.decision{background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.2)}
+.wf-node.end{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.2)}
+.wf-arrow{color:var(--text-muted);font-size:14px;margin:0 6px;display:inline-block}
+.wf-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;justify-content:center}
+
+.lifecycle{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:32px 0}
+.lc-step{padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;text-align:center;color:var(--text-primary);border:1px solid;min-width:90px}
+.lc-arrow{color:var(--text-muted);font-size:16px}
+.lc-step.s1{background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15)}
+.lc-step.s2{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15)}
+.lc-step.s3{background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.15)}
+.lc-step.s4{background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15)}
+.lc-step.s5{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15)}
+
+.org-tree{max-width:600px;margin:0 auto}
+.org-node{padding:14px 20px;border-radius:10px;border:1px solid;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.org-node .org-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.org-node .org-label{font-size:13px;font-weight:600;color:var(--text-primary)}
+.org-node .org-meta{font-size:11px;color:var(--text-muted)}
+.org-node.domain{border-color:rgba(99,102,241,.2);background:rgba(99,102,241,.03)}.org-node.domain .org-icon{background:rgba(99,102,241,.1);color:var(--accent-violet)}
+.org-node.project{border-color:rgba(0,136,170,.15);background:rgba(0,136,170,.03);margin-left:32px}.org-node.project .org-icon{background:rgba(0,136,170,.08);color:var(--accent-cyan)}
+.org-node.resource{border-color:var(--border);background:var(--surface-raised);margin-left:64px;padding:10px 16px}
+.org-node.resource .org-icon{width:24px;height:24px;font-size:11px;border-radius:6px;background:rgba(0,0,0,.04);color:var(--text-muted)}
+.org-node.resource .org-label{font-size:12px;font-weight:500}
+.org-node.shared{border-color:rgba(5,150,105,.15);background:rgba(5,150,105,.03);margin-left:32px}.org-node.shared .org-icon{background:rgba(5,150,105,.08);color:var(--accent-green)}
+
+.footer{padding:64px 0;text-align:center;background:var(--surface)}
+.footer-brand{font-family:var(--display);font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:8px}
+.footer-sub{font-size:13px;color:var(--text-muted);margin-bottom:32px}
+.footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:24px}
+.footer-links a{font-size:13px;color:var(--text-secondary);transition:color .2s}
+.footer-links a:hover{color:var(--text-primary)}
+.footer-copy{font-size:11px;color:var(--text-muted)}
+
+.sec-alt{background:linear-gradient(180deg,var(--surface-raised) 0%,#f8f9fb 100%)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.animate{animation:fadeUp .6s ease-out both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-logo">
+      <svg width="28" height="28" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="120" height="120" rx="28" fill="#e8f6fa"/>
+        <circle cx="62" cy="56" r="30" fill="#fff" stroke="#0088aa" stroke-width="6"/>
+        <path d="M58 38L52 54H64L55 76" stroke="#006688" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <span>FastAIAgent<span class="foundry"> by FastAIFoundry</span></span>
+    </div>
+    <div class="topbar-nav">
+      <a href="#platform">Platform</a>
+      <a href="#workflows">Workflows</a>
+      <a href="#knowledge">Knowledge</a>
+      <a href="#connectors">Connectors</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#enterprise">Enterprise</a>
+      <a href="#" class="topbar-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-badge animate"><div class="dot"></div><span>Now in Active Development</span></div>
+    <h1 class="animate d1">Build, Deploy &amp; Govern<br><em>Intelligent Agents</em></h1>
+    <p class="hero-sub animate d2">The complete AI agent platform. Visual workflows, multi-LLM execution, knowledge-grounded RAG, prompt lifecycle management, and enterprise-grade auth — all self-hostable, all in one system.</p>
+    <div class="hero-stats animate d3">
+      <div class="hero-stat"><div class="val">15+</div><div class="label">Connectors</div></div>
+      <div class="hero-stat"><div class="val">Multi-LLM</div><div class="label">Execution Engine</div></div>
+      <div class="hero-stat"><div class="val">MCP</div><div class="label">Protocol Native</div></div>
+      <div class="hero-stat"><div class="val">Docker</div><div class="label">Self-Hosted</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="platform">
+  <div class="container">
+    <div class="sec-label cyan">Platform Architecture</div>
+    <div class="sec-title">One platform, every layer.</div>
+    <div class="sec-desc">FastAIAgent is an end-to-end agent development platform. Not a framework you glue together — a complete system where agents, workflows, knowledge, prompts, and infrastructure are designed to work as one.</div>
+    <div class="arch-diagram">
+      <div class="arch-layers">
+        <div class="arch-layer">
+          <div class="arch-block cyan" style="flex:2"><div class="block-label">Presentation Layer</div><div class="block-title">Live Chat &amp; Conversational Playground</div><div class="block-items">Real-time streaming UI · Markdown rendering · Tool call visualization · Multi-turn conversations · Message history</div></div>
+          <div class="arch-block violet"><div class="block-label">Visual Builder</div><div class="block-title">Workflow Editor</div><div class="block-items">Drag-drop canvas · ReactFlow DAG · Node library · Live preview</div></div>
+        </div>
+        <div class="arch-connector">▾ ▾ ▾</div>
+        <div class="arch-layer">
+          <div class="arch-block orange"><div class="block-label">Execution</div><div class="block-title">Agent Engine</div><div class="block-items">Multi-LLM · Tool use · Streaming · Multi-agent teams</div></div>
+          <div class="arch-block green"><div class="block-label">Knowledge</div><div class="block-title">RAG Pipeline</div><div class="block-items">Chunking · Embedding · Vector search · Document ingestion</div></div>
+          <div class="arch-block rose"><div class="block-label">Lifecycle</div><div class="block-title">Prompt Registry</div><div class="block-items">Versioning · Approval flows · A/B testing · Deployment</div></div>
+        </div>
+        <div class="arch-connector">▾ ▾ ▾</div>
+        <div class="arch-layer">
+          <div class="arch-block neutral"><div class="block-label">Infrastructure</div><div class="block-title">Connectors · MCP Servers · LLM Endpoints · Vector Stores</div><div class="block-items">15+ pre-built connectors · Anthropic MCP protocol · OpenAI, Anthropic, Azure, local models · Qdrant, PgVector, Azure AI Search</div></div>
+        </div>
+        <div class="arch-connector">▾ ▾ ▾</div>
+        <div class="arch-layer">
+          <div class="arch-block neutral" style="flex:1"><div class="block-label">Data</div><div class="block-title">PostgreSQL</div><div class="block-items">Metadata · Auth · Traces</div></div>
+          <div class="arch-block neutral" style="flex:1"><div class="block-label">Vectors</div><div class="block-title">Qdrant / PgVector / Azure AI Search</div><div class="block-items">Embeddings · Similarity search</div></div>
+          <div class="arch-block neutral" style="flex:1"><div class="block-label">Runtime</div><div class="block-title">Docker + FastAPI</div><div class="block-items">Self-hosted · Multi-env · Production-grade</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec-alt">
+  <div class="container">
+    <div class="split">
+      <div>
+        <div class="sec-label cyan">Execution Engine</div>
+        <div class="sec-title">Agents that think,<br>act, and remember.</div>
+        <div class="sec-desc" style="margin-bottom:0">The execution engine orchestrates LLM calls, tool use, memory retrieval, and multi-step reasoning — with real-time streaming and full observability at every step.</div>
+        <ul class="features-list">
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Multi-LLM Support</strong> — Switch between OpenAI, Anthropic, Azure OpenAI, and local models without changing agent logic</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Real-Time Streaming</strong> — Token-by-token output to the Live Chat UI with tool call visualization</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Native Tool Use</strong> — Agents invoke tools, connectors, MCP servers, and Python scripts autonomously</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Agent Memory</strong> — Automatic extraction and retrieval of long-term memory from conversations</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Supervisor-Worker Teams</strong> — Orchestrate multi-agent systems with delegation, handoff, and aggregation</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="code-window">
+          <div class="code-titlebar"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span class="code-title">agent_execution.py</span></div>
+          <div class="code-body"><span class="cm"># Agent executes with full tool access</span>
+<span class="kw">result</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">engine.execute</span>(
+    agent_id<span class="op">=</span><span class="str">"lead-qualifier"</span>,
+    message<span class="op">=</span><span class="str">"Qualify this lead from CRM"</span>,
+    tools<span class="op">=</span>[
+        salesforce_connector,
+        enrichment_mcp,
+        scoring_script
+    ],
+    llm_endpoint<span class="op">=</span><span class="str">"gpt-4o-production"</span>,
+    stream<span class="op">=</span><span class="kw">True</span>,
+    memory_enabled<span class="op">=</span><span class="kw">True</span>
+)
+
+<span class="cm"># Full trace captured automatically</span>
+<span class="cm"># → LLM calls, tool invocations, latency,</span>
+<span class="cm">#   token usage, memory writes, cost</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="workflows">
+  <div class="container">
+    <div class="sec-label violet">Visual Workflow Editor</div>
+    <div class="sec-title">Design agent logic visually.</div>
+    <div class="sec-desc">Build complex multi-step workflows with a drag-and-drop canvas. Chain LLM calls, tool invocations, conditional branches, and parallel execution — without writing orchestration code.</div>
+    <div class="hero-feature-visual" style="margin-bottom:48px">
+      <div class="visual-inner" style="flex-direction:column;gap:20px;padding:40px 48px">
+        <div class="wf-row"><div class="wf-node start">▶ Trigger</div><span class="wf-arrow">→</span><div class="wf-node process">🔌 Fetch CRM Data</div><span class="wf-arrow">→</span><div class="wf-node llm">🧠 LLM: Analyze Lead</div><span class="wf-arrow">→</span><div class="wf-node decision">◆ Score ≥ 80?</div></div>
+        <div style="display:flex;justify-content:center;gap:80px">
+          <div style="text-align:center"><div style="color:var(--accent-green);font-size:11px;font-family:var(--mono);margin-bottom:8px">YES</div><div class="wf-node process">📧 Send to Sales</div></div>
+          <div style="text-align:center"><div style="color:var(--accent-rose);font-size:11px;font-family:var(--mono);margin-bottom:8px">NO</div><div class="wf-node llm">🧠 Nurture Sequence</div></div>
+        </div>
+        <div class="wf-row"><div class="wf-node end">✓ Complete</div></div>
+      </div>
+    </div>
+    <div class="card-grid cols-3">
+      <div class="fcard"><div class="fcard-icon violet">⟐</div><h3>Drag-and-Drop Canvas</h3><p>ReactFlow-powered graph editor. Add nodes, draw edges, configure each step visually. Full undo/redo and zoom controls.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">⑂</div><h3>Conditional Branching</h3><p>Route execution based on LLM output, tool results, or custom conditions. Build decision trees that adapt in real time.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">⊞</div><h3>Rich Node Library</h3><p>LLM calls, tool invocations, connectors, scripts, sub-chains, input/output nodes — everything you need as composable blocks.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="knowledge" class="sec-alt">
+  <div class="container">
+    <div class="split reverse">
+      <div>
+        <div class="sec-label green">Knowledge Base &amp; RAG</div>
+        <div class="sec-title">Ground agents in your data.</div>
+        <div class="sec-desc" style="margin-bottom:0">Upload documents, build knowledge bases, and let agents retrieve relevant context at runtime. Full RAG pipeline — from ingestion to retrieval — built in.</div>
+        <ul class="features-list">
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Document Ingestion</strong> — PDF, DOCX, TXT, Markdown — upload and auto-process into searchable chunks</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Smart Chunking</strong> — Configurable chunk size, overlap, and strategy for optimal retrieval quality</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Multi-KB Agents</strong> — Attach multiple knowledge bases to a single agent for cross-domain reasoning</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Flexible Vector Stores</strong> — Built-in Qdrant, or bring your own: PgVector, Azure AI Search, external Qdrant</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Semantic Search</strong> — Embedding-based retrieval injects only the most relevant context into each LLM call</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="fcard" style="border-color:rgba(5,150,105,.15);padding:0;overflow:hidden">
+          <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">📚</span><span style="font-size:14px;font-weight:700;color:var(--text-primary)">Product Catalogue KB</span></div>
+            <span class="mono" style="color:var(--accent-green);font-size:9px">● Active</span>
+          </div>
+          <div style="padding:20px 24px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+              <div><div style="font-size:20px;font-weight:800;color:var(--text-primary)">2,847</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Chunks</div></div>
+              <div><div style="font-size:20px;font-weight:800;color:var(--text-primary)">142</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Documents</div></div>
+              <div><div style="font-size:20px;font-weight:800;color:var(--text-primary)">98.2%</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Retrieval Acc.</div></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;font-family:var(--mono);letter-spacing:1px">RECENT DOCUMENTS</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:12px;display:flex;justify-content:space-between;align-items:center"><span style="color:var(--text-secondary)">📄 Product-Specs-2026.pdf</span><span style="font-size:10px;color:var(--text-muted)">324 chunks</span></div>
+              <div style="padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:12px;display:flex;justify-content:space-between;align-items:center"><span style="color:var(--text-secondary)">📄 Pricing-Guide-v4.docx</span><span style="font-size:10px;color:var(--text-muted)">89 chunks</span></div>
+              <div style="padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:12px;display:flex;justify-content:space-between;align-items:center"><span style="color:var(--text-secondary)">📄 FAQ-Database.md</span><span style="font-size:10px;color:var(--text-muted)">201 chunks</span></div>
+            </div>
+          </div>
+          <div style="padding:14px 24px;background:rgba(5,150,105,.04);border-top:1px solid rgba(5,150,105,.1);display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--accent-green);font-family:var(--mono);letter-spacing:1px">VECTOR STORE</span><span style="font-size:12px;color:var(--text-secondary)">Qdrant (built-in) · 1536-dim</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="connectors">
+  <div class="container">
+    <div class="sec-label orange">Connector Library</div>
+    <div class="sec-title">Connect to everything.</div>
+    <div class="sec-desc">Pre-built connectors for CRMs, databases, communication tools, cloud services, and custom APIs. Each connector is a reusable, domain-level resource available to every agent and workflow in your organisation.</div>
+    <div class="connector-showcase">
+      <div class="conn-chip"><span class="conn-dot" style="background:#0176D3"></span>Salesforce</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#FF5722"></span>ServiceNow</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#0052CC"></span>Jira</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#7B68EE"></span>Slack</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#4285F4"></span>Google Sheets</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Microsoft 365</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#FF9900"></span>AWS S3</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#336791"></span>PostgreSQL</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#4DB33D"></span>MongoDB</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#E34F26"></span>REST API</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#FF6B2B"></span>Webhook</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#E535AB"></span>GraphQL</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#00b4d8"></span>SMTP Email</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#0088cc"></span>Telegram</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#8B5CF6"></span>Custom Python</div>
+    </div>
+    <div class="card-grid cols-3" style="margin-top:32px">
+      <div class="fcard"><div class="fcard-icon orange">⚡</div><h3>MCP Protocol Native</h3><p>First-class support for Anthropic's Model Context Protocol. Connect MCP-compatible tool servers and let agents discover capabilities dynamically.</p><div class="tag">Anthropic MCP Spec</div></div>
+      <div class="fcard"><div class="fcard-icon orange">🐍</div><h3>Python Script Connector</h3><p>Write custom logic in Python, expose it as a tool. Sandboxed execution with input/output validation and full trace logging.</p><div class="tag">Custom Code Nodes</div></div>
+      <div class="fcard"><div class="fcard-icon orange">⏰</div><h3>Triggers &amp; Scheduling</h3><p>Fire agents on webhooks, cron schedules, or external events. Every trigger execution is traced, with retry logic and error handling.</p><div class="tag">Webhooks + Cron</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="prompts" class="sec-alt">
+  <div class="container">
+    <div class="sec-label rose">Prompt Registry</div>
+    <div class="sec-title">Prompts as first-class code.</div>
+    <div class="sec-desc">Centralised prompt lifecycle management. Author, version, test, approve, deploy, and monitor every prompt across your entire agent ecosystem — with full audit trail.</div>
+    <div class="lifecycle"><div class="lc-step s1">✎ Author</div><div class="lc-arrow">→</div><div class="lc-step s2">⑂ Version</div><div class="lc-arrow">→</div><div class="lc-step s3">▶ Test</div><div class="lc-arrow">→</div><div class="lc-step s4">✓ Approve</div><div class="lc-arrow">→</div><div class="lc-step s5">🚀 Deploy</div></div>
+    <div class="card-grid cols-2" style="margin-top:40px">
+      <div class="fcard" style="grid-row:span 2"><div class="fcard-icon rose">⑂</div><h3>Semantic Versioning &amp; Diff</h3><p>Every prompt edit creates a new version. Compare any two versions side-by-side with character-level diffs. Roll back to any previous version instantly.</p>
+        <div style="margin-top:20px;padding:16px;background:var(--surface-raised);border-radius:10px;font-family:var(--mono);font-size:11px;line-height:2"><div style="color:var(--text-muted)">v2.1.0 → v2.2.0</div><div style="color:var(--accent-rose);margin-top:8px">− You are a helpful assistant.</div><div style="color:var(--accent-green)">+ You are a lead qualification specialist<br>+ for enterprise SaaS products.</div><div style="color:var(--text-muted);margin-top:8px">+ Added {{company_context}} variable</div></div>
+        <div style="margin-top:16px"><h3 style="font-size:14px">Composition Engine</h3><p style="margin-top:6px">Build prompts from reusable fragments and templates. Compose complex system prompts from modular pieces — one change propagates everywhere.</p></div>
+      </div>
+      <div class="fcard"><div class="fcard-icon rose">🛡</div><h3>Approval Workflow</h3><p>Draft → Review → Approve → Deploy pipeline. Gate production deployments behind human approval. Configurable per environment.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">📊</div><h3>Performance Analytics</h3><p>Track quality, cost, latency, and drift for every deployed prompt version. A/B split testing to compare versions in production.</p></div>
+    </div>
+    <div class="card-grid cols-3" style="margin-top:16px">
+      <div class="fcard"><div class="fcard-icon rose">▶</div><h3>Prompt Playground</h3><p>Test prompts against any LLM endpoint with variable injection, output preview, and instant comparison.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">🔍</div><h3>Security Scanner</h3><p>Automatic detection of injection patterns, PII leakage, and hardcoded secrets in prompt text.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">🔗</div><h3>External API</h3><p>REST API + API keys + webhooks. External systems like governance tools can query prompt state and subscribe to lifecycle events.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="split">
+      <div>
+        <div class="sec-label cyan">Live Chat Interface</div>
+        <div class="sec-title">Converse with your agents.</div>
+        <div class="sec-desc" style="margin-bottom:0">A production-grade conversational playground. Real-time streaming, tool call visualization, multi-turn history, and Markdown rendering — built for both testing and end-user interaction.</div>
+        <ul class="features-list">
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Streaming Responses</strong> — Token-by-token output for real-time conversational experience</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Tool Call Visibility</strong> — See which tools the agent invokes, with inputs and outputs rendered inline</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Conversation Persistence</strong> — Full message history saved to PostgreSQL for review and analysis</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Rich Rendering</strong> — Markdown, code blocks, tables, and structured outputs displayed beautifully</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="fcard" style="padding:0;overflow:hidden;border-color:rgba(0,136,170,.15)">
+          <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-green)"></span><span style="font-size:13px;font-weight:600;color:var(--text-primary)">Lead Qualifier Agent</span></div>
+            <span class="mono" style="color:var(--text-muted);font-size:9px">GPT-4o · Streaming</span>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:16px;min-height:260px">
+            <div style="align-self:flex-end;max-width:80%;padding:10px 14px;background:rgba(0,136,170,.06);border:1px solid rgba(0,136,170,.12);border-radius:12px 12px 2px 12px"><div style="font-size:12.5px;color:var(--text-primary)">Qualify the lead from Acme Corp — check their CRM record and score them.</div></div>
+            <div style="padding:8px 12px;background:rgba(234,88,12,.04);border:1px solid rgba(234,88,12,.1);border-radius:8px;font-family:var(--mono);font-size:10px"><span style="color:var(--accent-orange)">⚡ Tool Call:</span> <span style="color:var(--text-secondary)">salesforce.getAccount("Acme Corp")</span></div>
+            <div style="align-self:flex-start;max-width:85%;padding:10px 14px;background:var(--surface-raised);border:1px solid var(--border);border-radius:2px 12px 12px 12px"><div style="font-size:12.5px;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Acme Corp</strong> scores <strong style="color:var(--accent-green)">87/100</strong>. They have 500+ employees, active renewal pipeline, and 3 open opportunities. Routing to the enterprise sales team with a warm handoff brief.</div></div>
+          </div>
+          <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">
+            <div style="flex:1;padding:8px 12px;background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-muted)">Type a message...</div>
+            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:#fff">↑</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec-alt">
+  <div class="container">
+    <div class="sec-label violet">Observability &amp; Evaluation</div>
+    <div class="sec-title">See everything. Trust everything.</div>
+    <div class="sec-desc">Full execution tracing, evaluation suites, and agent versioning. Every decision your agent makes is logged, measurable, and reproducible.</div>
+    <div class="card-grid cols-2">
+      <div class="fcard"><div class="fcard-icon violet">📍</div><h3>Execution Traces</h3><p>Every agent run produces a hierarchical trace: LLM calls, tool invocations, token counts, latency, cost, and memory operations.</p>
+        <div style="margin-top:16px;padding:14px;background:var(--surface-raised);border-radius:8px;font-family:var(--mono);font-size:10.5px;line-height:2;color:var(--text-secondary)">
+          <div>▸ <span style="color:var(--accent-cyan)">agent.execute</span> <span style="color:var(--text-muted)">842ms</span></div>
+          <div style="padding-left:16px">▸ <span style="color:var(--accent-violet)">llm.call</span> <span style="color:var(--text-muted)">gpt-4o · 520ms · 1.2k tok</span></div>
+          <div style="padding-left:16px">▸ <span style="color:var(--accent-orange)">tool.invoke</span> <span style="color:var(--text-muted)">salesforce.get · 180ms</span></div>
+          <div style="padding-left:16px">▸ <span style="color:var(--accent-green)">memory.retrieve</span> <span style="color:var(--text-muted)">3 entries · 42ms</span></div>
+          <div style="padding-left:16px">▸ <span style="color:var(--accent-violet)">llm.call</span> <span style="color:var(--text-muted)">gpt-4o · 340ms · 0.8k tok</span></div>
+        </div>
+      </div>
+      <div class="fcard"><div class="fcard-icon violet">🧪</div><h3>Evaluation Suite</h3><p>Define test cases, attach metrics, and run evaluations across agent versions. Compare quality, cost, and latency before promoting to production.</p>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">Accuracy</span><span style="color:var(--accent-green);font-weight:600">94.2%</span></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">Avg. Latency</span><span style="color:var(--accent-cyan);font-weight:600">1.2s</span></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">Cost / Run</span><span style="color:var(--accent-orange);font-weight:600">$0.018</span></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">Regression Tests</span><span style="color:var(--accent-green);font-weight:600">47/47 passed</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-grid cols-3" style="margin-top:16px">
+      <div class="fcard"><div class="fcard-icon violet">⑂</div><h3>Agent Versioning</h3><p>Snapshot agent configurations. Compare versions. Roll back instantly. Every deployment is a traceable, reversible event.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">🌍</div><h3>Environment Promotion</h3><p>Dev → Staging → Production pipeline. Promote agents, prompts, and workflows through environments with confidence.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">🔄</div><h3>Trace-Prompt Correlation</h3><p>Every LLM call in a trace references the exact prompt version used. Debug production issues by linking behavior to specific prompt text.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="enterprise">
+  <div class="container">
+    <div class="split">
+      <div>
+        <div class="sec-label violet">Organisation Hierarchy</div>
+        <div class="sec-title">Structured for the enterprise.</div>
+        <div class="sec-desc" style="margin-bottom:0">Domains and Projects mirror how real organisations work. Share infrastructure centrally, build autonomously within teams.</div>
+        <ul class="features-list">
+          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Domains</strong> — Top-level organisational units (business units, departments)</span></li>
+          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Projects</strong> — Scoped workspaces within a Domain for initiatives and products</span></li>
+          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Shared Infrastructure</strong> — LLM endpoints, connectors, and MCP servers at Domain level</span></li>
+          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Scoped Resources</strong> — Agents, workflows, knowledge bases scoped to each Project</span></li>
+          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Two-Tier RBAC</strong> — Domain-level and Project-level roles with permission inheritance</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="org-tree">
+          <div class="org-node domain"><div class="org-icon">◈</div><div><div class="org-label">Customer Digital Services</div><div class="org-meta">Domain · 3 Projects · 12 Members</div></div></div>
+          <div class="org-node shared"><div class="org-icon">⚡</div><div><div class="org-label">Shared Infrastructure</div><div class="org-meta">LLM Endpoints · Connectors · MCP · Vector Stores</div></div></div>
+          <div class="org-node project"><div class="org-icon">◆</div><div><div class="org-label">CRM Digital Colleague</div><div class="org-meta">Project · 5 Agents · 3 Chains · 2 KBs</div></div></div>
+          <div class="org-node resource"><div class="org-icon">◦</div><div><div class="org-label">Lead Qualifier Agent · Follow-up Agent · Qualification Pipeline</div></div></div>
+          <div class="org-node project"><div class="org-icon">◆</div><div><div class="org-label">Support Triage Bot</div><div class="org-meta">Project · 2 Agents · 1 Chain · 1 KB</div></div></div>
+          <div class="org-node project"><div class="org-icon">◆</div><div><div class="org-label">Internal Ops Assistant</div><div class="org-meta">Project · 1 Agent · 0 Chains · 1 KB</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec-alt">
+  <div class="container">
+    <div class="sec-label green">Auth, Security &amp; Deployment</div>
+    <div class="sec-title">Enterprise-grade from day one.</div>
+    <div class="sec-desc">JWT authentication, role-based access control, environment isolation, and self-hosted Docker deployment. No cloud dependency, no vendor lock-in.</div>
+    <div class="card-grid cols-4">
+      <div class="fcard"><div class="fcard-icon green">🔐</div><h3>JWT Auth</h3><p>Secure authentication with JWT tokens. User registration, login, and session management built in.</p></div>
+      <div class="fcard"><div class="fcard-icon green">👥</div><h3>RBAC</h3><p>Role-based access at Domain and Project level. Admin, member, viewer — with permission inheritance.</p></div>
+      <div class="fcard"><div class="fcard-icon green">🐳</div><h3>Docker Deploy</h3><p>Full Docker Compose stack. PostgreSQL, Qdrant, FastAPI backend, React frontend — one command.</p></div>
+      <div class="fcard"><div class="fcard-icon green">🌐</div><h3>Multi-Environment</h3><p>Dev, staging, production — isolated environments with independent configurations and promotion workflows.</p></div>
+    </div>
+    <div class="metrics-bar">
+      <div class="metric"><div class="val">PostgreSQL</div><div class="lbl">Production Database</div></div>
+      <div class="metric"><div class="val">FastAPI</div><div class="lbl">Async Python Backend</div></div>
+      <div class="metric"><div class="val">React + TS</div><div class="lbl">Frontend Stack</div></div>
+      <div class="metric"><div class="val">Docker</div><div class="lbl">Self-Hosted Deployment</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="sec-label cyan">Visual Identity</div>
+    <div class="sec-title">A UI that commands attention.</div>
+    <div class="sec-desc">FastAIAgent ships with a dual-theme system designed for long working sessions. Not an afterthought — a deliberate visual language for AI operations.</div>
+    <div class="card-grid cols-2">
+      <div class="fcard" style="background:linear-gradient(135deg,#0a0a12,#0f0f1a);border-color:rgba(0,212,255,.15)">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:#00d4ff;margin-bottom:12px">MIDNIGHT OPERATOR</div>
+        <h3 style="font-size:20px;margin-bottom:12px;color:#eee">Dark Mode</h3>
+        <p style="color:#8b8b9e">Deep navy-black canvas with cyan and violet accents. Reduced eye strain for extended sessions. Optimised contrast ratios for accessibility.</p>
+        <div style="display:flex;gap:8px;margin-top:16px"><div style="width:32px;height:32px;border-radius:8px;background:#0a0a12;border:1px solid #27272a"></div><div style="width:32px;height:32px;border-radius:8px;background:#00d4ff"></div><div style="width:32px;height:32px;border-radius:8px;background:#7b61ff"></div><div style="width:32px;height:32px;border-radius:8px;background:#ff6b2b"></div><div style="width:32px;height:32px;border-radius:8px;background:#10b981"></div></div>
+      </div>
+      <div class="fcard" style="background:linear-gradient(135deg,#f8f9fa,#ffffff);border-color:rgba(0,136,170,.12);box-shadow:0 2px 12px rgba(0,0,0,.06)">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-violet);margin-bottom:12px">CLEAN LAB</div>
+        <h3 style="font-size:20px;margin-bottom:12px;color:#111">Light Mode</h3>
+        <p style="color:#555">Clinical white canvas with deep blue accents. Maximum readability for document-heavy workflows and presentations.</p>
+        <div style="display:flex;gap:8px;margin-top:16px"><div style="width:32px;height:32px;border-radius:8px;background:#ffffff;border:1px solid #e5e7eb"></div><div style="width:32px;height:32px;border-radius:8px;background:#0088aa"></div><div style="width:32px;height:32px;border-radius:8px;background:#6366f1"></div><div style="width:32px;height:32px;border-radius:8px;background:#ea580c"></div><div style="width:32px;height:32px;border-radius:8px;background:#059669"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec-alt">
+  <div class="container" style="text-align:center">
+    <div class="sec-label cyan" style="justify-content:center">Part of the FastAIFoundry Ecosystem</div>
+    <div class="sec-title" style="margin:0 auto 16px">Agent is just the beginning.</div>
+    <div class="sec-desc" style="margin:0 auto 48px;max-width:640px;text-align:center">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Ground them in context. Govern them at scale.</div>
+    <div class="card-grid cols-3" style="max-width:900px;margin:0 auto">
+      <div class="fcard" style="text-align:center;border-color:rgba(0,136,170,.2)">
+        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#e8f6fa"/><circle cx="62" cy="56" r="30" fill="#fff" stroke="#0088aa" stroke-width="6"/><path d="M58 38L52 54H64L55 76" stroke="#006688" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+        <h3 class="gradient-text" style="font-size:18px">FastAIAgent</h3>
+        <p style="margin-top:8px">Build, test, deploy, and run intelligent agents with visual workflows, knowledge bases, and full lifecycle management.</p>
+        <div class="mono" style="color:var(--accent-cyan);margin-top:12px;font-size:9px">You are here</div>
+      </div>
+      <div class="fcard" style="text-align:center;border-color:rgba(99,102,241,.15)">
+        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#eee8f8"/><path d="M20 52L60 30L100 52L60 74Z" fill="#dcd0ee" stroke="#6b51e0" stroke-width="4" stroke-opacity="0.3"/><path d="M20 66L60 44L100 66L60 88Z" fill="#d6c8ea" stroke="#6b51e0" stroke-width="5" stroke-opacity="0.6"/><circle cx="60" cy="66" r="14" fill="#f0ecf8" stroke="#6b51e0" stroke-width="5"/><path d="M54 62L60 56L66 62L60 68Z" stroke="#4a38b0" stroke-width="4.5" fill="none"/></svg></div>
+        <h3 style="font-size:18px;color:var(--accent-violet)">FastAIContext</h3>
+        <p style="margin-top:8px">The business context layer. Knowledge graphs, entity resolution, and semantic understanding that makes agents truly organisation-aware.</p>
+        <div class="mono" style="color:var(--text-muted);margin-top:12px;font-size:9px">Coming Soon</div>
+      </div>
+      <div class="fcard" style="text-align:center;border-color:rgba(5,150,105,.15)">
+        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#e8faf4"/><path d="M60 12L96 28V60C96 82 80 96 60 104C40 96 24 82 24 60V28L60 12Z" fill="#f0fdf8" stroke="#0d9668" stroke-width="5" stroke-linejoin="round"/><path d="M42 58L54 70L78 44" stroke="#0d9668" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+        <h3 style="font-size:18px;color:var(--accent-green)">FastAIShield</h3>
+        <p style="margin-top:8px">AI governance and compliance. Risk assessment, audit trails, and regulatory readiness for EU AI Act and beyond.</p>
+        <div class="mono" style="color:var(--text-muted);margin-top:12px;font-size:9px">Coming Soon</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-brand">Fast<span class="gradient-text">AI</span>Foundry</div>
+    <div class="footer-sub">Build intelligent agents. Ground them in context. Govern them at scale.</div>
+    <div class="footer-links"><a href="#">Documentation</a><a href="#">GitHub</a><a href="#">API Reference</a><a href="#">Blog</a><a href="#">Contact</a></div>
+    <div class="footer-copy">© 2026 FastAIFoundry. Self-hosted. Open architecture. Your data stays yours.</div>
+  </div>
+</footer>
+
+</body>
+</html>
