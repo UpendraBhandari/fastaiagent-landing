@@ -197,6 +197,134 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 .animate{animation:fadeUp .6s ease-out both}
 .d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+
+/* ========== MOBILE HAMBURGER ========== */
+.topbar-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text-primary)}
+.topbar-toggle svg{width:24px;height:24px}
+
+/* ========== TABLET (max 900px) ========== */
+@media(max-width:900px){
+  .container{padding:0 20px}
+  .topbar{padding:0 20px}
+  .topbar-nav{display:none;position:absolute;top:64px;left:0;right:0;background:var(--surface);
+    border-bottom:1px solid var(--border);flex-direction:column;padding:20px 24px;gap:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,.08)}
+  .topbar-nav.open{display:flex}
+  .topbar-toggle{display:block}
+  .topbar-cta{align-self:flex-start}
+
+  .hero{padding:120px 0 80px}
+  .hero-sub{font-size:16px;margin-bottom:36px}
+  .hero-stats{gap:24px}
+  .hero-stat .val{font-size:22px}
+
+  section{padding:64px 0}
+  .sec-title{font-size:28px}
+  .sec-desc{font-size:15px;margin-bottom:32px}
+
+  .arch-diagram{padding:24px;margin-top:32px;overflow-x:auto}
+  .arch-layer{flex-direction:column;gap:10px}
+  .arch-block{padding:16px}
+
+  .wf-row{gap:6px}
+  .wf-node{padding:8px 12px;font-size:11px}
+  .wf-arrow{font-size:12px;margin:0 3px}
+
+  .lifecycle{gap:3px}
+  .lc-step{padding:8px 12px;font-size:11px;min-width:auto}
+
+  .org-node.project{margin-left:16px}
+  .org-node.resource{margin-left:32px}
+  .org-node.shared{margin-left:16px}
+
+  .code-window{font-size:11px}
+  .code-body{padding:16px;font-size:10.5px;line-height:1.7}
+
+  .metrics-bar{grid-template-columns:repeat(2,1fr)}
+  .metric{padding:20px 16px}
+  .metric .val{font-size:24px}
+
+  .connector-showcase{gap:8px}
+  .conn-chip{padding:6px 12px;font-size:11px}
+
+  .fcard{padding:24px}
+}
+
+/* ========== PHONE (max 600px) ========== */
+@media(max-width:600px){
+  .container{padding:0 16px}
+  .topbar{padding:0 16px}
+
+  .hero{padding:100px 0 60px}
+  .hero h1{font-size:32px;letter-spacing:-.5px}
+  .hero-sub{font-size:15px;line-height:1.7;margin-bottom:28px}
+  .hero-stats{flex-direction:column;gap:16px}
+  .hero-stat .val{font-size:20px}
+  .hero-badge span{font-size:9px;letter-spacing:1.5px}
+
+  section{padding:48px 0}
+  .sec-label{font-size:10px;letter-spacing:2px}
+  .sec-title{font-size:24px}
+  .sec-desc{font-size:14px;margin-bottom:24px}
+
+  .card-grid{gap:12px}
+  .fcard{padding:20px;border-radius:12px}
+  .fcard h3{font-size:15px}
+  .fcard p{font-size:13px}
+  .fcard-icon{width:38px;height:38px;font-size:17px;margin-bottom:14px}
+
+  .split{gap:32px}
+  .features-list li{font-size:13px;gap:8px;padding:8px 0}
+  .check{width:16px;height:16px;font-size:9px}
+
+  .arch-diagram{padding:16px;border-radius:12px}
+  .arch-block .block-title{font-size:13px}
+  .arch-block .block-items{font-size:10.5px}
+  .arch-block .block-label{font-size:8px}
+
+  .code-window{border-radius:10px}
+  .code-body{padding:12px 14px;font-size:10px;line-height:1.6;-webkit-overflow-scrolling:touch}
+  .code-titlebar{padding:10px 14px}
+
+  .visual-inner{padding:20px 16px}
+  .wf-row{flex-direction:column;align-items:center;gap:4px}
+  .wf-arrow{transform:rotate(90deg)}
+  .wf-node{width:100%;max-width:220px;justify-content:center;padding:10px 14px}
+  .wf-branch{gap:24px!important;flex-wrap:wrap;justify-content:center!important}
+
+  .lifecycle{flex-wrap:wrap;gap:6px}
+  .lc-step{flex:1;min-width:70px;padding:8px 10px;font-size:10px}
+  .lc-arrow{display:none}
+
+  .metrics-bar{grid-template-columns:1fr 1fr;border-radius:12px}
+  .metric{padding:16px 12px}
+  .metric .val{font-size:20px}
+  .metric .lbl{font-size:10px}
+
+  .connector-showcase{gap:6px}
+  .conn-chip{padding:6px 10px;font-size:10.5px;border-radius:6px}
+  .conn-chip .conn-dot{width:5px;height:5px}
+
+  .org-tree{font-size:12px}
+  .org-node{padding:10px 14px;border-radius:8px;gap:10px}
+  .org-node .org-icon{width:28px;height:28px;font-size:12px}
+  .org-node .org-label{font-size:12px}
+  .org-node .org-meta{font-size:10px}
+  .org-node.project{margin-left:12px}
+  .org-node.resource{margin-left:24px;padding:8px 12px}
+  .org-node.shared{margin-left:12px}
+
+  .topbar-logo span{font-size:15px}
+  .topbar-logo .foundry{font-size:10px}
+  .topbar-logo svg{width:24px;height:24px}
+  .topbar-inner{height:56px}
+
+  .footer-links{flex-wrap:wrap;gap:16px 24px;justify-content:center}
+  .footer-brand{font-size:20px}
+
+  /* Ecosystem cards */
+  .card-grid.cols-3{gap:12px}
+}
 </style>
 </head>
 <body>
@@ -211,6 +339,9 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
       </svg>
       <span>FastAIAgent<span class="foundry"> by FastAIFoundry</span></span>
     </div>
+    <button class="topbar-toggle" onclick="document.querySelector('.topbar-nav').classList.toggle('open')" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
     <div class="topbar-nav">
       <a href="#platform">Platform</a>
       <a href="#workflows">Workflows</a>
@@ -318,7 +449,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
     <div class="hero-feature-visual" style="margin-bottom:48px">
       <div class="visual-inner" style="flex-direction:column;gap:20px;padding:40px 48px">
         <div class="wf-row"><div class="wf-node start">▶ Trigger</div><span class="wf-arrow">→</span><div class="wf-node process">🔌 Fetch CRM Data</div><span class="wf-arrow">→</span><div class="wf-node llm">🧠 LLM: Analyze Lead</div><span class="wf-arrow">→</span><div class="wf-node decision">◆ Score ≥ 80?</div></div>
-        <div style="display:flex;justify-content:center;gap:80px">
+        <div style="display:flex;justify-content:center;gap:80px" class="wf-branch">
           <div style="text-align:center"><div style="color:var(--accent-green);font-size:11px;font-family:var(--mono);margin-bottom:8px">YES</div><div class="wf-node process">📧 Send to Sales</div></div>
           <div style="text-align:center"><div style="color:var(--accent-rose);font-size:11px;font-family:var(--mono);margin-bottom:8px">NO</div><div class="wf-node llm">🧠 Nurture Sequence</div></div>
         </div>
@@ -601,5 +732,10 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   </div>
 </footer>
 
+<script>
+document.querySelectorAll('.topbar-nav a').forEach(a=>a.addEventListener('click',()=>{
+  document.querySelector('.topbar-nav').classList.remove('open');
+}));
+</script>
 </body>
 </html>
