@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -325,6 +326,59 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   /* Ecosystem cards */
   .card-grid.cols-3{gap:12px}
 }
+/* ========== AGENT REPLAY ========== */
+.replay-demo{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.replay-demo-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--surface-raised)}
+.replay-demo-header h4{font-size:13px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.replay-demo-header .replay-meta{display:flex;gap:16px;font-family:var(--mono);font-size:10px;color:var(--text-muted)}
+.replay-demo-header .replay-meta strong{color:var(--text-secondary)}
+.replay-body{display:grid;grid-template-columns:240px 1fr}
+.replay-timeline{border-right:1px solid var(--border);padding:12px 0}
+.replay-step{display:flex;align-items:flex-start;gap:10px;padding:9px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;font-size:12px}
+.replay-step:hover{background:var(--surface-raised)}
+.replay-step.active{background:rgba(0,136,170,.04);border-left-color:var(--accent-cyan)}
+.replay-step .step-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.replay-step .step-dot.llm{background:var(--accent-violet)}.replay-step .step-dot.tool{background:var(--accent-orange)}
+.replay-step .step-dot.retrieval{background:var(--accent-green)}.replay-step .step-dot.memory{background:var(--accent-cyan)}
+.replay-step .step-name{font-weight:600;color:var(--text-primary);font-size:12px}
+.replay-step .step-meta{font-family:var(--mono);font-size:9.5px;color:var(--text-muted);margin-top:1px}
+.replay-step .fork-icon{margin-left:auto;color:var(--accent-cyan);font-size:11px;flex-shrink:0}
+.replay-detail{padding:20px 24px}
+.replay-detail-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.replay-detail-top h5{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.replay-type-tag{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:4px}
+.replay-type-tag.tool{background:rgba(234,88,12,.08);color:var(--accent-orange);border:1px solid rgba(234,88,12,.15)}
+.replay-type-tag.llm{background:rgba(99,102,241,.08);color:var(--accent-violet);border:1px solid rgba(99,102,241,.15)}
+.replay-fork-btn{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:6px 14px;background:rgba(0,136,170,.06);border:1px solid rgba(0,136,170,.2);border-radius:6px;color:var(--accent-cyan);cursor:pointer;transition:all .2s;text-transform:uppercase}
+.replay-fork-btn:hover{background:rgba(0,136,170,.12);border-color:rgba(0,136,170,.35)}
+.replay-json-block{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--text-secondary);margin-bottom:12px}
+.replay-json-block .jk{color:var(--accent-violet)}.replay-json-block .js{color:var(--accent-green)}.replay-json-block .jn{color:var(--accent-orange)}
+.replay-section-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.replay-cost-row{display:flex;align-items:center;gap:10px;font-size:11px;margin-top:4px}
+.replay-cost-row .cost-label{font-family:var(--mono);font-size:10px;color:var(--text-muted);width:44px}
+.replay-cost-row .cost-track{flex:1;height:5px;background:var(--surface-raised);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.replay-cost-row .cost-fill{height:100%;border-radius:3px}
+.replay-cost-row .cost-fill.tokens{background:var(--accent-violet)}.replay-cost-row .cost-fill.cost{background:var(--accent-cyan)}
+.replay-cost-row .cost-val{font-family:var(--mono);font-size:10px;color:var(--text-secondary);width:90px;text-align:right}
+.replay-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--border);background:var(--surface-raised)}
+.replay-nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.5px;padding:5px 12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.replay-nav-btn:hover{border-color:var(--border-light);color:var(--text-primary)}
+.replay-nav-info{font-family:var(--mono);font-size:10px;color:var(--text-muted)}
+.new-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1px;background:var(--accent-cyan);color:#fff;padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:6px}
+@media(max-width:900px){
+  .replay-body{grid-template-columns:1fr}
+  .replay-timeline{border-right:none;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:8px 12px;gap:4px}
+  .replay-step{padding:6px 10px;border-left:none;border-bottom:2px solid transparent;white-space:nowrap;min-width:auto}
+  .replay-step.active{border-bottom-color:var(--accent-cyan);border-left-color:transparent}
+  .replay-step .step-meta{display:none}
+  .replay-step .fork-icon{display:none}
+  .replay-demo-header{flex-direction:column;gap:8px;align-items:flex-start}
+}
+@media(max-width:600px){
+  .replay-detail{padding:14px 16px}
+  .replay-json-block{font-size:9.5px;padding:10px 12px}
+  .replay-demo-header .replay-meta{flex-wrap:wrap;gap:8px}
+}
 </style>
 </head>
 <body>
@@ -348,6 +402,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
       <a href="#knowledge">Knowledge</a>
       <a href="#connectors">Connectors</a>
       <a href="#prompts">Prompts</a>
+      <a href="#replay">Replay</a>
       <a href="#enterprise">Enterprise</a>
       <a href="#" class="topbar-cta">Get Started</a>
     </div>
@@ -620,6 +675,76 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
       <div class="fcard"><div class="fcard-icon violet">⑂</div><h3>Agent Versioning</h3><p>Snapshot agent configurations. Compare versions. Roll back instantly. Every deployment is a traceable, reversible event.</p></div>
       <div class="fcard"><div class="fcard-icon violet">🌍</div><h3>Environment Promotion</h3><p>Dev → Staging → Production pipeline. Promote agents, prompts, and workflows through environments with confidence.</p></div>
       <div class="fcard"><div class="fcard-icon violet">🔄</div><h3>Trace-Prompt Correlation</h3><p>Every LLM call in a trace references the exact prompt version used. Debug production issues by linking behavior to specific prompt text.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="replay">
+  <div class="container">
+    <div class="sec-label cyan">Agent Replay<span class="new-badge">NEW</span></div>
+    <div class="sec-title">Time-Travel Debugging for Agent Executions.</div>
+    <div class="sec-desc">Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore "what if?" scenarios.</div>
+
+    <div class="replay-demo">
+      <div class="replay-demo-header">
+        <h4>▶ Replay: <span style="color:var(--accent-cyan)">Customer Support Agent</span></h4>
+        <div class="replay-meta">
+          <span>Steps: <strong>7</strong></span>
+          <span>Tokens: <strong>1,847</strong></span>
+          <span>Cost: <strong>$0.0062</strong></span>
+          <span>Duration: <strong>2.4s</strong></span>
+        </div>
+      </div>
+      <div class="replay-body">
+        <div class="replay-timeline">
+          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">System Prompt</div><div class="step-meta">setup · 0ms</div></div></div>
+          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">LLM Call #1</div><div class="step-meta">gpt-4o · 520ms · 412 tok</div></div></div>
+          <div class="replay-step"><div class="step-dot retrieval"></div><div><div class="step-name">KB: Search Docs</div><div class="step-meta">3 chunks · 85ms</div></div></div>
+          <div class="replay-step active"><div class="step-dot tool"></div><div><div class="step-name">Tool: get_customer</div><div class="step-meta">salesforce · 180ms</div></div><div class="fork-icon">⑂</div></div>
+          <div class="replay-step"><div class="step-dot memory"></div><div><div class="step-name">Memory Retrieve</div><div class="step-meta">2 entries · 42ms</div></div></div>
+          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">LLM Call #2</div><div class="step-meta">gpt-4o · 680ms · 891 tok</div></div></div>
+          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">Final Response</div><div class="step-meta">output · 544 tok</div></div></div>
+        </div>
+        <div class="replay-detail">
+          <div class="replay-detail-top">
+            <h5>Step 4: get_customer <span class="replay-type-tag tool">TOOL</span></h5>
+            <button class="replay-fork-btn">⑂ Fork from here</button>
+          </div>
+          <div class="replay-section-lbl">Input</div>
+          <div class="replay-json-block">{
+  <span class="jk">"tool_name"</span>: <span class="js">"salesforce.get_account"</span>,
+  <span class="jk">"arguments"</span>: {
+    <span class="jk">"account_name"</span>: <span class="js">"Acme Corp"</span>
+  }
+}</div>
+          <div class="replay-section-lbl">Output</div>
+          <div class="replay-json-block">{
+  <span class="jk">"id"</span>: <span class="js">"001Dn00000X8kPQ"</span>,
+  <span class="jk">"name"</span>: <span class="js">"Acme Corp"</span>,
+  <span class="jk">"employees"</span>: <span class="jn">520</span>,
+  <span class="jk">"annual_revenue"</span>: <span class="jn">48000000</span>,
+  <span class="jk">"tier"</span>: <span class="js">"Enterprise"</span>
+}</div>
+          <div class="replay-cost-row"><div class="cost-label">tokens</div><div class="cost-track"><div class="cost-fill tokens" style="width:58%"></div></div><div class="cost-val">1,073 / 1,847</div></div>
+          <div class="replay-cost-row" style="margin-top:6px"><div class="cost-label">cost</div><div class="cost-track"><div class="cost-fill cost" style="width:45%"></div></div><div class="cost-val">$0.0028 / $0.0062</div></div>
+        </div>
+      </div>
+      <div class="replay-nav">
+        <button class="replay-nav-btn">◀ Prev</button>
+        <div class="replay-nav-info">Step 4 of 7 · <span style="color:var(--accent-cyan)">⑂ 1 fork</span></div>
+        <button class="replay-nav-btn">Next ▶</button>
+      </div>
+    </div>
+
+    <div class="card-grid cols-3" style="margin-top:32px">
+      <div class="fcard"><div class="fcard-icon cyan">▶</div><h3>Step-Through Replay</h3><p>Walk through every span in an agent execution — LLM calls, tool invocations, KB retrievals, memory lookups — with full input/output at each step.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">⑂</div><h3>Fork &amp; Re-run</h3><p>From any step, modify the input and re-execute from that point forward. Creates a new linked trace so you can compare outcomes.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">⟷</div><h3>Diff View</h3><p>Side-by-side comparison of original execution vs. forked execution. See how one change ripples through the entire agent decision tree.</p></div>
+    </div>
+    <div class="card-grid cols-3" style="margin-top:16px">
+      <div class="fcard"><div class="fcard-icon cyan">📊</div><h3>Cost Waterfall</h3><p>Progressive token and cost accumulation as you step through the replay. See exactly where your spend goes, span by span.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">💬</div><h3>Message History</h3><p>At any step, see the complete accumulated message history — exactly what the LLM received as context at that point in execution.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">🔗</div><h3>Fork Lineage</h3><p>Track the family tree of forked traces. Original → Fork #1 → Fork #2. Navigate between versions and compare outcomes.</p></div>
     </div>
   </div>
 </section>
