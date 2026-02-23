@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -403,6 +404,8 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
       <a href="#connectors">Connectors</a>
       <a href="#prompts">Prompts</a>
       <a href="#replay">Replay</a>
+      <a href="#public-api">Public API</a>
+      <a href="#hitl">HITL</a>
       <a href="#enterprise">Enterprise</a>
       <a href="#" class="topbar-cta">Get Started</a>
     </div>
@@ -413,9 +416,10 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   <div class="container">
     <div class="hero-badge animate"><div class="dot"></div><span>Now in Active Development</span></div>
     <h1 class="animate d1">Build, Deploy &amp; Govern<br><em>Intelligent Agents</em></h1>
-    <p class="hero-sub animate d2">The complete AI agent platform. Visual workflows, multi-LLM execution, knowledge-grounded RAG, prompt lifecycle management, and enterprise-grade auth — all self-hostable, all in one system.</p>
+    <p class="hero-sub animate d2">The complete AI agent platform. Visual workflows, multi-LLM execution, knowledge-grounded RAG, prompt lifecycle management, Public API with SSE streaming, human-in-the-loop approval gates, and enterprise-grade auth — all self-hostable, all in one system.</p>
     <div class="hero-stats animate d3">
-      <div class="hero-stat"><div class="val">15+</div><div class="label">Connectors</div></div>
+      <div class="hero-stat"><div class="val">29+</div><div class="label">Connectors</div></div>
+      <div class="hero-stat"><div class="val">250+</div><div class="label">API Endpoints</div></div>
       <div class="hero-stat"><div class="val">Multi-LLM</div><div class="label">Execution Engine</div></div>
       <div class="hero-stat"><div class="val">MCP</div><div class="label">Protocol Native</div></div>
       <div class="hero-stat"><div class="val">Docker</div><div class="label">Self-Hosted</div></div>
@@ -436,19 +440,24 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
         </div>
         <div class="arch-connector">▾ ▾ ▾</div>
         <div class="arch-layer">
-          <div class="arch-block orange"><div class="block-label">Execution</div><div class="block-title">Agent Engine</div><div class="block-items">Multi-LLM · Tool use · Streaming · Multi-agent teams</div></div>
+          <div class="arch-block orange"><div class="block-label">Execution</div><div class="block-title">Agent Engine</div><div class="block-items">Multi-LLM · Tool use · Streaming · Multi-agent teams · HITL gates</div></div>
           <div class="arch-block green"><div class="block-label">Knowledge</div><div class="block-title">RAG Pipeline</div><div class="block-items">Chunking · Embedding · Vector search · Document ingestion</div></div>
           <div class="arch-block rose"><div class="block-label">Lifecycle</div><div class="block-title">Prompt Registry</div><div class="block-items">Versioning · Approval flows · A/B testing · Deployment</div></div>
         </div>
         <div class="arch-connector">▾ ▾ ▾</div>
         <div class="arch-layer">
-          <div class="arch-block neutral"><div class="block-label">Infrastructure</div><div class="block-title">Connectors · MCP Servers · LLM Endpoints · Vector Stores</div><div class="block-items">15+ pre-built connectors · Anthropic MCP protocol · OpenAI, Anthropic, Azure, local models · Qdrant, PgVector, Azure AI Search</div></div>
+          <div class="arch-block cyan"><div class="block-label">Public API</div><div class="block-title">RESTful API + SSE Streaming</div><div class="block-items">API key auth · 12 scopes · Rate limiting · Usage tracking · Agent &amp; chain invocation</div></div>
+          <div class="arch-block orange"><div class="block-label">Approval Layer</div><div class="block-title">Human-in-the-Loop Gates</div><div class="block-items">Tool approval policies · Chain human input · Webhooks · Stateless resume</div></div>
+        </div>
+        <div class="arch-connector">▾ ▾ ▾</div>
+        <div class="arch-layer">
+          <div class="arch-block neutral"><div class="block-label">Infrastructure</div><div class="block-title">Connectors · MCP Servers · Hosted MCP · LLM Endpoints · Vector Stores</div><div class="block-items">29 pre-built connectors · Anthropic MCP protocol · Hosted MCP servers · OpenAI, Anthropic, Azure, local models · Qdrant, PgVector, Azure AI Search</div></div>
         </div>
         <div class="arch-connector">▾ ▾ ▾</div>
         <div class="arch-layer">
           <div class="arch-block neutral" style="flex:1"><div class="block-label">Data</div><div class="block-title">PostgreSQL</div><div class="block-items">Metadata · Auth · Traces</div></div>
           <div class="arch-block neutral" style="flex:1"><div class="block-label">Vectors</div><div class="block-title">Qdrant / PgVector / Azure AI Search</div><div class="block-items">Embeddings · Similarity search</div></div>
-          <div class="arch-block neutral" style="flex:1"><div class="block-label">Runtime</div><div class="block-title">Docker + FastAPI</div><div class="block-items">Self-hosted · Multi-env · Production-grade</div></div>
+          <div class="arch-block neutral" style="flex:1"><div class="block-label">Runtime</div><div class="block-title">Docker + FastAPI</div><div class="block-items">Self-hosted · Air-gapped · Production-grade</div></div>
         </div>
       </div>
     </div>
@@ -468,6 +477,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
           <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Native Tool Use</strong> — Agents invoke tools, connectors, MCP servers, and Python scripts autonomously</span></li>
           <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Agent Memory</strong> — Automatic extraction and retrieval of long-term memory from conversations</span></li>
           <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Supervisor-Worker Teams</strong> — Orchestrate multi-agent systems with delegation, handoff, and aggregation</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Human-in-the-Loop</strong> — Agents can pause mid-execution to request human input via the built-in <code style="font-size:12px;background:var(--surface-raised);padding:1px 5px;border-radius:3px">request_human_input</code> tool</span></li>
         </ul>
       </div>
       <div>
@@ -514,7 +524,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
     <div class="card-grid cols-3">
       <div class="fcard"><div class="fcard-icon violet">⟐</div><h3>Drag-and-Drop Canvas</h3><p>ReactFlow-powered graph editor. Add nodes, draw edges, configure each step visually. Full undo/redo and zoom controls.</p></div>
       <div class="fcard"><div class="fcard-icon violet">⑂</div><h3>Conditional Branching</h3><p>Route execution based on LLM output, tool results, or custom conditions. Build decision trees that adapt in real time.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">⊞</div><h3>Rich Node Library</h3><p>LLM calls, tool invocations, connectors, scripts, sub-chains, input/output nodes — everything you need as composable blocks.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">⊞</div><h3>Rich Node Library</h3><p>LLM calls, tool invocations, connectors, scripts, sub-chains, parallel execution, knowledge search, human input nodes — everything you need as composable blocks.</p></div>
     </div>
   </div>
 </section>
@@ -564,28 +574,47 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   <div class="container">
     <div class="sec-label orange">Connector Library</div>
     <div class="sec-title">Connect to everything.</div>
-    <div class="sec-desc">Pre-built connectors for CRMs, databases, communication tools, cloud services, and custom APIs. Each connector is a reusable, domain-level resource available to every agent and workflow in your organisation.</div>
+    <div class="sec-desc">29 pre-built connectors across 8 categories — databases, storage, communication, CRM, email, messaging, document processing, and web. Each connector is a reusable, domain-level resource available to every agent and workflow in your organisation.</div>
     <div class="connector-showcase">
-      <div class="conn-chip"><span class="conn-dot" style="background:#0176D3"></span>Salesforce</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#FF5722"></span>ServiceNow</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#0052CC"></span>Jira</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#7B68EE"></span>Slack</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#4285F4"></span>Google Sheets</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Microsoft 365</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#FF9900"></span>AWS S3</div>
       <div class="conn-chip"><span class="conn-dot" style="background:#336791"></span>PostgreSQL</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#00758F"></span>MySQL</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#F80000"></span>Oracle</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Azure SQL</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#003B57"></span>SQLite</div>
       <div class="conn-chip"><span class="conn-dot" style="background:#4DB33D"></span>MongoDB</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#E34F26"></span>REST API</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#FF6B2B"></span>Webhook</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#E535AB"></span>GraphQL</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#00b4d8"></span>SMTP Email</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#00BFB3"></span>Elasticsearch</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#DC382D"></span>Redis</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#FF9900"></span>Amazon S3</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Azure Blob</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#4285F4"></span>Google Drive</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#6B7280"></span>SFTP</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#7B68EE"></span>Slack</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#6264A7"></span>Microsoft Teams</div>
       <div class="conn-chip"><span class="conn-dot" style="background:#0088cc"></span>Telegram</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#8B5CF6"></span>Custom Python</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#25D366"></span>WhatsApp</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#0176D3"></span>Salesforce</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#002050"></span>Dynamics 365</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#EA4335"></span>Gmail</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Outlook</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#00b4d8"></span>SMTP Email</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#231F20"></span>Apache Kafka</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#E34F26"></span>REST API</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#E535AB"></span>GraphQL</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#c0392b"></span>PDF Reader</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#2B579A"></span>Word Reader</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#217346"></span>Excel / CSV</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#FF6B2B"></span>Web Scraper</div>
+      <div class="conn-chip"><span class="conn-dot" style="background:#8B5CF6"></span>Web Crawler</div>
     </div>
     <div class="card-grid cols-3" style="margin-top:32px">
-      <div class="fcard"><div class="fcard-icon orange">⚡</div><h3>MCP Protocol Native</h3><p>First-class support for Anthropic's Model Context Protocol. Connect MCP-compatible tool servers and let agents discover capabilities dynamically.</p><div class="tag">Anthropic MCP Spec</div></div>
+      <div class="fcard"><div class="fcard-icon orange">⚡</div><h3>MCP Protocol Native</h3><p>First-class support for Anthropic's Model Context Protocol. Connect external MCP servers, discover tools dynamically, and import them into your project.</p><div class="tag">Anthropic MCP Spec</div></div>
+      <div class="fcard"><div class="fcard-icon orange">🖥</div><h3>Hosted MCP Servers<span class="new-badge">NEW</span></h3><p>Host MCP servers directly inside FastAIAgent. Streamable-HTTP transport, token-based auth, auto-start on boot, and tool assignment — all managed from the UI.</p><div class="tag">In-Process Hosting</div></div>
       <div class="fcard"><div class="fcard-icon orange">🐍</div><h3>Python Script Connector</h3><p>Write custom logic in Python, expose it as a tool. Sandboxed execution with input/output validation and full trace logging.</p><div class="tag">Custom Code Nodes</div></div>
+    </div>
+    <div class="card-grid cols-3" style="margin-top:16px">
       <div class="fcard"><div class="fcard-icon orange">⏰</div><h3>Triggers &amp; Scheduling</h3><p>Fire agents on webhooks, cron schedules, or external events. Every trigger execution is traced, with retry logic and error handling.</p><div class="tag">Webhooks + Cron</div></div>
+      <div class="fcard"><div class="fcard-icon orange">🔗</div><h3>Connector-to-Tool</h3><p>Register any connector action as a reusable tool. Agents and chains can invoke connector actions directly — no glue code needed.</p><div class="tag">One-Click Registration</div></div>
+      <div class="fcard"><div class="fcard-icon orange">🔒</div><h3>Encrypted Secrets</h3><p>Connector credentials secured with AES-256-GCM encryption. Secrets never stored in plaintext — decrypted only at execution time.</p><div class="tag">AES-256-GCM</div></div>
     </div>
   </div>
 </section>
@@ -749,6 +778,264 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   </div>
 </section>
 
+<!-- ============ PUBLIC API (Phase 19/20) ============ -->
+<section id="public-api" class="sec-alt">
+  <div class="container">
+    <div class="split">
+      <div>
+        <div class="sec-label cyan">Public API<span class="new-badge">NEW</span></div>
+        <div class="sec-title">Integrate Agents<br>Into Anything.</div>
+        <div class="sec-desc" style="margin-bottom:0">A full RESTful API at <code style="font-size:13px;background:var(--surface-raised);padding:2px 6px;border-radius:4px">/public/v1/</code> with API key authentication, scoped permissions, rate limiting, and SSE streaming — so external systems can invoke your agents and chains programmatically.</div>
+        <ul class="features-list">
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Scoped API Keys</strong> — 12 fine-grained scopes including agent:read, agent:execute, chain:execute, kb:read, approval:manage, and more</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">SSE Streaming</strong> — Real-time token-by-token streaming over Server-Sent Events with tool call events and HITL signals</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Rate Limiting</strong> — Configurable RPM and RPD per API key with token-bucket algorithm and persistent state</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Usage Tracking</strong> — Per-request logging with tokens, cost, latency — plus daily aggregation and visual dashboards</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">KB Public API</strong> — Discover knowledge bases, list documents, and inject context via API — agents automatically ground in your data</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="code-window">
+          <div class="code-titlebar"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span class="code-title">public_api_invoke.sh</span></div>
+          <div class="code-body"><span class="cm"># Execute agent via Public API with SSE</span>
+<span class="fn">curl</span> <span class="str">-N</span> \
+  <span class="op">-H</span> <span class="str">"X-API-Key: fa_k_your_key_here"</span> \
+  <span class="op">-H</span> <span class="str">"Content-Type: application/json"</span> \
+  <span class="op">-d</span> <span class="str">'{"input": "Qualify lead from Acme"}'</span> \
+  <span class="kw">https://host/public/v1/agents/{id}/invoke/stream</span>
+
+<span class="cm"># SSE events:</span>
+<span class="cm"># → token: {"text": "Acme Corp scores..."}</span>
+<span class="cm"># → tool_call_start: {"tool": "salesforce"}</span>
+<span class="cm"># → tool_call_end: {"result": {...}}</span>
+<span class="cm"># → done: {"trace_id":"...","cost":0.006}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-grid cols-4" style="margin-top:32px">
+      <div class="fcard"><div class="fcard-icon cyan">🔑</div><h3>API Key Management</h3><p>Create scoped keys restricted to specific agents and chains. Set rate limits, expiry dates, and track usage per key.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">📡</div><h3>Agent Invocation</h3><p>Non-streaming JSON or real-time SSE. Execute agents and chains via a single POST call with full trace capture.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">📚</div><h3>KB Discovery</h3><p>List knowledge bases, retrieve metadata, browse documents — all via Public API. Context injection happens automatically.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">📖</div><h3>API Documentation</h3><p>Built-in interactive API docs with endpoint reference, scope requirements, and example payloads.</p></div>
+    </div>
+    <div class="metrics-bar" style="margin-top:16px;margin-bottom:0">
+      <div class="metric"><div class="val">37+</div><div class="lbl">Public Endpoints</div></div>
+      <div class="metric"><div class="val">12</div><div class="lbl">API Key Scopes</div></div>
+      <div class="metric"><div class="val">SSE</div><div class="lbl">Streaming Protocol</div></div>
+      <div class="metric"><div class="val">HMAC</div><div class="lbl">Webhook Signing</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HUMAN-IN-THE-LOOP (Phase 21) ============ -->
+<section id="hitl">
+  <div class="container">
+    <div class="sec-label rose">Human-in-the-Loop<span class="new-badge">NEW</span></div>
+    <div class="sec-title">Keep Humans in Control.</div>
+    <div class="sec-desc">Gate sensitive tool calls behind configurable approval policies. Pause chain execution for human input. Get notified instantly via HMAC-signed webhooks — and resume execution exactly where you left off with full stateless context preservation.</div>
+
+    <!-- ── HITL Visual Flow Diagram ── -->
+    <div class="hero-feature-visual" style="margin-bottom:48px">
+      <div class="visual-inner" style="flex-direction:column;gap:20px;padding:40px 48px">
+        <div class="wf-row"><div class="wf-node start">▶ Agent Executes</div><span class="wf-arrow">→</span><div class="wf-node llm">🧠 LLM Decides Tool</div><span class="wf-arrow">→</span><div class="wf-node decision">🛡 Policy Match?</div></div>
+        <div style="display:flex;justify-content:center;gap:80px" class="wf-branch">
+          <div style="text-align:center"><div style="color:var(--accent-green);font-size:11px;font-family:var(--mono);margin-bottom:8px">NO MATCH</div><div class="wf-node process">⚡ Execute Tool</div></div>
+          <div style="text-align:center"><div style="color:var(--accent-rose);font-size:11px;font-family:var(--mono);margin-bottom:8px">MATCH</div><div class="wf-node end" style="background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.2)">⏸ Pause + Webhook</div></div>
+        </div>
+        <div class="wf-row"><div class="wf-node process">👤 Human Approves / Rejects / Modifies</div><span class="wf-arrow">→</span><div class="wf-node start">▶ Resume Stream</div></div>
+      </div>
+    </div>
+
+    <!-- ── HITL Interactive Demo (Approval Request UI) ── -->
+    <div class="replay-demo" style="margin-bottom:48px">
+      <div class="replay-demo-header">
+        <h4>🛡 Approval Request: <span style="color:var(--accent-rose)">salesforce.create_opportunity</span></h4>
+        <div class="replay-meta">
+          <span>Agent: <strong>Lead Qualifier</strong></span>
+          <span>Policy: <strong>salesforce.*</strong></span>
+          <span>Status: <strong style="color:var(--accent-orange)">⏳ Pending</strong></span>
+          <span>Timeout: <strong>60 min</strong></span>
+        </div>
+      </div>
+      <div class="replay-body">
+        <div class="replay-timeline">
+          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">Agent Started</div><div class="step-meta">gpt-4o · stream</div></div></div>
+          <div class="replay-step"><div class="step-dot retrieval"></div><div><div class="step-name">KB: Company Data</div><div class="step-meta">3 chunks · 62ms</div></div></div>
+          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">LLM: Qualify Lead</div><div class="step-meta">gpt-4o · 412 tok</div></div></div>
+          <div class="replay-step active"><div class="step-dot tool" style="background:var(--accent-rose)"></div><div><div class="step-name">🛡 Tool Blocked</div><div class="step-meta">salesforce · policy match</div></div><div class="fork-icon" style="color:var(--accent-rose)">⏸</div></div>
+          <div class="replay-step" style="opacity:.4"><div class="step-dot llm"></div><div><div class="step-name">⏳ Waiting...</div><div class="step-meta">resume after approval</div></div></div>
+        </div>
+        <div class="replay-detail">
+          <div class="replay-detail-top">
+            <h5>Tool Call: salesforce.create_opportunity <span class="replay-type-tag" style="background:rgba(220,38,38,.08);color:var(--accent-rose);border:1px solid rgba(220,38,38,.15)">BLOCKED</span></h5>
+          </div>
+          <div class="replay-section-lbl">Tool Parameters (Editable by Approver)</div>
+          <div class="replay-json-block">{
+  <span class="jk">"tool_name"</span>: <span class="js">"salesforce.create_opportunity"</span>,
+  <span class="jk">"arguments"</span>: {
+    <span class="jk">"account_id"</span>: <span class="js">"001Dn00000X8kPQ"</span>,
+    <span class="jk">"name"</span>: <span class="js">"Acme Corp — Enterprise Renewal"</span>,
+    <span class="jk">"amount"</span>: <span class="jn">480000</span>,
+    <span class="jk">"stage"</span>: <span class="js">"Qualification"</span>,
+    <span class="jk">"close_date"</span>: <span class="js">"2026-06-30"</span>
+  }
+}</div>
+          <div class="replay-section-lbl">Policy Details</div>
+          <div class="replay-json-block">{
+  <span class="jk">"policy"</span>: <span class="js">"salesforce.*"</span>,
+  <span class="jk">"condition"</span>: <span class="js">"field_threshold"</span>,
+  <span class="jk">"rule"</span>: <span class="js">"amount &gt; 100000"</span>,
+  <span class="jk">"matched"</span>: <span class="jn">true</span>,
+  <span class="jk">"webhook_sent"</span>: <span class="jn">true</span>
+}</div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="replay-fork-btn" style="background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.25);color:var(--accent-green)">✓ Approve</button>
+            <button class="replay-fork-btn" style="background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.2);color:var(--accent-cyan)">✏ Modify &amp; Approve</button>
+            <button class="replay-fork-btn" style="background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.2);color:var(--accent-rose)">✕ Reject</button>
+          </div>
+        </div>
+      </div>
+      <div class="replay-nav">
+        <div class="replay-nav-info" style="width:100%;text-align:center">Webhook dispatched · <span style="color:var(--accent-rose)">approval.requested</span> → https://ops.acme.com/webhooks · <span style="color:var(--accent-green)">HMAC-SHA256 signed</span></div>
+      </div>
+    </div>
+
+    <!-- ── Tool Approval Flow ── -->
+    <div style="margin-bottom:12px"><div class="sec-label rose" style="font-size:10px">Tool Approval Flow</div></div>
+    <div class="card-grid cols-3">
+      <div class="fcard"><div class="fcard-icon rose">🛡</div><h3>Approval Policies</h3><p>Define rules with glob patterns (<code style="font-size:11px;background:var(--surface-raised);padding:1px 4px;border-radius:3px">salesforce.*</code>, <code style="font-size:11px;background:var(--surface-raised);padding:1px 4px;border-radius:3px">email.send</code>, <code style="font-size:11px;background:var(--surface-raised);padding:1px 4px;border-radius:3px">*</code>) that gate tool execution behind human approval. Per-agent or domain-wide.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">📐</div><h3>Field Threshold Conditions</h3><p>Conditional approval based on tool input values — e.g., "require approval when <code style="font-size:11px;background:var(--surface-raised);padding:1px 4px;border-radius:3px">input.amount &gt; 10000</code>". Low-value actions proceed automatically.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">✏</div><h3>Approve with Modification</h3><p>Approvers can modify tool parameters before execution — change the amount, fix the account ID, update the date. The modified input is what executes.</p></div>
+    </div>
+
+    <!-- ── Streaming & Resumption ── -->
+    <div style="margin-top:32px;margin-bottom:12px"><div class="sec-label rose" style="font-size:10px">Streaming &amp; Stateless Resumption</div></div>
+    <div class="card-grid cols-2">
+      <div class="fcard" style="grid-row:span 2"><div class="fcard-icon rose">⏸</div><h3>Two-Phase Streaming Architecture</h3>
+        <p>When a tool call matches a policy, the execution engine serialises full agent state — messages, tool call, config — to the database and cleanly closes the SSE stream.</p>
+        <div style="margin-top:20px;padding:16px;background:var(--surface-raised);border-radius:10px;font-family:var(--mono);font-size:11px;line-height:2">
+          <div style="color:var(--text-muted)">Phase 1 — Original Stream</div>
+          <div style="color:var(--accent-cyan);margin-top:4px">event: token</div>
+          <div style="color:var(--accent-cyan)">event: token</div>
+          <div style="color:var(--accent-orange)">event: tool_call_pending</div>
+          <div style="color:var(--accent-rose)">event: stream_paused</div>
+          <div style="color:var(--text-muted);margin-top:12px">Phase 2 — After Approval</div>
+          <div style="color:var(--accent-green);margin-top:4px">POST /approvals/{id}/resume/stream</div>
+          <div style="color:var(--accent-cyan)">event: tool_call_result</div>
+          <div style="color:var(--accent-cyan)">event: token</div>
+          <div style="color:var(--accent-green)">event: done</div>
+        </div>
+        <p style="margin-top:16px">The consumer handles approval out-of-band, then calls the resume endpoint for a fresh SSE stream. Fully stateless — no long-lived connections.</p>
+      </div>
+      <div class="fcard"><div class="fcard-icon rose">🔄</div><h3>Rejection Handling</h3><p>When an approver rejects a tool call with a reason, the agent receives the rejection as context and generates an intelligent alternative response — no dead ends.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">⏰</div><h3>Automatic Expiry</h3><p>A background job (APScheduler, every 60s) expires stale approval requests after the configured timeout. Expired requests trigger <code style="font-size:11px;background:var(--surface-raised);padding:1px 4px;border-radius:3px">approval.expired</code> webhooks.</p></div>
+    </div>
+
+    <!-- ── Chain Human Input ── -->
+    <div style="margin-top:32px;margin-bottom:12px"><div class="sec-label rose" style="font-size:10px">Chain Human Input Nodes</div></div>
+    <div class="card-grid cols-3">
+      <div class="fcard"><div class="fcard-icon rose">🔗</div><h3>HumanInput Chain Node</h3><p>A dedicated chain node type that pauses execution and creates an approval request. The chain resumes from the next node after input is received.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">🎛</div><h3>Three Input Types</h3><p><strong>Approval</strong> — simple yes/no gate. <strong>Text</strong> — free-form human input. <strong>Choice</strong> — multiple options presented to the approver. All configurable per node.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">▶</div><h3>Chain Resume Executor</h3><p>Dedicated service deserialises chain state and continues execution from the next node after human input. Works with both admin UI and Public API.</p></div>
+    </div>
+
+    <!-- ── Webhooks & Audit ── -->
+    <div style="margin-top:32px;margin-bottom:12px"><div class="sec-label rose" style="font-size:10px">Webhooks &amp; Audit</div></div>
+    <div class="card-grid cols-3">
+      <div class="fcard"><div class="fcard-icon rose">📡</div><h3>HMAC-Signed Webhooks</h3><p>Register webhook URLs via the Public API. Payloads signed with per-webhook secret (<code style="font-size:11px;background:var(--surface-raised);padding:1px 4px;border-radius:3px">X-FastAI-Signature</code>). Events: requested, approved, rejected, expired.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">📋</div><h3>Full Audit Trail</h3><p>The <code style="font-size:11px;background:var(--surface-raised);padding:1px 4px;border-radius:3px">approval_audit_log</code> table tracks every lifecycle event: created → webhook_sent → approved/rejected/modified/expired → resumed.</p></div>
+      <div class="fcard"><div class="fcard-icon rose">🖥</div><h3>Admin Approval UI</h3><p>View pending approvals, inspect tool parameters and agent context, approve/reject/modify directly from the admin interface — with bulk operations and force-expire.</p></div>
+    </div>
+
+    <!-- ── HITL Metrics ── -->
+    <div class="metrics-bar" style="margin-top:32px;margin-bottom:0">
+      <div class="metric"><div class="val">Glob</div><div class="lbl">Pattern Matching</div></div>
+      <div class="metric"><div class="val">Stateless</div><div class="lbl">Context Serialisation</div></div>
+      <div class="metric"><div class="val">SSE</div><div class="lbl">Two-Phase Streaming</div></div>
+      <div class="metric"><div class="val">HMAC-SHA256</div><div class="lbl">Webhook Signing</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ANALYTICS DASHBOARD ============ -->
+<section class="sec-alt">
+  <div class="container">
+    <div class="split reverse">
+      <div>
+        <div class="sec-label green">Analytics &amp; Dashboard</div>
+        <div class="sec-title">See the full picture.</div>
+        <div class="sec-desc" style="margin-bottom:0">Cross-project analytics, agent performance tracking, prompt-level cost breakdowns, and API usage dashboards — all built in. Know exactly where your tokens, time, and money go.</div>
+        <ul class="features-list">
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Platform Dashboard</strong> — Entity counts, recent activity, health status, trigger activity, and eval run summaries at a glance</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Execution Analytics</strong> — Total executions, token usage, cost breakdown by agent and time period</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Prompt Analytics</strong> — Per-version performance: latency, tokens, cost, quality trends, regression detection</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">API Usage Dashboard</strong> — Requests, tokens, and cost per API key and endpoint with daily breakdowns</span></li>
+          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Cost Estimation</strong> — Real-time LLM token cost estimation by provider and model during execution</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="fcard" style="border-color:rgba(5,150,105,.15);padding:0;overflow:hidden">
+          <div style="padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">📊</span><span style="font-size:14px;font-weight:700;color:var(--text-primary)">Platform Dashboard</span></div>
+            <span class="mono" style="color:var(--accent-green);font-size:9px">LIVE</span>
+          </div>
+          <div style="padding:20px 24px">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+              <div style="padding:12px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--text-primary)">1,247</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Executions</div></div>
+              <div style="padding:12px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--text-primary)">2.4M</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Tokens</div></div>
+              <div style="padding:12px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--accent-green)">$18.42</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Total Cost</div></div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;font-family:var(--mono);letter-spacing:1px">TOP AGENTS BY USAGE</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:12px"><span style="color:var(--text-secondary)">Lead Qualifier</span><span style="font-size:10px;color:var(--accent-cyan);font-family:var(--mono)">482 runs · $6.14</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:12px"><span style="color:var(--text-secondary)">Support Triage</span><span style="font-size:10px;color:var(--accent-cyan);font-family:var(--mono)">318 runs · $4.21</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:12px"><span style="color:var(--text-secondary)">Content Writer</span><span style="font-size:10px;color:var(--accent-cyan);font-family:var(--mono)">201 runs · $3.87</span></div>
+            </div>
+          </div>
+          <div style="padding:12px 24px;background:rgba(5,150,105,.04);border-top:1px solid rgba(5,150,105,.1);display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--accent-green);font-family:var(--mono);letter-spacing:1px">API USAGE</span><span style="font-size:12px;color:var(--text-secondary)">1,024 requests today · 3 active keys</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USER MANAGEMENT & RBAC ============ -->
+<section>
+  <div class="container">
+    <div class="sec-label violet">User Management</div>
+    <div class="sec-title">Four-Role RBAC, built in.</div>
+    <div class="sec-desc">A complete user management system with a four-tier permission hierarchy, invitation-based onboarding, and role-based UI visibility — no external identity provider required.</div>
+    <div class="hero-feature-visual" style="margin-bottom:48px">
+      <div class="visual-inner" style="flex-direction:column;gap:16px;padding:32px 48px">
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:560px;margin:0 auto;width:100%">
+          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(220,38,38,.2);background:rgba(220,38,38,.04);display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(220,38,38,.1);color:var(--accent-rose);flex-shrink:0">👑</div>
+            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">App Admin</div><div style="font-size:11px;color:var(--text-muted)">Global scope · Full override · User management · First user auto-promoted</div></div>
+          </div>
+          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(99,102,241,.2);background:rgba(99,102,241,.04);margin-left:24px;display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(99,102,241,.1);color:var(--accent-violet);flex-shrink:0">⚙</div>
+            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">Domain Admin</div><div style="font-size:11px;color:var(--text-muted)">Domain owner · All projects in domain · Infra management · Member management</div></div>
+          </div>
+          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(0,136,170,.2);background:rgba(0,136,170,.04);margin-left:48px;display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(0,136,170,.1);color:var(--accent-cyan);flex-shrink:0">🛠</div>
+            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">Developer</div><div style="font-size:11px;color:var(--text-muted)">Assigned projects · Read / Write / Execute · Build agents, chains, tools</div></div>
+          </div>
+          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(5,150,105,.2);background:rgba(5,150,105,.04);margin-left:72px;display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(5,150,105,.1);color:var(--accent-green);flex-shrink:0">👁</div>
+            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">Viewer</div><div style="font-size:11px;color:var(--text-muted)">Read + Execute only · Domain-wide or project-scoped · Business user access</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-grid cols-4">
+      <div class="fcard"><div class="fcard-icon violet">📧</div><h3>Invitation System</h3><p>Email-based invitations with role pre-assignment. Users auto-join the correct domain and project on registration.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">🎭</div><h3>Role-Based UI</h3><p>Sidebar sections, page access, and component rendering all adapt to the user's effective permissions. No hidden admin panels.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">🔒</div><h3>Permission Guards</h3><p>Every API endpoint enforces role checks. Frontend hooks derive canRead, canWrite, canExecute from user context.</p></div>
+      <div class="fcard"><div class="fcard-icon violet">🛡</div><h3>Safety Guards</h3><p>Last App Admin protection prevents lockout. Domain scope limits prevent cross-domain access. Cascade delete on removal.</p></div>
+    </div>
+  </div>
+</section>
+
 <section id="enterprise">
   <div class="container">
     <div class="split">
@@ -759,9 +1046,9 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
         <ul class="features-list">
           <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Domains</strong> — Top-level organisational units (business units, departments)</span></li>
           <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Projects</strong> — Scoped workspaces within a Domain for initiatives and products</span></li>
-          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Shared Infrastructure</strong> — LLM endpoints, connectors, and MCP servers at Domain level</span></li>
+          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Shared Infrastructure</strong> — LLM endpoints, connectors, MCP servers, and hosted MCP at Domain level</span></li>
           <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Scoped Resources</strong> — Agents, workflows, knowledge bases scoped to each Project</span></li>
-          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Two-Tier RBAC</strong> — Domain-level and Project-level roles with permission inheritance</span></li>
+          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Four-Role RBAC</strong> — App Admin, Domain Admin, Developer, Viewer with cascading permission inheritance</span></li>
         </ul>
       </div>
       <div>
@@ -782,18 +1069,24 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   <div class="container">
     <div class="sec-label green">Auth, Security &amp; Deployment</div>
     <div class="sec-title">Enterprise-grade from Day One.</div>
-    <div class="sec-desc">JWT authentication, role-based access control, environment isolation, and self-hosted Docker deployment. No cloud dependency, no vendor lock-in.</div>
+    <div class="sec-desc">JWT authentication, four-role RBAC, invitation-based onboarding, audit logging, environment isolation, and self-hosted Docker deployment — including air-gapped standalone bundles. No cloud dependency, no vendor lock-in.</div>
     <div class="card-grid cols-4">
-      <div class="fcard"><div class="fcard-icon green">🔐</div><h3>JWT Auth</h3><p>Secure authentication with JWT tokens. User registration, login, and session management built in.</p></div>
-      <div class="fcard"><div class="fcard-icon green">👥</div><h3>RBAC</h3><p>Role-based access at Domain and Project level. Admin, member, viewer — with permission inheritance.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🐳</div><h3>Docker Deploy</h3><p>Full Docker Compose stack. PostgreSQL, Qdrant, FastAPI backend, React frontend — one command.</p></div>
+      <div class="fcard"><div class="fcard-icon green">🔐</div><h3>JWT Auth</h3><p>Secure authentication with JWT tokens and refresh token rotation. User registration, login, and session management built in.</p></div>
+      <div class="fcard"><div class="fcard-icon green">👥</div><h3>Four-Role RBAC</h3><p>App Admin, Domain Admin, Developer, Viewer — with cascading permission inheritance and role-based UI visibility at every level.</p></div>
+      <div class="fcard"><div class="fcard-icon green">🐳</div><h3>Docker Deploy</h3><p>Full Docker Compose stack. PostgreSQL, Qdrant, FastAPI backend, React frontend — one command to production.</p></div>
+      <div class="fcard"><div class="fcard-icon green">📦</div><h3>Air-Gapped Deploy<span class="new-badge">NEW</span></h3><p>Standalone deployment bundles with pre-built images. Zero internet dependency — 4 commands to deploy in any environment.</p></div>
+    </div>
+    <div class="card-grid cols-4" style="margin-top:16px">
+      <div class="fcard"><div class="fcard-icon green">📋</div><h3>Audit Logging</h3><p>Complete audit trail of who did what, when. Action tracking, resource IDs, actor identification, and IP capture for compliance.</p></div>
+      <div class="fcard"><div class="fcard-icon green">📧</div><h3>Invitation System</h3><p>Email-based user invitations with role pre-assignment. Accept an invite and auto-join the right domain and project.</p></div>
       <div class="fcard"><div class="fcard-icon green">🌐</div><h3>Multi-Environment</h3><p>Dev, staging, production — isolated environments with independent configurations and promotion workflows.</p></div>
+      <div class="fcard"><div class="fcard-icon green">🔒</div><h3>Encrypted Secrets</h3><p>All connector credentials and API keys encrypted with AES-256-GCM. Decrypted only at execution time.</p></div>
     </div>
     <div class="metrics-bar">
       <div class="metric"><div class="val">PostgreSQL</div><div class="lbl">Production Database</div></div>
       <div class="metric"><div class="val">FastAPI</div><div class="lbl">Async Python Backend</div></div>
       <div class="metric"><div class="val">React + TS</div><div class="lbl">Frontend Stack</div></div>
-      <div class="metric"><div class="val">Docker</div><div class="lbl">Self-Hosted Deployment</div></div>
+      <div class="metric"><div class="val">61+</div><div class="lbl">Backend Models</div></div>
     </div>
   </div>
 </section>
@@ -801,7 +1094,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 <section>
   <div class="container">
     <div class="sec-label cyan">Visual Identity</div>
-    <div class="sec-title">An User Interface that commands attention.</div>
+    <div class="sec-title">A User Interface that commands attention.</div>
     <div class="sec-desc">FastAIAgent ships with a dual-theme system designed for long working sessions. Not an afterthought — a deliberate visual language for AI operations.</div>
     <div class="card-grid cols-2">
       <div class="fcard" style="background:linear-gradient(135deg,#0a0a12,#0f0f1a);border-color:rgba(0,212,255,.15)">
@@ -824,13 +1117,19 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   <div class="container" style="text-align:center">
     <div class="sec-label cyan" style="justify-content:center">Part of the FastAIFoundry Ecosystem</div>
     <div class="sec-title" style="margin:0 auto 16px">Agent is just the Beginning.</div>
-    <div class="sec-desc" style="margin:0 auto 48px;max-width:640px;text-align:center">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Ground them in context. Govern them at scale.</div>
-    <div class="card-grid cols-3" style="max-width:900px;margin:0 auto">
+    <div class="sec-desc" style="margin:0 auto 48px;max-width:640px;text-align:center">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Consume them in Workspace. Ground them in context. Govern them at scale.</div>
+    <div class="card-grid cols-4" style="max-width:1100px;margin:0 auto">
       <div class="fcard" style="text-align:center;border-color:rgba(0,136,170,.2)">
         <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#e8f6fa"/><circle cx="62" cy="56" r="30" fill="#fff" stroke="#0088aa" stroke-width="6"/><path d="M58 38L52 54H64L55 76" stroke="#006688" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
         <h3 class="gradient-text" style="font-size:18px">FastAIAgent</h3>
         <p style="margin-top:8px">Build, test, deploy, and run intelligent agents with visual workflows, knowledge bases, and full lifecycle management.</p>
         <div class="mono" style="color:var(--accent-cyan);margin-top:12px;font-size:9px">You are here</div>
+      </div>
+      <div class="fcard" style="text-align:center;border-color:rgba(134,25,143,.15)">
+        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#f5eaf8"/><rect x="12" y="12" width="42" height="42" rx="13" fill="#fff" stroke="#86198F" stroke-width="5" stroke-opacity=".55"/><rect x="66" y="12" width="42" height="42" rx="13" fill="#fff" stroke="#86198F" stroke-width="5" stroke-opacity=".55"/><rect x="12" y="66" width="42" height="42" rx="13" fill="#fff" stroke="#86198F" stroke-width="5" stroke-opacity=".55"/><rect x="66" y="66" width="42" height="42" rx="13" fill="#f3e0f6" stroke="#86198F" stroke-width="5.5"/><path d="M80 76L80 98L98 87Z" fill="#86198F" opacity=".85"/><circle cx="60" cy="60" r="5.5" fill="#86198F" opacity=".9"/></svg></div>
+        <h3 style="font-size:18px;color:#86198F">FastAIWorkspace</h3>
+        <p style="margin-top:8px">Thin-client consumption portal for business users. Run agents, view results, and manage work — no technical skills required.</p>
+        <div class="mono" style="color:#86198F;margin-top:12px;font-size:9px">Live</div>
       </div>
       <div class="fcard" style="text-align:center;border-color:rgba(99,102,241,.15)">
         <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#eee8f8"/><path d="M20 52L60 30L100 52L60 74Z" fill="#dcd0ee" stroke="#6b51e0" stroke-width="4" stroke-opacity="0.3"/><path d="M20 66L60 44L100 66L60 88Z" fill="#d6c8ea" stroke="#6b51e0" stroke-width="5" stroke-opacity="0.6"/><circle cx="60" cy="66" r="14" fill="#f0ecf8" stroke="#6b51e0" stroke-width="5"/><path d="M54 62L60 56L66 62L60 68Z" stroke="#4a38b0" stroke-width="4.5" fill="none"/></svg></div>
