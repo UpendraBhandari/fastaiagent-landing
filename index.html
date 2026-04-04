@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FastAIAgent — The Complete AI Agent Platform</title>
+<title>FastAIAgent — Every Tool Gives You Pieces. We Close the Loop.</title>
+<meta name="description" content="The complete AI agent platform and open-source SDK. Build, monitor, evaluate, and optimize AI agents with the only closed-loop operational system. From code to production in minutes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
 <style>
@@ -19,7 +20,7 @@ img{max-width:100%;display:block}
   --accent-orange:#ea580c;
   --accent-green:#059669;
   --accent-rose:#dc2626;
-  --surface:#ffffff;
+  --surface:#0c0000;
   --surface-raised:#f1f3f7;
   --surface-hover:#e8eaef;
   --border:#e0e2e8;
@@ -56,6 +57,9 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
 .topbar-cta{font-size:12px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;
   padding:8px 20px;border:1px solid var(--accent-cyan);color:var(--accent-cyan);border-radius:6px;transition:all .2s}
 .topbar-cta:hover{background:var(--accent-cyan);color:#fff}
+.topbar-cta-fill{font-size:12px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;
+  padding:8px 20px;background:var(--accent-cyan);color:#fff;border:1px solid var(--accent-cyan);border-radius:6px;transition:all .2s}
+.topbar-cta-fill:hover{background:#006d88}
 .topbar-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--text-secondary);width:32px;height:32px}
 .topbar-toggle svg{width:24px;height:24px}
 
@@ -72,7 +76,14 @@ body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
 .hero-badge span{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase}
 .hero h1{font-family:var(--display);font-size:clamp(42px,6vw,72px);font-weight:800;color:var(--text-primary);line-height:1.1;margin-bottom:24px;letter-spacing:-1px}
 .hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:18px;color:var(--text-secondary);max-width:680px;margin:0 auto 48px;line-height:1.8;font-weight:300}
+.hero-sub{font-size:18px;color:var(--text-secondary);max-width:720px;margin:0 auto 40px;line-height:1.8;font-weight:300}
+.hero-ctas{display:flex;justify-content:center;gap:16px;margin-bottom:48px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--accent-cyan);color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--accent-cyan)}
+.btn-primary:hover{background:#006d88;border-color:#006d88}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--surface);color:var(--text-primary);border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--border-light);background:var(--surface-raised)}
+.btn-sdk{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--text-primary);color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--text-primary);font-family:var(--mono);font-size:13px;letter-spacing:.5px}
+.btn-sdk:hover{background:#2d3748}
 .hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
 .hero-stat{text-align:center}
 .hero-stat .val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text-primary)}
@@ -90,6 +101,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 .sec-label.rose{color:var(--accent-rose)}.sec-label.rose::before{background:var(--accent-rose)}
 .sec-title{font-family:var(--display);font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--text-primary);line-height:1.2;margin-bottom:16px;letter-spacing:-.5px}
 .sec-desc{font-size:16px;color:var(--text-secondary);max-width:560px;line-height:1.8;margin-bottom:48px;font-weight:300}
+.sec-desc-wide{font-size:16px;color:var(--text-secondary);max-width:720px;line-height:1.8;margin-bottom:48px;font-weight:300}
 .sec-alt{background:var(--surface-raised)}
 
 /* ===== CARDS ===== */
@@ -110,6 +122,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 .fcard .tag{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:16px;display:inline-block}
 .new-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1px;background:var(--accent-cyan);color:#fff;padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:6px}
 .ent-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1px;background:var(--accent-violet);color:#fff;padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:6px}
+.oss-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1px;background:var(--text-primary);color:#fff;padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:6px}
 
 /* ===== LAYOUTS ===== */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
@@ -124,28 +137,15 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 .check.green{background:rgba(5,150,105,.08);color:var(--accent-green);border:1px solid rgba(5,150,105,.15)}
 .check.rose{background:rgba(220,38,38,.08);color:var(--accent-rose);border:1px solid rgba(220,38,38,.15)}
 
-/* ===== ARCHITECTURE ===== */
-.arch-diagram{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px;margin-top:48px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.arch-diagram::before{content:'';position:absolute;top:0;right:0;width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,.04),transparent);pointer-events:none}
-.arch-layers{display:flex;flex-direction:column;gap:12px}
-.arch-layer{display:flex;align-items:stretch;gap:12px}
-.arch-block{flex:1;padding:20px 24px;border-radius:12px;border:1px solid;position:relative}
-.arch-block .block-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.arch-block .block-title{font-size:14px;font-weight:700;color:var(--text-primary)}
-.arch-block .block-items{font-size:11.5px;color:var(--text-secondary);margin-top:6px;line-height:1.6}
-.arch-block.cyan{border-color:rgba(0,136,170,.2);background:rgba(0,136,170,.03)}.arch-block.cyan .block-label{color:var(--accent-cyan)}
-.arch-block.violet{border-color:rgba(99,102,241,.2);background:rgba(99,102,241,.03)}.arch-block.violet .block-label{color:var(--accent-violet)}
-.arch-block.orange{border-color:rgba(234,88,12,.2);background:rgba(234,88,12,.03)}.arch-block.orange .block-label{color:var(--accent-orange)}
-.arch-block.green{border-color:rgba(5,150,105,.2);background:rgba(5,150,105,.03)}.arch-block.green .block-label{color:var(--accent-green)}
-.arch-block.rose{border-color:rgba(220,38,38,.2);background:rgba(220,38,38,.03)}.arch-block.rose .block-label{color:var(--accent-rose)}
-.arch-block.neutral{border-color:var(--border);background:var(--surface-raised)}.arch-block.neutral .block-label{color:var(--text-muted)}
-.arch-connector{text-align:center;padding:8px 0;color:var(--text-muted);font-size:18px;letter-spacing:4px}
-
-/* ===== CONNECTORS ===== */
-.connector-showcase{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
-.conn-chip{padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.conn-chip:hover{border-color:var(--border-light);color:var(--text-primary);background:var(--surface-raised)}
-.conn-chip .conn-dot{width:6px;height:6px;border-radius:50%}
+/* ===== LIFECYCLE / LOOP ===== */
+.lifecycle{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:32px 0}
+.lc-step{padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;text-align:center;color:var(--text-primary);border:1px solid;min-width:90px}
+.lc-arrow{color:var(--text-muted);font-size:16px}
+.lc-step.s1{background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15)}
+.lc-step.s2{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15)}
+.lc-step.s3{background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.15)}
+.lc-step.s4{background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15)}
+.lc-step.s5{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15)}
 
 /* ===== CODE WINDOW ===== */
 .code-window{background:#1e1e2e;border:1px solid #2a2a3a;border-radius:14px;overflow:hidden;font-family:var(--mono);font-size:12px;line-height:1.8;box-shadow:0 4px 16px rgba(0,0,0,.12)}
@@ -161,6 +161,31 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 .metric .val{font-family:var(--display);font-size:32px;font-weight:800;color:var(--text-primary);margin-bottom:4px}
 .metric .lbl{font-size:12px;color:var(--text-muted)}
 
+/* ===== COMPARISON TABLE ===== */
+.compare-table{width:100%;border-collapse:collapse;margin-top:32px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.compare-table th{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:16px 20px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface-raised)}
+.compare-table th:first-child{width:200px}
+.compare-table th.highlight{color:var(--accent-cyan);background:rgba(0,136,170,.04)}
+.compare-table td{padding:14px 20px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--border)}
+.compare-table td:first-child{font-weight:600;color:var(--text-primary);font-size:13px}
+.compare-table td.highlight{background:rgba(0,136,170,.02)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .yes{color:var(--accent-green);font-weight:700;font-size:14px}
+.compare-table .no{color:var(--text-muted);font-size:14px}
+.compare-table .partial{color:var(--accent-orange);font-size:12px;font-family:var(--mono)}
+
+/* ===== TIER CARDS ===== */
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;transition:all .3s}
+.tier-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.tier-card.featured{border-color:rgba(0,136,170,.3);box-shadow:0 4px 16px rgba(0,136,170,.08)}
+.tier-name{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.tier-price{font-family:var(--display);font-size:36px;font-weight:800;color:var(--text-primary);margin-bottom:16px}
+.tier-price span{font-size:14px;font-weight:400;color:var(--text-muted)}
+.tier-list{list-style:none;text-align:left;font-size:13px;color:var(--text-secondary);display:flex;flex-direction:column;gap:8px}
+.tier-list li{display:flex;align-items:center;gap:8px}
+.tier-list li::before{content:'✓';font-size:11px;color:var(--accent-green);font-weight:700}
+
 /* ===== WORKFLOW ===== */
 .wf-node{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid;font-size:12px;font-weight:600;color:var(--text-primary);position:relative;z-index:2}
 .wf-node.start{background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.2)}
@@ -171,38 +196,37 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 .wf-arrow{color:var(--text-muted);font-size:14px;margin:0 6px;display:inline-block}
 .wf-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;justify-content:center}
 
-/* ===== LIFECYCLE ===== */
-.lifecycle{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:32px 0}
-.lc-step{padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;text-align:center;color:var(--text-primary);border:1px solid;min-width:90px}
-.lc-arrow{color:var(--text-muted);font-size:16px}
-.lc-step.s1{background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15)}
-.lc-step.s2{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15)}
-.lc-step.s3{background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.15)}
-.lc-step.s4{background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15)}
-.lc-step.s5{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15)}
+/* ===== PIPELINE ===== */
+.pipeline-flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:32px 0;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
+.pipe-step{padding:10px 16px;border-radius:8px;font-size:11px;font-weight:600;text-align:center;border:1px solid;white-space:nowrap}
+.pipe-arrow{color:var(--text-muted);font-size:14px;flex-shrink:0}
 
-/* ===== ORG TREE ===== */
-.org-tree{max-width:600px;margin:0 auto}
-.org-node{padding:14px 20px;border-radius:10px;border:1px solid;margin-bottom:8px;display:flex;align-items:center;gap:12px}
-.org-node .org-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.org-node .org-label{font-size:13px;font-weight:600;color:var(--text-primary)}
-.org-node .org-meta{font-size:11px;color:var(--text-muted)}
-.org-node.domain{border-color:rgba(99,102,241,.2);background:rgba(99,102,241,.03)}.org-node.domain .org-icon{background:rgba(99,102,241,.1);color:var(--accent-violet)}
-.org-node.shared{border-color:rgba(234,88,12,.2);background:rgba(234,88,12,.03);margin-left:12px}.org-node.shared .org-icon{background:rgba(234,88,12,.1);color:var(--accent-orange)}
-.org-node.project{border-color:rgba(0,136,170,.2);background:rgba(0,136,170,.03);margin-left:24px}.org-node.project .org-icon{background:rgba(0,136,170,.1);color:var(--accent-cyan)}
-.org-node.resource{border-color:var(--border);background:var(--surface-raised);margin-left:48px;padding:10px 16px}.org-node.resource .org-icon{background:var(--surface);color:var(--text-muted);font-size:10px}
+/* ===== CONNECTOR CHIPS ===== */
+.connector-showcase{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.conn-chip{padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.conn-chip:hover{border-color:var(--border-light);color:var(--text-primary);background:var(--surface-raised)}
+.conn-chip .conn-dot{width:6px;height:6px;border-radius:50%}
+
+/* ===== TWO-PATH ===== */
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+.path-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;position:relative;overflow:hidden;transition:all .3s}
+.path-card:hover{border-color:var(--border-light);box-shadow:0 8px 32px rgba(0,0,0,.06)}
+.path-card .path-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.path-card h3{font-family:var(--display);font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:12px}
+.path-card p{font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:20px}
+.path-features{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
+.path-features li{font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:8px}
+.path-features li::before{content:'→';color:var(--text-muted);font-size:11px}
 
 /* ===== HERO FEATURE VISUAL ===== */
-.hero-feature-visual{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2px;overflow:hidden;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.hero-feature-visual::before{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,rgba(0,136,170,.06),transparent,rgba(99,102,241,.06));z-index:1;pointer-events:none}
-.visual-inner{background:var(--surface-raised);border-radius:18px;padding:32px;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative}
+.hero-feature-visual{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.visual-inner{display:flex;flex-direction:column;gap:20px;padding:40px 48px}
 
-/* ===== REPLAY ===== */
-.replay-demo{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.replay-demo-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--surface-raised)}
-.replay-demo-header h4{font-size:13px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px}
-.replay-demo-header .replay-meta{display:flex;gap:16px;font-family:var(--mono);font-size:10px;color:var(--text-muted)}
-.replay-demo-header .replay-meta strong{color:var(--text-secondary)}
+/* ===== REPLAY DEMO ===== */
+.replay-demo{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.replay-demo-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface-raised)}
+.replay-demo-header h4{font-size:14px;font-weight:700;color:var(--text-primary)}
+.replay-meta{display:flex;gap:16px;font-size:11px;color:var(--text-muted);font-family:var(--mono)}
 .replay-body{display:grid;grid-template-columns:240px 1fr}
 .replay-timeline{border-right:1px solid var(--border);padding:12px 0}
 .replay-step{display:flex;align-items:flex-start;gap:10px;padding:9px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;font-size:12px}
@@ -219,7 +243,6 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 .replay-detail-top h5{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:8px}
 .replay-type-tag{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:4px}
 .replay-type-tag.tool{background:rgba(234,88,12,.08);color:var(--accent-orange);border:1px solid rgba(234,88,12,.15)}
-.replay-type-tag.llm{background:rgba(99,102,241,.08);color:var(--accent-violet);border:1px solid rgba(99,102,241,.15)}
 .replay-fork-btn{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:6px 14px;background:rgba(0,136,170,.06);border:1px solid rgba(0,136,170,.2);border-radius:6px;color:var(--accent-cyan);cursor:pointer;transition:all .2s;text-transform:uppercase}
 .replay-fork-btn:hover{background:rgba(0,136,170,.12);border-color:rgba(0,136,170,.35)}
 .replay-json-block{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--text-secondary);margin-bottom:12px}
@@ -236,33 +259,22 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 .replay-nav-btn:hover{border-color:var(--border-light);color:var(--text-primary)}
 .replay-nav-info{font-family:var(--mono);font-size:10px;color:var(--text-muted)}
 
-/* ===== PIPELINE VISUAL ===== */
-.pipeline-flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:32px 0;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
-.pipe-step{padding:10px 16px;border-radius:8px;font-size:11px;font-weight:600;text-align:center;border:1px solid;white-space:nowrap}
-.pipe-arrow{color:var(--text-muted);font-size:14px;flex-shrink:0}
-
 /* ===== SUBSECTION ===== */
 .subsec{margin-top:48px;padding-top:48px;border-top:1px solid var(--border)}
 .subsec-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
-
-/* ===== TIER CARDS ===== */
-.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;transition:all .3s}
-.tier-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
-.tier-card.featured{border-color:rgba(0,136,170,.3);box-shadow:0 4px 16px rgba(0,136,170,.08)}
-.tier-name{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.tier-price{font-family:var(--display);font-size:36px;font-weight:800;color:var(--text-primary);margin-bottom:16px}
-.tier-list{list-style:none;text-align:left;font-size:13px;color:var(--text-secondary);display:flex;flex-direction:column;gap:8px}
-.tier-list li{display:flex;align-items:center;gap:8px}
-.tier-list li::before{content:'✓';font-size:11px;color:var(--accent-green);font-weight:700}
 
 /* ===== FOOTER ===== */
 .footer{padding:80px 0 40px;text-align:center;background:var(--text-primary);color:#fff;position:relative}
 .footer-brand{font-family:var(--display);font-size:28px;font-weight:800;margin-bottom:12px}
 .footer-sub{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:32px}
-.footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:32px}
+.footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:32px;flex-wrap:wrap}
 .footer-links a{font-size:13px;color:rgba(255,255,255,.6);transition:color .2s}
 .footer-links a:hover{color:#fff}
+.footer-ctas{display:flex;justify-content:center;gap:16px;margin-bottom:40px;flex-wrap:wrap}
+.footer-cta-primary{padding:12px 28px;background:var(--accent-cyan);color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--accent-cyan)}
+.footer-cta-primary:hover{background:#006d88}
+.footer-cta-secondary{padding:12px 28px;background:transparent;color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid rgba(255,255,255,.2)}
+.footer-cta-secondary:hover{border-color:rgba(255,255,255,.5)}
 .footer-copy{font-size:12px;color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.08);padding-top:24px}
 
 /* ===== RESPONSIVE ===== */
@@ -271,6 +283,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   .split{grid-template-columns:1fr;gap:40px}
   .split.reverse{direction:ltr}
   .tier-grid{grid-template-columns:1fr}
+  .path-grid{grid-template-columns:1fr}
   .topbar-nav{display:none;position:absolute;top:64px;left:0;right:0;background:var(--surface);border-bottom:1px solid var(--border);flex-direction:column;padding:20px 32px;gap:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
   .topbar-nav.open{display:flex}
   .topbar-toggle{display:block}
@@ -282,7 +295,8 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   .replay-step.active{border-bottom-color:var(--accent-cyan);border-left-color:transparent}
   .replay-step .step-meta,.replay-step .fork-icon{display:none}
   .replay-demo-header{flex-direction:column;gap:8px;align-items:flex-start}
-  .arch-layer{flex-direction:column}
+  .compare-table{font-size:12px}
+  .compare-table th,.compare-table td{padding:10px 12px}
   .pipeline-flow{gap:4px}
   .pipe-step{font-size:10px;padding:8px 10px}
 }
@@ -291,6 +305,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   .container{padding:0 20px}
   .hero h1{font-size:36px}
   .sec-title{font-size:28px}
+  .hero-ctas{flex-direction:column;align-items:center}
 }
 </style>
 </head>
@@ -311,14 +326,13 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
     <div class="topbar-nav">
+      <a href="#loop">The Loop</a>
+      <a href="#sdk">SDK</a>
       <a href="#platform">Platform</a>
-      <a href="#knowledge">RAG</a>
-      <a href="#prompts">Prompts</a>
-      <a href="#evaluation">Evaluation</a>
-      <a href="#public-api">API</a>
-      <a href="#hitl">HITL</a>
-      <a href="#enterprise">Enterprise</a>
-      <a href="https://app.fastaiagent.net/" class="topbar-cta">Get Started</a>
+      <a href="#replay">Replay</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/fastai-foundry/fastaiagent-sdk" class="topbar-cta" style="margin-left:4px">GitHub</a>
+      <a href="https://app.fastaiagent.net/" class="topbar-cta-fill">Start Free</a>
     </div>
   </div>
 </nav>
@@ -326,360 +340,225 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 <!-- ===== HERO ===== -->
 <header class="hero">
   <div class="container">
-    <div class="hero-badge"><div class="dot"></div><span>36 Phases Shipped — Active Development</span></div>
-    <h1>Build, Deploy &amp; Govern<br><em>Intelligent Agents</em></h1>
-    <p class="hero-sub">The complete AI agent platform. Visual workflows, advanced RAG with hybrid search and reranking, prompt lifecycle with auto-optimization, LLM-as-Judge evaluation, human-in-the-loop gates, SSO, SaaS billing, and enterprise-grade observability — all self-hostable.</p>
+    <div class="hero-badge"><div class="dot"></div><span>SDK v0.1.0 Released · Open Source · Apache 2.0</span></div>
+    <h1>Build, Optimize, Deploy &amp; Govern<br><em>Intelligent Agents.</em></h1>
+    <p style="font-family:var(--mono);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--accent-cyan);margin-bottom:32px">Every tool gives you pieces — We close the loop.</p>
+    <p class="hero-sub">The only AI agent platform with a closed-loop operational system. Develop → Trace → Feedback → Eval → Optimize → Deploy — and back again. Open-source SDK for developers, full platform for teams. From failing trace to fixed agent in 10 minutes, not 4 hours.</p>
+    <div class="hero-ctas">
+      <a href="https://app.fastaiagent.net/" class="btn-primary">Start Free →</a>
+      <a href="https://fastaiagent.net/demo" class="btn-secondary">Book a Demo</a>
+      <a href="https://github.com/fastai-foundry/fastaiagent-sdk" class="btn-sdk">pip install fastaiagent</a>
+    </div>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="val">29+</div><div class="label">Connectors</div></div>
       <div class="hero-stat"><div class="val">Multi-LLM</div><div class="label">Any Provider</div></div>
+      <div class="hero-stat"><div class="val">29+</div><div class="label">Connectors</div></div>
       <div class="hero-stat"><div class="val">MCP</div><div class="label">Protocol Native</div></div>
+      <div class="hero-stat"><div class="val">Open Source</div><div class="label">Apache 2.0 SDK</div></div>
       <div class="hero-stat"><div class="val">SaaS</div><div class="label">Or Self-Hosted</div></div>
-      <div class="hero-stat"><div class="val">Full API</div><div class="label">Embed Anywhere</div></div>
     </div>
   </div>
 </header>
 
-<!-- ===== PLATFORM ARCHITECTURE ===== -->
-<section id="platform">
-  <div class="container">
-    <div class="sec-label cyan">Platform Architecture</div>
-    <div class="sec-title">One Platform, Every Layer.</div>
-    <div class="sec-desc">FastAIAgent is an end-to-end agent development platform. Not a framework you glue together — a complete system where agents, workflows, knowledge, prompts, evaluation, billing, and infrastructure work as one.</div>
-    <div class="arch-diagram">
-      <div class="arch-layers">
-        <div class="arch-layer">
-          <div class="arch-block cyan" style="flex:2"><div class="block-label">Presentation</div><div class="block-title">Chat · Playground · Compare Mode · Workspace</div><div class="block-items">Real-time streaming · Tool call visualization · Side-by-side A/B prompt testing · Block-based structured output</div></div>
-          <div class="arch-block violet"><div class="block-label">Visual Builder</div><div class="block-title">Workflow Editor</div><div class="block-items">Drag-drop canvas · Node library · Human input nodes · Live preview</div></div>
-        </div>
-        <div class="arch-connector">▾ ▾ ▾</div>
-        <div class="arch-layer">
-          <div class="arch-block orange"><div class="block-label">Execution</div><div class="block-title">Agent Engine</div><div class="block-items">Multi-LLM · Tool use · Memory · Teams · HITL gates · Feedback</div></div>
-          <div class="arch-block green"><div class="block-label">Knowledge</div><div class="block-title">Advanced RAG Pipeline</div><div class="block-items">Hybrid search · Reranking · Query rewriting · Adaptive routing · Self-grading</div></div>
-          <div class="arch-block rose"><div class="block-label">Lifecycle</div><div class="block-title">Prompt Registry + Optimizer</div><div class="block-items">Versioning · Auto-optimization · Compare mode · Version analytics</div></div>
-        </div>
-        <div class="arch-connector">▾ ▾ ▾</div>
-        <div class="arch-layer">
-          <div class="arch-block violet"><div class="block-label">Quality</div><div class="block-title">Evaluation Intelligence</div><div class="block-items">LLM-as-Judge · RAG eval · Annotation queues · Online policies · CI/CD integration</div></div>
-          <div class="arch-block cyan"><div class="block-label">Public API</div><div class="block-title">RESTful API + Streaming</div><div class="block-items">Scoped API keys · Rate limiting · Usage tracking · Webhook notifications</div></div>
-        </div>
-        <div class="arch-connector">▾ ▾ ▾</div>
-        <div class="arch-layer">
-          <div class="arch-block neutral"><div class="block-label">Infrastructure</div><div class="block-title">Connectors · MCP Servers · LLM Endpoints · Vector Stores</div><div class="block-items">29 pre-built connectors · Hosted MCP servers · OpenAI, Anthropic, Azure, Ollama, custom endpoints · Multiple vector store options</div></div>
-        </div>
-        <div class="arch-connector">▾ ▾ ▾</div>
-        <div class="arch-layer">
-          <div class="arch-block neutral" style="flex:1"><div class="block-label">Storage</div><div class="block-title">Relational + Vector</div><div class="block-items">Metadata · Auth · Traces · Embeddings</div></div>
-          <div class="arch-block neutral" style="flex:1"><div class="block-label">Performance</div><div class="block-title">Caching &amp; Partitioning</div><div class="block-items">Fast retrieval · High throughput</div></div>
-          <div class="arch-block neutral" style="flex:1"><div class="block-label">Monitoring</div><div class="block-title">Metrics &amp; Tracing</div><div class="block-items">Health dashboards · Distributed tracing</div></div>
-          <div class="arch-block neutral" style="flex:1"><div class="block-label">Deployment</div><div class="block-title">Docker · Self-Hosted</div><div class="block-items">One command · Air-gapped ready</div></div>
-        </div>
+<!-- ===== THE OPERATIONAL LOOP ===== -->
+<section id="loop">
+  <div class="container" style="text-align:center">
+    <div class="sec-label cyan" style="justify-content:center">The Operational Loop</div>
+    <div class="sec-title" style="margin:0 auto 16px">One system. Seven steps.<br>Zero context switching.</div>
+    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">Most teams stitch together 3–4 tools to go from a failing agent to a fixed one. FastAIAgent is the only platform where trace, feedback, eval, optimization, comparison, and deployment happen in a single closed-loop system — so every production failure becomes a shipped improvement, not a fire drill.</div>
+
+    <div class="pipeline-flow" style="max-width:1000px;margin:0 auto 48px">
+      <div class="pipe-step" style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15);color:var(--text-primary)">⌨ Develop</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15);color:var(--text-primary)">📍 Trace</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15);color:var(--text-primary)">👎 Feedback</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15);color:var(--text-primary)">🧪 Eval Case</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.15);color:var(--text-primary)">🤖 Optimize</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15);color:var(--text-primary)">⟷ Compare</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15);color:var(--text-primary)">🚀 Deploy</div>
+      <div class="pipe-arrow">↩</div>
+    </div>
+
+    <div class="card-grid cols-2" style="max-width:900px;margin:0 auto">
+      <div class="fcard" style="border-color:rgba(220,38,38,.15);text-align:left">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-rose);margin-bottom:12px">WITHOUT FASTAIAGENT</div>
+        <h3 style="font-size:18px;margin-bottom:8px">4 Hours Per Failure</h3>
+        <p>Failing trace → manually write test case → manually rewrite prompt → manually test → manually deploy. Every production failure is a multi-hour context-switching fire drill across 3–4 different tools.</p>
+        <div style="margin-top:16px;font-family:var(--display);font-size:28px;font-weight:800;color:var(--accent-rose)">~4 hrs</div>
+      </div>
+      <div class="fcard" style="border-color:rgba(0,136,170,.2);text-align:left">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">WITH FASTAIAGENT</div>
+        <h3 style="font-size:18px;margin-bottom:8px">10 Minutes Per Failure</h3>
+        <p>Failing trace → thumbs down → eval case auto-created → Prompt Optimizer rewrites → Compare Mode A/B tests → deploy → SDK pulls new version. All within one system. Zero context switching.</p>
+        <div style="margin-top:16px;font-family:var(--display);font-size:28px;font-weight:800;color:var(--accent-cyan)">~10 min</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== EXECUTION ENGINE ===== -->
+<!-- ===== TWO PATHS ===== -->
 <section class="sec-alt">
+  <div class="container" style="text-align:center">
+    <div class="sec-label violet" style="justify-content:center">Two Entry Points, One Data Plane</div>
+    <div class="sec-title" style="margin:0 auto 16px">Built for engineers.<br>Designed for teams.</div>
+    <div class="sec-desc-wide" style="margin:0 auto 0;text-align:center">Whether you write Python or build in a UI, you get the same trace dashboard, the same prompt registry, the same eval framework.</div>
+    <div class="path-grid">
+      <div class="path-card" style="border-color:rgba(17,24,39,.15)">
+        <div class="path-label" style="color:var(--text-primary)">⌨ For Engineers</div>
+        <h3>Open-Source SDK</h3>
+        <p>Build agents in Python. Run locally. Connect to the platform for observability, prompt management, and eval — when you're ready.</p>
+        <ul class="path-features">
+          <li>Multi-provider LLM (OpenAI, Anthropic, Ollama, Azure, Bedrock)</li>
+          <li>Structured output, streaming, tool calling</li>
+          <li>Supervisor-Worker multi-agent teams</li>
+          <li>Chain orchestration with cycles, checkpoints, HITL</li>
+          <li>Eval framework with 7+ scorers and LLM judge</li>
+          <li>Local KB (ingestion, chunking, embedding, search)</li>
+          <li><code style="font-size:12px;background:var(--surface-raised);padding:2px 6px;border-radius:4px">fa.connect()</code> for platform services</li>
+        </ul>
+        <a href="https://github.com/fastai-foundry/fastaiagent-sdk" class="btn-sdk" style="font-size:12px;padding:10px 24px">pip install fastaiagent</a>
+      </div>
+      <div class="path-card" style="border-color:rgba(0,136,170,.2)">
+        <div class="path-label" style="color:var(--accent-cyan)">🖥 For Teams</div>
+        <h3>Full Platform</h3>
+        <p>Build agents in the UI. Visual chain editor. Configure connectors. Test in the Playground. Monitor in the dashboard. No SDK required.</p>
+        <ul class="path-features">
+          <li>Visual Workflow Editor with drag-and-drop canvas</li>
+          <li>29+ pre-built connectors and hosted MCP servers</li>
+          <li>Advanced RAG with hybrid search and reranking</li>
+          <li>Prompt Registry with auto-optimization</li>
+          <li>Agent Replay with fork-and-rerun debugging</li>
+          <li>RBAC, SSO, audit trails, SaaS billing</li>
+          <li>Air-gapped deployment for regulated environments</li>
+        </ul>
+        <a href="https://app.fastaiagent.net/" class="btn-primary" style="font-size:12px;padding:10px 24px">Start Free →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SDK SHOWCASE ===== -->
+<section id="sdk">
   <div class="container">
     <div class="split">
       <div>
-        <div class="sec-label cyan">Execution Engine</div>
-        <div class="sec-title">Agents that Think,<br>Act and Remember.</div>
-        <div class="sec-desc" style="margin-bottom:0">The execution engine orchestrates LLM calls, tool use, memory retrieval, and multi-step reasoning — with real-time streaming and full observability at every step.</div>
+        <div class="sec-label cyan">Open-Source SDK</div>
+        <div class="sec-title">Five Lines to Your<br>First Agent.</div>
+        <div class="sec-desc" style="margin-bottom:0">The <code style="font-size:14px;background:var(--surface-raised);padding:2px 8px;border-radius:4px">fastaiagent</code> SDK is open-source (Apache 2.0) and runs anywhere Python runs. Start standalone — add the platform later with a single <code style="font-size:14px;background:var(--surface-raised);padding:2px 8px;border-radius:4px">fa.connect()</code> call.</div>
         <ul class="features-list">
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Multi-LLM Support</strong> — OpenAI, Anthropic, Azure OpenAI, Ollama, and custom endpoints via Gateway auth</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Real-Time Streaming</strong> — Token-by-token output to the Live Chat UI with tool call visualization</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Native Tool Use</strong> — Agents invoke tools, connectors, MCP servers, and Python scripts autonomously</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Agent Memory</strong> — Automatic extraction and retrieval of long-term memory across conversations, regardless of LLM provider</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Supervisor-Worker Teams</strong> — Orchestrate multi-agent systems with delegation, handoff, and aggregation</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Response Feedback</strong> — Thumbs-up/down on any trace with daily trends and auto-conversion to eval cases</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Multi-Provider LLM</strong> — OpenAI, Anthropic, Ollama, Azure, Bedrock, and custom endpoints</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Streaming + Structured Output</strong> — SSE parsing across providers with <code>response_format</code> support</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Context/DI</strong> — <code>RunContext[T]</code> passes DB connections, API clients, and runtime state to tools</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Guardrails</strong> — 5 types, 5 built-ins. Input, output, tool-call, and tool-result positions</span></li>
+          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">fa.connect()</strong> — Traces flow up, prompts flow down, evals flow both ways. Platform is optional.</span></li>
         </ul>
       </div>
       <div>
         <div class="code-window">
-          <div class="code-titlebar"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span class="code-title">agent_execution.py</span></div>
-          <div class="code-body"><span class="cm"># Agent executes with full tool access</span>
-<span class="kw">result</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">engine.execute</span>(
-    agent_id<span class="op">=</span><span class="str">"lead-qualifier"</span>,
-    message<span class="op">=</span><span class="str">"Qualify this lead from CRM"</span>,
-    tools<span class="op">=</span>[
-        salesforce_connector,
-        enrichment_mcp,
-        scoring_script
-    ],
-    llm_endpoint<span class="op">=</span><span class="str">"gpt-4o-production"</span>,
-    stream<span class="op">=</span><span class="kw">True</span>,
-    memory_enabled<span class="op">=</span><span class="kw">True</span>
+          <div class="code-titlebar"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span class="code-title">quickstart.py</span></div>
+          <div class="code-body"><span class="kw">import</span> fastaiagent <span class="kw">as</span> fa
+
+<span class="cm"># Connect to platform (optional)</span>
+fa.<span class="fn">connect</span>(api_key<span class="op">=</span><span class="str">"fa_k_..."</span>, project<span class="op">=</span><span class="str">"my-project"</span>)
+
+<span class="cm"># Define your agent</span>
+agent <span class="op">=</span> fa.<span class="fn">Agent</span>(
+    name<span class="op">=</span><span class="str">"support-bot"</span>,
+    model<span class="op">=</span><span class="str">"gpt-4o"</span>,
+    system_prompt<span class="op">=</span><span class="str">"You are a helpful support agent."</span>,
+    tools<span class="op">=</span>[search_kb, create_ticket],
+    guardrails<span class="op">=</span>[pii_filter, toxicity_check],
 )
 
-<span class="cm"># Full trace captured automatically</span>
-<span class="cm"># → LLM calls, tool invocations, latency,</span>
-<span class="cm">#   token usage, memory, cost, feedback</span></div>
+<span class="cm"># Run it</span>
+result <span class="op">=</span> <span class="kw">await</span> agent.<span class="fn">run</span>(<span class="str">"I can't log in to my account"</span>)
+
+<span class="cm"># Traces auto-export to platform</span>
+<span class="cm"># Prompts pull from registry</span>
+<span class="cm"># Eval results publish back</span></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+          <div class="conn-chip"><span class="conn-dot" style="background:var(--text-primary)"></span>Apache 2.0</div>
+          <div class="conn-chip"><span class="conn-dot" style="background:var(--accent-cyan)"></span>PyPI: fastaiagent</div>
+          <div class="conn-chip"><span class="conn-dot" style="background:var(--accent-violet)"></span>GitHub</div>
         </div>
       </div>
+    </div>
+
+    <!-- SDK Features Grid -->
+    <div class="card-grid cols-4" style="margin-top:48px">
+      <div class="fcard"><div class="fcard-icon cyan">🔀</div><h3>Supervisor-Worker<span class="oss-badge">SDK</span></h3><p>Multi-agent orchestration with context passthrough, streaming delegation, and callable dynamic prompts.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">⛓</div><h3>Chain Orchestration<span class="oss-badge">SDK</span></h3><p>Cyclic graphs, checkpointing, HITL gates, parallel execution, and conditional routing — all in code.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">🧪</div><h3>Eval Framework<span class="oss-badge">SDK</span></h3><p>7+ scorers, LLM-as-Judge, trajectory eval, session eval. Publish results to platform with one call.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">📚</div><h3>Local Knowledge Base<span class="oss-badge">SDK</span></h3><p>Document ingestion, multi-strategy chunking, embedding, and vector search — fully local, no platform needed.</p></div>
+    </div>
+    <div class="card-grid cols-4" style="margin-top:16px">
+      <div class="fcard"><div class="fcard-icon cyan">🔄</div><h3>Agent Replay<span class="oss-badge">SDK</span></h3><p>Fork any execution at any step and re-run with modified inputs. The debugging feature no other framework has.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">📋</div><h3>Prompt Registry<span class="oss-badge">SDK</span></h3><p>Version, compose with fragments, pull from platform. <code style="font-size:11px">PromptRegistry(source="platform")</code> for team-managed prompts.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">🔭</div><h3>OTel Tracing<span class="oss-badge">SDK</span></h3><p>OpenTelemetry spans with BatchSpanProcessor. Local SQLite storage or export to platform via <code style="font-size:11px">fa.connect()</code>.</p></div>
+      <div class="fcard"><div class="fcard-icon cyan">🛡</div><h3>5 Guardrail Types<span class="oss-badge">SDK</span></h3><p>Input, output, tool-call, tool-result, and content guardrails. 5 built-in guards plus custom definitions.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ===== VISUAL WORKFLOW EDITOR ===== -->
-<section id="workflows">
+<!-- ===== THE COMPLETE AGENT OPERATING SYSTEM ===== -->
+<section id="platform" class="sec-alt">
   <div class="container">
-    <div class="sec-label violet">Visual Workflow Editor</div>
-    <div class="sec-title">Design Agent logic visually.</div>
-    <div class="sec-desc">Build complex multi-step workflows with a drag-and-drop canvas. Chain LLM calls, tool invocations, conditional branches, human input nodes, and parallel execution — without writing orchestration code.</div>
-    <div class="hero-feature-visual" style="margin-bottom:48px">
-      <div class="visual-inner" style="flex-direction:column;gap:20px;padding:40px 48px">
-        <div class="wf-row"><div class="wf-node start">▶ Trigger</div><span class="wf-arrow">→</span><div class="wf-node process">🔌 Fetch CRM Data</div><span class="wf-arrow">→</span><div class="wf-node llm">🧠 LLM: Analyze Lead</div><span class="wf-arrow">→</span><div class="wf-node decision">◆ Score ≥ 80?</div></div>
-        <div style="display:flex;justify-content:center;gap:80px">
-          <div style="text-align:center"><div style="color:var(--accent-green);font-size:11px;font-family:var(--mono);margin-bottom:8px">YES</div><div class="wf-node process">📧 Send to Sales</div></div>
-          <div style="text-align:center"><div style="color:var(--accent-rose);font-size:11px;font-family:var(--mono);margin-bottom:8px">NO</div><div class="wf-node llm">🧠 Nurture Sequence</div></div>
-        </div>
-        <div class="wf-row"><div class="wf-node end">✓ Complete</div></div>
-      </div>
-    </div>
+    <div class="sec-label violet">The Complete Agent Operating System</div>
+    <div class="sec-title">Everything to build, ship, and improve AI agents.</div>
+    <div class="sec-desc-wide">Everything SDK agents need to go to production — and everything teams need to manage them at scale. One platform. No tool-stitching. No context switching.</div>
+
+    <!-- Differentiators -->
     <div class="card-grid cols-3">
-      <div class="fcard"><div class="fcard-icon violet">⟐</div><h3>Drag-and-Drop Canvas</h3><p>Visual graph editor. Add nodes, draw edges, configure each step visually. Full undo/redo and zoom controls.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">⑂</div><h3>Conditional Branching</h3><p>Route execution based on LLM output, tool results, or custom conditions. Build decision trees that adapt in real time.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">⊞</div><h3>Rich Node Library</h3><p>LLM calls, tool invocations, connectors, scripts, sub-chains, parallel execution, knowledge search, and human input — all composable blocks.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== KNOWLEDGE BASE & ADVANCED RAG ===== -->
-<section id="knowledge" class="sec-alt">
-  <div class="container">
-    <div class="split reverse">
-      <div>
-        <div class="sec-label green">Knowledge Base &amp; RAG</div>
-        <div class="sec-title">Ground Agents in your Data.</div>
-        <div class="sec-desc" style="margin-bottom:0">A production-grade RAG pipeline spanning 4 phases of iterative improvement. From document ingestion through multi-strategy chunking, hybrid search, reranking, and self-grading — with 20+ configurable retrieval feature flags.</div>
-        <ul class="features-list">
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Document Ingestion</strong> — PDF (with Markdown preprocessing), DOCX, TXT, Markdown, Excel — auto-processed into searchable chunks</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Multi-Strategy Chunking</strong> — Recursive, structure-aware, semantic, and sentence strategies with configurable target tokens</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Hybrid Search</strong> — Combines dense vector and keyword-based search with intelligent fusion for superior retrieval accuracy</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Reranking Pipeline</strong> — Pluggable reranking with multiple providers to push the most relevant results to the top</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Adaptive Query Routing</strong> — LLM classifies query complexity and auto-decomposes into parallel sub-queries</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Self-Grading</strong> — Post-generation quality check with annotation queue flagging for low-quality responses</span></li>
-        </ul>
+      <div class="fcard" style="border-color:rgba(0,136,170,.2)">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">ONLY IN FASTAIAGENT</div>
+        <h3 style="font-size:18px;margin-bottom:10px">Closed-Loop Operations</h3>
+        <p>Develop → Trace → Feedback → Eval Case → Optimize → Compare → Deploy — in one system. Negative feedback auto-creates eval cases. Prompt Optimizer rewrites. Compare Mode A/B tests. Ship without switching tools.</p>
       </div>
-      <div>
-        <div class="fcard" style="border-color:rgba(5,150,105,.15);padding:0;overflow:hidden">
-          <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">📚</span><span style="font-size:14px;font-weight:700;color:var(--text-primary)">Product Catalogue KB</span></div>
-            <span class="mono" style="color:var(--accent-green);font-size:9px">● Hybrid Search</span>
-          </div>
-          <div style="padding:20px 24px">
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
-              <div style="padding:10px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--text-primary)">2,847</div><div style="font-size:9px;color:var(--text-muted);font-family:var(--mono)">Chunks</div></div>
-              <div style="padding:10px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--text-primary)">142</div><div style="font-size:9px;color:var(--text-muted);font-family:var(--mono)">Documents</div></div>
-              <div style="padding:10px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--accent-green)">98.2%</div><div style="font-size:9px;color:var(--text-muted);font-family:var(--mono)">Retrieval Acc.</div></div>
-            </div>
-            <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;font-family:var(--mono);letter-spacing:1px">RETRIEVAL CONFIG</div>
-            <div style="display:flex;flex-direction:column;gap:4px;font-size:11px">
-              <div style="padding:6px 10px;background:var(--surface-raised);border-radius:6px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Search Mode</span><span style="color:var(--accent-green);font-family:var(--mono);font-size:10px">hybrid</span></div>
-              <div style="padding:6px 10px;background:var(--surface-raised);border-radius:6px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Chunking</span><span style="color:var(--accent-cyan);font-family:var(--mono);font-size:10px">semantic</span></div>
-              <div style="padding:6px 10px;background:var(--surface-raised);border-radius:6px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Reranking</span><span style="color:var(--accent-violet);font-family:var(--mono);font-size:10px">enabled</span></div>
-              <div style="padding:6px 10px;background:var(--surface-raised);border-radius:6px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Relevance Gate</span><span style="color:var(--accent-orange);font-family:var(--mono);font-size:10px">active</span></div>
-              <div style="padding:6px 10px;background:var(--surface-raised);border-radius:6px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">Enrichment</span><span style="color:var(--accent-green);font-family:var(--mono);font-size:10px">contextual</span></div>
-            </div>
-          </div>
-          <div style="padding:12px 24px;background:rgba(5,150,105,.04);border-top:1px solid rgba(5,150,105,.1);display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--accent-green);font-family:var(--mono);letter-spacing:1px">VECTOR STORE</span><span style="font-size:12px;color:var(--text-secondary)">Built-in or bring your own</span></div>
-        </div>
+      <div class="fcard" style="border-color:rgba(0,136,170,.2)">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">ONLY IN FASTAIAGENT</div>
+        <h3 style="font-size:18px;margin-bottom:10px">Agent Replay</h3>
+        <p>Step through any execution span-by-span. Fork from any point and re-run with modified inputs. Compare original vs. forked outcomes side by side. Time-travel debugging for AI agents.</p>
+      </div>
+      <div class="fcard" style="border-color:rgba(0,136,170,.2)">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">ONLY IN FASTAIAGENT</div>
+        <h3 style="font-size:18px;margin-bottom:10px">SDK + Platform, One Data Plane</h3>
+        <p>Open-source SDK and full platform share the same trace dashboard, prompt registry, and eval framework. <code style="font-size:12px;background:var(--surface-raised);padding:2px 6px;border-radius:4px">fa.connect()</code> bridges them with a single call.</p>
       </div>
     </div>
 
-    <!-- Advanced RAG Pipeline Visual -->
-    <div class="pipeline-flow" style="margin-top:48px">
-      <div class="pipe-step" style="background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15);color:var(--text-primary)">Query</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15);color:var(--text-primary)">Rewrite</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.15);color:var(--text-primary)">Route</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15);color:var(--text-primary)">Hybrid Search</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15);color:var(--text-primary)">Rerank</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15);color:var(--text-primary)">Relevance Gate</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15);color:var(--text-primary)">Generate</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15);color:var(--text-primary)">Self-Grade</div>
+    <!-- Full Capability Grid -->
+    <div style="margin-top:48px;padding-top:48px;border-top:1px solid var(--border)">
+      <div class="sec-label violet">Platform Capabilities</div>
+      <div class="card-grid cols-4" style="margin-top:24px">
+        <div class="fcard"><div class="fcard-icon violet">⟐</div><h3>Visual Workflow Editor</h3><p>Drag-and-drop canvas with cyclic graphs, conditional routing, parallel execution, HITL nodes, and checkpointing — no orchestration code needed.</p></div>
+        <div class="fcard"><div class="fcard-icon green">📚</div><h3>Advanced RAG Pipeline</h3><p>Hybrid search, reranking, query rewriting, adaptive routing, self-grading, contextual enrichment — 20+ configurable retrieval feature flags.</p></div>
+        <div class="fcard"><div class="fcard-icon rose">⑂</div><h3>Prompt Registry &amp; Optimizer</h3><p>Versioning, fragments, 3-mode auto-optimization, Compare Mode A/B testing, version analytics, and approval workflows.</p></div>
+        <div class="fcard"><div class="fcard-icon violet">📍</div><h3>Observability &amp; Tracing</h3><p>Full hierarchical traces: LLM calls, tool invocations, tokens, latency, cost — linked to the exact prompt version used.</p></div>
+      </div>
+      <div class="card-grid cols-4" style="margin-top:16px">
+        <div class="fcard"><div class="fcard-icon violet">⚖️</div><h3>Evaluation Intelligence</h3><p>LLM-as-Judge scoring, RAG eval (Ragas), annotation queues, online eval policies, A/B comparisons, CI/CD eval API, and MLflow integration.</p></div>
+        <div class="fcard"><div class="fcard-icon cyan">🧠</div><h3>Agent Memory</h3><p>Long-term memory across conversations with automatic extraction. Provider-agnostic — works with any LLM. Configurable thresholds and vector-based recall.</p></div>
+        <div class="fcard"><div class="fcard-icon violet">🧬</div><h3>Synthetic Data Generation</h3><p>LLM-powered test data from schemas. Preview with any connector, export to eval datasets. Bootstrap testing without manual data collection.</p></div>
+        <div class="fcard"><div class="fcard-icon cyan">💬</div><h3>Chat &amp; Conversation Simulator</h3><p>Streaming playground with tool call visualization. Multi-turn conversation simulator with persona-driven users, session scorers, and trajectory analysis.</p></div>
+      </div>
+      <div class="card-grid cols-4" style="margin-top:16px">
+        <div class="fcard"><div class="fcard-icon orange">🔌</div><h3>29+ Connectors &amp; MCP</h3><p>Databases, storage, messaging, CRM, email, and data processing. First-class MCP support with hosted servers.</p></div>
+        <div class="fcard"><div class="fcard-icon rose">🛡</div><h3>Human-in-the-Loop</h3><p>Approval policies on tool calls. Chain pause for human input. Signed webhooks. Context-aware intelligent rejection.</p></div>
+        <div class="fcard"><div class="fcard-icon cyan">🔗</div><h3>Public API &amp; Streaming</h3><p>RESTful API at <code style="font-size:11px">/public/v1/</code>. Scoped keys, rate limiting, SSE streaming, feedback, and webhooks.</p></div>
+        <div class="fcard"><div class="fcard-icon green">🔐</div><h3>Enterprise Infrastructure</h3><p>SSO + 4-role RBAC, air-gapped deployment, audit trails, encrypted secrets, and EU AI Act compliance via FastAIShield.</p></div>
+      </div>
     </div>
 
-    <div class="card-grid cols-3" style="margin-top:32px">
-      <div class="fcard"><div class="fcard-icon green">🔀</div><h3>Relevance Gate<span class="new-badge">NEW</span></h3><p>Automatically evaluates retrieval quality and triggers reactive query rewriting when results fall below your configured threshold — no bad context reaches the LLM.</p></div>
-      <div class="fcard"><div class="fcard-icon green">✏️</div><h3>Query Rewriting<span class="new-badge">NEW</span></h3><p>Three proactive strategies that reformulate user queries before retrieval — improving search results before they happen. Choose from hypothetical document generation, abstraction, or auto-detect.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🧠</div><h3>Contextual Enrichment<span class="new-badge">NEW</span></h3><p>LLM-generated context prefix per chunk for improved retrieval accuracy. Background enrichment job with cost estimation.</p></div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon green">🔍</div><h3>KB Intelligence<span class="new-badge">NEW</span></h3><p>LLM + statistical analysis of collection content: topic summaries, entity extraction, chunk quality stats, and optimization suggestions.</p></div>
-      <div class="fcard"><div class="fcard-icon green">📊</div><h3>Metadata Filtering<span class="new-badge">NEW</span></h3><p>Narrow retrieval results by document type, date, author, or custom metadata fields. Filter panel built into the UI for quick configuration.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🔗</div><h3>Boundary-Aware Embeddings<span class="new-badge">NEW</span></h3><p>Late chunking generates embeddings that respect document structure and boundaries — preserving cross-chunk context for more accurate retrieval.</p></div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon green">⚡</div><h3>Post-Chunking<span class="ent-badge">ENTERPRISE</span></h3><p>Documents stored as full-text with whole-doc embeddings. Chunking happens at query time, informed by the actual query — dramatically improving relevance.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🤖</div><h3>LLM-Based Chunking<span class="ent-badge">ENTERPRISE</span></h3><p>LLM reads full documents and produces semantically self-contained chunks. Cost-guarded with large-document sectioning.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🌐</div><h3>Multi-KB Coordination<span class="ent-badge">ENTERPRISE</span></h3><p>Intelligent routing across 2+ knowledge bases using KB analysis. Parallel retrieval with merge and deduplication.</p></div>
-    </div>
     <div class="metrics-bar" style="margin-bottom:0">
-      <div class="metric"><div class="val">5</div><div class="lbl">Chunking Strategies</div></div>
-      <div class="metric"><div class="val">Hybrid</div><div class="lbl">Search Mode</div></div>
-      <div class="metric"><div class="val">3</div><div class="lbl">Reranking Options</div></div>
-      <div class="metric"><div class="val">Auto</div><div class="lbl">Query Routing</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== CONNECTORS ===== -->
-<section id="connectors">
-  <div class="container">
-    <div class="sec-label orange">Connector Library</div>
-    <div class="sec-title">Connect to everything.</div>
-    <div class="sec-desc">29 pre-built connectors across 8 categories. Each connector is a reusable, domain-level resource available to every agent and workflow in your organisation.</div>
-    <div class="connector-showcase">
-      <div class="conn-chip"><span class="conn-dot" style="background:#336791"></span>PostgreSQL</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#00758F"></span>MySQL</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#F80000"></span>Oracle</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Azure SQL</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#003B57"></span>SQLite</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#4DB33D"></span>MongoDB</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#00BFB3"></span>Elasticsearch</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#DC382D"></span>Redis</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#FF9900"></span>Amazon S3</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Azure Blob</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#4285F4"></span>Google Drive</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#6B7280"></span>SFTP</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#7B68EE"></span>Slack</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#6264A7"></span>Microsoft Teams</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#0088cc"></span>Telegram</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#25D366"></span>WhatsApp</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#0176D3"></span>Salesforce</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#002050"></span>Dynamics 365</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#EA4335"></span>Gmail</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#0078D4"></span>Outlook</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#00b4d8"></span>SMTP Email</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#231F20"></span>Apache Kafka</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#E34F26"></span>REST API</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#E535AB"></span>GraphQL</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#c0392b"></span>PDF Reader</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#2B579A"></span>Word Reader</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#217346"></span>Excel / CSV</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#FF6B2B"></span>Web Scraper</div>
-      <div class="conn-chip"><span class="conn-dot" style="background:#8B5CF6"></span>Web Crawler</div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:32px">
-      <div class="fcard"><div class="fcard-icon orange">⚡</div><h3>MCP Protocol Native</h3><p>First-class support for Anthropic's Model Context Protocol. Connect external MCP servers, discover tools dynamically, and import them into your project.</p><div class="tag">Anthropic MCP Spec</div></div>
-      <div class="fcard"><div class="fcard-icon orange">🖥</div><h3>Hosted MCP Servers</h3><p>Host MCP servers directly inside FastAIAgent. Streamable-HTTP transport, token-based auth, auto-start on boot, and tool assignment — all managed from the UI.</p><div class="tag">In-Process Hosting</div></div>
-      <div class="fcard"><div class="fcard-icon orange">🏗️</div><h3>Unity Catalog Volumes<span class="new-badge">NEW</span></h3><p>Browse Databricks Unity Catalog catalogs, schemas, and volumes. Import files directly into knowledge bases from your lakehouse.</p><div class="tag">Databricks SDK</div></div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon orange">⏰</div><h3>Triggers &amp; Scheduling</h3><p>Fire agents on webhooks, cron schedules, or external events. Every trigger execution is traced, with retry logic and error handling.</p><div class="tag">Webhooks + Cron</div></div>
-      <div class="fcard"><div class="fcard-icon orange">🔗</div><h3>Connector-to-Tool</h3><p>Register any connector action as a reusable tool. Agents and chains can invoke connector actions directly — no glue code needed.</p><div class="tag">One-Click Registration</div></div>
-      <div class="fcard"><div class="fcard-icon orange">🔒</div><h3>Enterprise LLM Gateways<span class="new-badge">NEW</span></h3><p>Connect to enterprise LLM endpoints behind corporate gateways. Supports advanced authentication methods including token exchange and secret vault resolution.</p><div class="tag">Enterprise Ready</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PROMPT REGISTRY & OPTIMIZATION ===== -->
-<section id="prompts" class="sec-alt">
-  <div class="container">
-    <div class="sec-label rose">Prompt Registry &amp; Optimization</div>
-    <div class="sec-title">Prompts as first-class code.</div>
-    <div class="sec-desc">Centralised prompt lifecycle management with automated optimization. Author, version, test, optimize, approve, deploy, and monitor every prompt — with full audit trail and bidirectional trace linking.</div>
-    <div class="lifecycle"><div class="lc-step s1">✎ Author</div><div class="lc-arrow">→</div><div class="lc-step s2">⑂ Version</div><div class="lc-arrow">→</div><div class="lc-step s3">▶ Test</div><div class="lc-arrow">→</div><div class="lc-step s4">🤖 Optimize</div><div class="lc-arrow">→</div><div class="lc-step s4">✓ Approve</div><div class="lc-arrow">→</div><div class="lc-step s5">🚀 Deploy</div></div>
-    <div class="card-grid cols-2" style="margin-top:40px">
-      <div class="fcard" style="grid-row:span 2"><div class="fcard-icon rose">⑂</div><h3>Semantic Versioning &amp; Diff</h3><p>Every prompt edit creates a new version. Compare any two versions side-by-side with character-level diffs. Roll back to any previous version instantly.</p>
-        <div style="margin-top:20px;padding:16px;background:var(--surface-raised);border-radius:10px;font-family:var(--mono);font-size:11px;line-height:2"><div style="color:var(--text-muted)">v2.1.0 → v2.2.0</div><div style="color:var(--accent-rose);margin-top:8px">− You are a helpful assistant.</div><div style="color:var(--accent-green)">+ You are a lead qualification specialist<br>+ for enterprise SaaS products.</div><div style="color:var(--text-muted);margin-top:8px">+ Added {{company_context}} variable</div></div>
-        <div style="margin-top:16px"><h3 style="font-size:14px">Composition Engine</h3><p style="margin-top:6px">Build prompts from reusable fragments and templates. One change propagates everywhere.</p></div>
-      </div>
-      <div class="fcard"><div class="fcard-icon rose">🤖</div><h3>Prompt Auto-Optimizer<span class="new-badge">NEW</span></h3><p>Three automated optimization modes: <strong>Instruction Rewrite</strong> (improve clarity), <strong>Few-Shot Bootstrap</strong> (mine examples from past runs), and <strong>Iterative Refinement</strong> (eval-driven improvement). Candidate ranking and one-click promote to registry.</p></div>
-      <div class="fcard"><div class="fcard-icon rose">⟷</div><h3>Playground Compare Mode<span class="new-badge">NEW</span></h3><p>Side-by-side A/B prompt version and endpoint comparison. Split-pane UI, parallel execution, per-panel metrics, inline diff view, and shareable URLs for team review.</p></div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon rose">📊</div><h3>Version Analytics<span class="new-badge">NEW</span></h3><p>See how every prompt version performs in production: invocations, latency, error rate, cost, and quality trends. Compare multiple versions side by side with time-series charts.</p></div>
-      <div class="fcard"><div class="fcard-icon rose">🔍</div><h3>Security Scanner</h3><p>Automatic detection of injection patterns, PII leakage, and hardcoded secrets in prompt text.</p></div>
-      <div class="fcard"><div class="fcard-icon rose">🛡</div><h3>Approval Workflow</h3><p>Draft → Review → Approve → Deploy pipeline. Gate production deployments behind human approval. Configurable per environment.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== LIVE CHAT ===== -->
-<section>
-  <div class="container">
-    <div class="split">
-      <div>
-        <div class="sec-label cyan">Live Chat Interface</div>
-        <div class="sec-title">Converse with your Agents.</div>
-        <div class="sec-desc" style="margin-bottom:0">A production-grade conversational playground. Real-time streaming, tool call visualization, multi-turn history, and Markdown rendering — built for both testing and end-user interaction.</div>
-        <ul class="features-list">
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Streaming Responses</strong> — Token-by-token output for real-time conversational experience</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Tool Call Visibility</strong> — See which tools the agent invokes, with inputs and outputs rendered inline</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Response Feedback</strong> — Thumbs-up/down on any response with summaries and daily trend tracking</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Rich Rendering</strong> — Markdown, code blocks, tables, and structured outputs displayed beautifully</span></li>
-        </ul>
-      </div>
-      <div>
-        <div class="fcard" style="padding:0;overflow:hidden;border-color:rgba(0,136,170,.15)">
-          <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent-green)"></span><span style="font-size:13px;font-weight:600;color:var(--text-primary)">Lead Qualifier Agent</span></div>
-            <span class="mono" style="color:var(--text-muted);font-size:9px">GPT-4o · Streaming</span>
-          </div>
-          <div style="padding:20px;display:flex;flex-direction:column;gap:16px;min-height:260px">
-            <div style="align-self:flex-end;max-width:80%;padding:10px 14px;background:rgba(0,136,170,.06);border:1px solid rgba(0,136,170,.12);border-radius:12px 12px 2px 12px"><div style="font-size:12.5px;color:var(--text-primary)">Qualify the lead from Acme Corp — check their CRM record and score them.</div></div>
-            <div style="padding:8px 12px;background:rgba(234,88,12,.04);border:1px solid rgba(234,88,12,.1);border-radius:8px;font-family:var(--mono);font-size:10px"><span style="color:var(--accent-orange)">⚡ Tool Call:</span> <span style="color:var(--text-secondary)">salesforce.getAccount("Acme Corp")</span></div>
-            <div style="align-self:flex-start;max-width:85%;padding:10px 14px;background:var(--surface-raised);border:1px solid var(--border);border-radius:2px 12px 12px 12px"><div style="font-size:12.5px;color:var(--text-secondary)"><strong style="color:var(--text-primary)">Acme Corp</strong> scores <strong style="color:var(--accent-green)">87/100</strong>. They have 500+ employees, active renewal pipeline, and 3 open opportunities.</div></div>
-            <div style="display:flex;gap:8px;margin-left:4px"><span style="font-size:14px;cursor:pointer;opacity:.5">👍</span><span style="font-size:14px;cursor:pointer;opacity:.5">👎</span><span style="font-size:10px;color:var(--text-muted);margin-left:4px;align-self:center">Feedback</span></div>
-          </div>
-          <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">
-            <div style="flex:1;padding:8px 12px;background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-muted)">Type a message...</div>
-            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:#fff">↑</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== OBSERVABILITY & EVALUATION INTELLIGENCE ===== -->
-<section id="evaluation" class="sec-alt">
-  <div class="container">
-    <div class="sec-label violet">Observability &amp; Evaluation Intelligence</div>
-    <div class="sec-title">See Everything. Trust Everything.</div>
-    <div class="sec-desc">Full execution tracing, LLM-as-Judge scoring, RAG evaluation, annotation queues, online evaluation policies, A/B comparisons, and CI/CD integration — a complete quality pipeline from development to production.</div>
-    <div class="card-grid cols-2">
-      <div class="fcard"><div class="fcard-icon violet">📍</div><h3>Execution Traces</h3><p>Every agent run produces a hierarchical trace: LLM calls, tool invocations, token counts, latency, cost, and memory operations — all linked back to the exact prompt version used.</p>
-        <div style="margin-top:16px;padding:14px;background:var(--surface-raised);border-radius:8px;font-family:var(--mono);font-size:10.5px;line-height:2;color:var(--text-secondary)">
-          <div>▸ <span style="color:var(--accent-cyan)">agent.execute</span> <span style="color:var(--text-muted)">842ms</span></div>
-          <div style="padding-left:16px">▸ <span style="color:var(--accent-violet)">llm.call</span> <span style="color:var(--text-muted)">gpt-4o · 520ms · 1.2k tok</span></div>
-          <div style="padding-left:16px">▸ <span style="color:var(--accent-orange)">tool.invoke</span> <span style="color:var(--text-muted)">salesforce.get · 180ms</span></div>
-          <div style="padding-left:16px">▸ <span style="color:var(--accent-green)">memory.retrieve</span> <span style="color:var(--text-muted)">3 entries · 42ms</span></div>
-          <div style="padding-left:16px">▸ <span style="color:var(--accent-violet)">llm.call</span> <span style="color:var(--text-muted)">gpt-4o · 340ms · 0.8k tok</span></div>
-        </div>
-      </div>
-      <div class="fcard"><div class="fcard-icon violet">⚖️</div><h3>LLM-as-Judge Scorers<span class="new-badge">NEW</span></h3><p>Define custom scoring dimensions (correctness, helpfulness, safety) with judge prompt templates. Binary, 0-1, or 1-5 scale types. Test scorers before deploying.</p>
-        <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">Correctness</span><span style="color:var(--accent-green);font-weight:600;font-family:var(--mono)">0.94</span></div>
-          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">Helpfulness</span><span style="color:var(--accent-cyan);font-weight:600;font-family:var(--mono)">0.88</span></div>
-          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">Safety</span><span style="color:var(--accent-green);font-weight:600;font-family:var(--mono)">1.00</span></div>
-          <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--surface-raised);border-radius:8px;font-size:12px"><span style="color:var(--text-secondary)">RAG Relevance (Ragas)</span><span style="color:var(--accent-violet);font-weight:600;font-family:var(--mono)">0.91</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon violet">📋</div><h3>Eval Datasets<span class="new-badge">NEW</span></h3><p>Reusable test data management with CSV/JSONL import and export. Build golden datasets for regression testing across agent versions.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">🧬</div><h3>Synthetic Data Gen<span class="new-badge">NEW</span></h3><p>LLM-powered test data creation from schemas with connector preview and direct export to eval datasets. Bootstrap testing without manual data collection.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">📐</div><h3>RAG Evaluation<span class="new-badge">NEW</span></h3><p>Purpose-built metrics for retrieval-augmented generation: context relevance, answer faithfulness, and answer correctness — measured automatically at scale.</p></div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon violet">🔄</div><h3>Online Eval Policies<span class="new-badge">NEW</span></h3><p>Continuous production trace scoring at configurable sampling rates. Approval workflow for policy changes. Run quality monitoring on autopilot.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">⟷</div><h3>A/B Eval Comparisons<span class="new-badge">NEW</span></h3><p>Side-by-side eval run comparison with per-scorer deltas and statistical winner determination. Know which version is better before shipping.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">👥</div><h3>Annotation Queues<span class="new-badge">NEW</span></h3><p>Human review workflows with rubric-based scoring, item claiming, and agreement metrics. Combine human judgment with automated evaluation.</p></div>
-    </div>
-    <div class="card-grid cols-3" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon violet">🔌</div><h3>MLflow Integration<span class="new-badge">NEW</span></h3><p>Export traces and eval runs to MLflow. Bridge AI agent quality with your existing ML experiment tracking infrastructure.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">🏗️</div><h3>CI/CD Eval API<span class="new-badge">NEW</span></h3><p>Trigger eval runs from your CI pipeline, query pass/fail status, and generate live pass-rate badges for your README. Gate deployments on quality.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">⑂</div><h3>Agent Versioning</h3><p>Snapshot agent configurations. Compare versions. Roll back instantly. Every deployment is a traceable, reversible event.</p></div>
+      <div class="metric"><div class="val">29+</div><div class="lbl">Connectors</div></div>
+      <div class="metric"><div class="val">MCP</div><div class="lbl">Protocol Native</div></div>
+      <div class="metric"><div class="val">Full API</div><div class="lbl">Embed Anywhere</div></div>
+      <div class="metric"><div class="val">Air-Gap</div><div class="lbl">Ready to Deploy</div></div>
     </div>
   </div>
 </section>
@@ -687,9 +566,9 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 <!-- ===== AGENT REPLAY ===== -->
 <section id="replay">
   <div class="container">
-    <div class="sec-label cyan">Agent Replay</div>
-    <div class="sec-title">Time-Travel Debugging for Agent Executions.</div>
-    <div class="sec-desc">Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore "what if?" scenarios.</div>
+    <div class="sec-label cyan">Agent Replay — The Feature Nobody Else Has</div>
+    <div class="sec-title">Time-Travel Debugging for AI Agents.</div>
+    <div class="sec-desc-wide">Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore "what if?" scenarios. Available in both the SDK and the platform.</div>
 
     <div class="replay-demo">
       <div class="replay-demo-header">
@@ -740,229 +619,24 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
         <button class="replay-nav-btn">Next ▶</button>
       </div>
     </div>
-
-    <div class="card-grid cols-3" style="margin-top:32px">
-      <div class="fcard"><div class="fcard-icon cyan">▶</div><h3>Step-Through Replay</h3><p>Walk through every span — LLM calls, tool invocations, KB retrievals, memory lookups — with full input/output at each step.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">⑂</div><h3>Fork &amp; Re-run</h3><p>Modify input at any step and re-execute forward. Creates a new linked trace so you can compare outcomes side by side.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">📊</div><h3>Cost Waterfall</h3><p>Progressive token and cost accumulation as you step through. See exactly where your spend goes, span by span.</p></div>
-    </div>
   </div>
 </section>
 
-<!-- ===== PUBLIC API ===== -->
-<section id="public-api" class="sec-alt">
-  <div class="container">
-    <div class="split">
-      <div>
-        <div class="sec-label cyan">Public API</div>
-        <div class="sec-title">Integrate Agents<br>Into Anything.</div>
-        <div class="sec-desc" style="margin-bottom:0">A full RESTful API at <code style="font-size:13px;background:var(--surface-raised);padding:2px 6px;border-radius:4px">/public/v1/</code> with API key authentication, scoped permissions, rate limiting, feedback submission, and SSE streaming.</div>
-        <ul class="features-list">
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Scoped API Keys</strong> — Fine-grained permission scopes covering agents, chains, knowledge bases, approvals, webhooks, feedback, and evaluation</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Real-Time Streaming</strong> — Token-by-token streaming responses with tool call events and human-in-the-loop signals</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Rate Limiting</strong> — Configurable requests-per-minute and requests-per-day per API key</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Feedback API</strong> — Submit thumbs-up/down on any response via the API, with auto-conversion to eval test cases</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">CI/CD Eval API</strong> — Trigger eval runs, query status, and embed pass-rate badges in your README or CI dashboard</span></li>
-        </ul>
-      </div>
-      <div>
-        <div class="code-window">
-          <div class="code-titlebar"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span class="code-title">public_api_invoke.sh</span></div>
-          <div class="code-body"><span class="cm"># Execute agent via Public API with streaming</span>
-<span class="fn">curl</span> <span class="str">-N</span> \
-  <span class="op">-H</span> <span class="str">"X-API-Key: fa_k_your_key_here"</span> \
-  <span class="op">-H</span> <span class="str">"Content-Type: application/json"</span> \
-  <span class="op">-d</span> <span class="str">'{"input": "Qualify lead from Acme"}'</span> \
-  <span class="kw">https://host/public/v1/agents/{id}/invoke/stream</span>
-
-<span class="cm"># Streaming events:</span>
-<span class="cm"># → token: {"text": "Acme Corp scores..."}</span>
-<span class="cm"># → tool_call_start: {"tool": "salesforce"}</span>
-<span class="cm"># → approval_required: {...}</span>
-<span class="cm"># → done: {"trace_id":"...","cost":0.006}</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="metrics-bar" style="margin-top:32px;margin-bottom:0">
-      <div class="metric"><div class="val">Full</div><div class="lbl">REST API Coverage</div></div>
-      <div class="metric"><div class="val">Scoped</div><div class="lbl">Per-Key Permissions</div></div>
-      <div class="metric"><div class="val">Streaming</div><div class="lbl">Real-Time Responses</div></div>
-      <div class="metric"><div class="val">Signed</div><div class="lbl">Webhook Notifications</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== HUMAN-IN-THE-LOOP ===== -->
-<section id="hitl">
-  <div class="container">
-    <div class="sec-label rose">Human-in-the-Loop</div>
-    <div class="sec-title">Keep Humans in Control.</div>
-    <div class="sec-desc">Gate sensitive tool calls behind configurable approval policies. Pause chain execution for human input. Get notified via signed webhooks — and resume execution exactly where you left off.</div>
-
-    <div class="hero-feature-visual" style="margin-bottom:48px">
-      <div class="visual-inner" style="flex-direction:column;gap:20px;padding:40px 48px">
-        <div class="wf-row"><div class="wf-node start">▶ Agent Executes</div><span class="wf-arrow">→</span><div class="wf-node llm">🧠 LLM Decides Tool</div><span class="wf-arrow">→</span><div class="wf-node decision">🛡 Policy Match?</div></div>
-        <div style="display:flex;justify-content:center;gap:80px">
-          <div style="text-align:center"><div style="color:var(--accent-green);font-size:11px;font-family:var(--mono);margin-bottom:8px">NO MATCH</div><div class="wf-node process">⚡ Execute Tool</div></div>
-          <div style="text-align:center"><div style="color:var(--accent-rose);font-size:11px;font-family:var(--mono);margin-bottom:8px">MATCH</div><div class="wf-node end" style="background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.2)">⏸ Pause + Webhook</div></div>
-        </div>
-        <div class="wf-row"><div class="wf-node process">👤 Human Approves / Rejects / Modifies</div><span class="wf-arrow">→</span><div class="wf-node start">▶ Resume Stream</div></div>
-      </div>
-    </div>
-
-    <div class="card-grid cols-3">
-      <div class="fcard"><div class="fcard-icon rose">🔗</div><h3>Chain Human Input Nodes</h3><p>Dedicated chain node type that pauses execution. Three input types: approval (yes/no), text (free-form), and choice (multiple options).</p></div>
-      <div class="fcard"><div class="fcard-icon rose">📡</div><h3>Signed Webhooks</h3><p>Register webhook URLs via the API. Payloads are cryptographically signed per webhook. Events: requested, approved, rejected, expired.</p></div>
-      <div class="fcard"><div class="fcard-icon rose">🔄</div><h3>Intelligent Rejection</h3><p>When an approver rejects a tool call with a reason, the agent receives the rejection as context and generates an intelligent alternative — no dead ends.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== ANALYTICS & FEEDBACK ===== -->
-<section class="sec-alt">
-  <div class="container">
-    <div class="split reverse">
-      <div>
-        <div class="sec-label green">Analytics, Feedback &amp; Dashboard</div>
-        <div class="sec-title">See the full picture.</div>
-        <div class="sec-desc" style="margin-bottom:0">Cross-project analytics, agent performance tracking, prompt-level cost breakdowns, response feedback loops, and API usage dashboards — all built in.</div>
-        <ul class="features-list">
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Platform Dashboard</strong> — Entity counts, recent activity, health status, and eval run summaries at a glance</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Response Feedback</strong> — Thumbs-up/down per trace with agent/chain/prompt summaries and daily trends</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Feedback → Eval</strong> — Negative feedback auto-converts to eval test cases for regression prevention</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Prompt Analytics</strong> — Per-version performance: latency, tokens, cost, quality trends</span></li>
-          <li><span class="check green">✓</span><span><strong style="color:var(--text-primary)">Cost Estimation</strong> — Real-time LLM token cost estimation by provider and model during execution</span></li>
-        </ul>
-      </div>
-      <div>
-        <div class="fcard" style="border-color:rgba(5,150,105,.15);padding:0;overflow:hidden">
-          <div style="padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">📊</span><span style="font-size:14px;font-weight:700;color:var(--text-primary)">Platform Dashboard</span></div>
-            <span class="mono" style="color:var(--accent-green);font-size:9px">LIVE</span>
-          </div>
-          <div style="padding:20px 24px">
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
-              <div style="padding:12px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--text-primary)">1,247</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Executions</div></div>
-              <div style="padding:12px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--text-primary)">2.4M</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Tokens</div></div>
-              <div style="padding:12px;background:var(--surface-raised);border-radius:8px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--accent-green)">$18.42</div><div style="font-size:10px;color:var(--text-muted);font-family:var(--mono)">Total Cost</div></div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <div style="padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:11px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">👍 Positive</span><span style="font-family:var(--mono);font-size:10px;color:var(--accent-green)">89%</span></div>
-              <div style="padding:8px 12px;background:var(--surface-raised);border-radius:6px;font-size:11px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">👎 Negative</span><span style="font-family:var(--mono);font-size:10px;color:var(--accent-rose)">11%</span></div>
-            </div>
-          </div>
-          <div style="padding:12px 24px;background:rgba(5,150,105,.04);border-top:1px solid rgba(5,150,105,.1);display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--accent-green);font-family:var(--mono);letter-spacing:1px">API USAGE</span><span style="font-size:12px;color:var(--text-secondary)">1,024 requests today · 3 active keys</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== USER MANAGEMENT ===== -->
+<!-- ===== ENTERPRISE ===== -->
 <section>
   <div class="container">
-    <div class="sec-label violet">User Management</div>
-    <div class="sec-title">Four-Role RBAC, built in.</div>
-    <div class="sec-desc">A complete user management system with a four-tier permission hierarchy, invitation-based onboarding, SSO integration, and role-based UI visibility — no external identity provider required.</div>
-    <div class="hero-feature-visual" style="margin-bottom:48px">
-      <div class="visual-inner" style="flex-direction:column;gap:16px;padding:32px 48px">
-        <div style="display:flex;flex-direction:column;gap:8px;max-width:560px;margin:0 auto;width:100%">
-          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(220,38,38,.2);background:rgba(220,38,38,.04);display:flex;align-items:center;gap:12px">
-            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(220,38,38,.1);color:var(--accent-rose);flex-shrink:0">👑</div>
-            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">App Admin</div><div style="font-size:11px;color:var(--text-muted)">Global scope · Full override · User management · First user auto-promoted</div></div>
-          </div>
-          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(99,102,241,.2);background:rgba(99,102,241,.04);margin-left:24px;display:flex;align-items:center;gap:12px">
-            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(99,102,241,.1);color:var(--accent-violet);flex-shrink:0">⚙</div>
-            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">Domain Admin</div><div style="font-size:11px;color:var(--text-muted)">Domain owner · All projects in domain · Infra management · SSO config</div></div>
-          </div>
-          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(0,136,170,.2);background:rgba(0,136,170,.04);margin-left:48px;display:flex;align-items:center;gap:12px">
-            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(0,136,170,.1);color:var(--accent-cyan);flex-shrink:0">🛠</div>
-            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">Developer</div><div style="font-size:11px;color:var(--text-muted)">Assigned projects · Read / Write / Execute · Build agents, chains, tools</div></div>
-          </div>
-          <div style="padding:14px 20px;border-radius:10px;border:1px solid rgba(5,150,105,.2);background:rgba(5,150,105,.04);margin-left:72px;display:flex;align-items:center;gap:12px">
-            <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:rgba(5,150,105,.1);color:var(--accent-green);flex-shrink:0">👁</div>
-            <div><div style="font-size:13px;font-weight:700;color:var(--text-primary)">Viewer</div><div style="font-size:11px;color:var(--text-muted)">Read + Execute only · Domain-wide or project-scoped · Business user access</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="sec-label green">Enterprise Ready</div>
+    <div class="sec-title">Built for Regulated Environments.</div>
+    <div class="sec-desc-wide">4-role RBAC, SSO, encrypted secrets, audit trails, air-gapped deployment, and FastAIShield for EU AI Act compliance. No cloud dependency. No vendor lock-in. Your data stays yours.</div>
+
     <div class="card-grid cols-4">
-      <div class="fcard"><div class="fcard-icon violet">📧</div><h3>Invitation System</h3><p>Email-based invitations with role pre-assignment. Users auto-join the correct domain and project.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">🔐</div><h3>SSO Authentication<span class="new-badge">NEW</span></h3><p>Single sign-on with automatic user provisioning per domain. Coexists with traditional username/password authentication.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">🔒</div><h3>Permission Guards</h3><p>Every action enforces role checks. The entire UI adapts to show only what each user is allowed to see and do.</p></div>
-      <div class="fcard"><div class="fcard-icon violet">🛡</div><h3>Safety Guards</h3><p>Last admin protection prevents lockout. Domain scope limits prevent cross-domain access. Automatic session revocation on sensitive changes.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== ENTERPRISE: ORG + BILLING + PLAYBOOKS ===== -->
-<section id="enterprise" class="sec-alt">
-  <div class="container">
-    <div class="split">
-      <div>
-        <div class="sec-label violet">Organisation &amp; Billing</div>
-        <div class="sec-title">Structured for the Enterprise.</div>
-        <div class="sec-desc" style="margin-bottom:0">Domains and Projects mirror how real organisations work. SaaS billing with Stripe integration, tier-based feature gating, and automated free tier onboarding.</div>
-        <ul class="features-list">
-          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Domains &amp; Projects</strong> — Top-level org units with scoped workspaces for teams and initiatives</span></li>
-          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Shared Infrastructure</strong> — LLM endpoints, connectors, MCP servers at Domain level; agents/KBs at Project level</span></li>
-          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Platform Metering</strong> — Built-in usage tracking and billing with tier enforcement and configurable limits</span></li>
-          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Free/Pro/Enterprise Tiers</strong> — Self-service onboarding with auto-provisioning and team domain detection</span></li>
-          <li><span class="check violet">✓</span><span><strong style="color:var(--text-primary)">Schema Drift Detection</strong> — Automatic monitoring of tool output changes with version tracking and notifications</span></li>
-        </ul>
-      </div>
-      <div>
-        <div class="org-tree">
-          <div class="org-node domain"><div class="org-icon">◈</div><div><div class="org-label">Customer Digital Services</div><div class="org-meta">Domain · Pro Tier · 3 Projects · 12 Members</div></div></div>
-          <div class="org-node shared"><div class="org-icon">⚡</div><div><div class="org-label">Shared Infrastructure</div><div class="org-meta">LLM Endpoints · Connectors · MCP · SSO Provider</div></div></div>
-          <div class="org-node project"><div class="org-icon">◆</div><div><div class="org-label">Sales Assistant</div><div class="org-meta">Project · 5 Agents · 3 Chains · 2 KBs</div></div></div>
-          <div class="org-node resource"><div class="org-icon">◦</div><div><div class="org-label">Lead Qualifier Agent · Follow-up Agent · Qualification Pipeline</div></div></div>
-          <div class="org-node project"><div class="org-icon">◆</div><div><div class="org-label">Support Triage Bot</div><div class="org-meta">Project · 2 Agents · 1 Chain · 1 KB</div></div></div>
-          <div class="org-node project"><div class="org-icon">◆</div><div><div class="org-label">Internal Ops Assistant</div><div class="org-meta">Project · 1 Agent · 0 Chains · 1 KB</div></div></div>
-        </div>
-      </div>
+      <div class="fcard"><div class="fcard-icon green">🔐</div><h3>SSO + RBAC</h3><p>Enterprise single sign-on with 4-role permission hierarchy: App Admin, Domain Admin, Developer, Viewer.</p></div>
+      <div class="fcard"><div class="fcard-icon green">📦</div><h3>Air-Gapped Deploy</h3><p>Standalone deployment bundles with pre-built images. Zero internet dependency for classified and regulated networks.</p></div>
+      <div class="fcard"><div class="fcard-icon green">📋</div><h3>Audit Logging</h3><p>Complete audit trail: who did what, when. Action tracking, resource IDs, actor identification, and IP capture.</p></div>
+      <div class="fcard"><div class="fcard-icon green">🛡</div><h3>FastAIShield<span class="ent-badge">ENTERPRISE</span></h3><p>EU AI Act compliance platform. Risk assessment, accountability framework (19 roles), audit trails, and regulatory reporting.</p></div>
     </div>
 
-    <!-- Playbooks -->
-    <div class="subsec">
-      <div class="subsec-label" style="color:var(--accent-cyan)">Guided Onboarding</div>
-      <div class="sec-title" style="font-size:clamp(24px,3vw,32px)">Playbooks — Step-by-Step Workflows.</div>
-      <p style="font-size:15px;color:var(--text-secondary);max-width:560px;line-height:1.8;margin-bottom:32px">5 built-in playbook templates with progress tracking, on-demand resource provisioning, and difficulty levels. Guide new users from zero to a working agent in minutes.</p>
-      <div class="card-grid cols-4">
-        <div class="fcard"><div class="fcard-icon cyan">📖</div><h3>Guided Templates</h3><p>5 built-in playbooks covering common agent patterns — from simple Q&A to multi-step workflows.</p></div>
-        <div class="fcard"><div class="fcard-icon cyan">📊</div><h3>Progress Tracking</h3><p>Step completion state persisted across sessions. Pick up where you left off at any time.</p></div>
-        <div class="fcard"><div class="fcard-icon cyan">⚡</div><h3>Resource Provisioning</h3><p>Playbooks auto-create agents, KBs, tools, and chains as you progress through steps.</p></div>
-        <div class="fcard"><div class="fcard-icon cyan">🎯</div><h3>Difficulty Levels</h3><p>Beginner, intermediate, and advanced paths so developers and business users both find their starting point.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== AUTH, SECURITY & DEPLOYMENT ===== -->
-<section>
-  <div class="container">
-    <div class="sec-label green">Auth, Security &amp; Deployment</div>
-    <div class="sec-title">Enterprise-grade from Day One.</div>
-    <div class="sec-desc">Secure authentication, comprehensive audit trails, role-based access, encrypted secrets, and flexible deployment options — including fully air-gapped bundles for regulated environments. No cloud dependency, no vendor lock-in.</div>
-    <div class="card-grid cols-4">
-      <div class="fcard"><div class="fcard-icon green">🔐</div><h3>SSO + Password Auth</h3><p>Enterprise single sign-on with automatic user provisioning per domain. Also supports traditional username/password with email verification and password reset.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🛡</div><h3>Security Hardening<span class="new-badge">NEW</span></h3><p>Network-level protections, sensitive data redaction in logs, automatic session revocation on password changes, and restricted profile update fields.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🐳</div><h3>One-Command Deploy</h3><p>Full production stack in a single command. Database, vector store, caching, backend, and frontend — all containerised and ready to run.</p></div>
-      <div class="fcard"><div class="fcard-icon green">📦</div><h3>Air-Gapped Deploy</h3><p>Standalone deployment bundles with pre-built images. Zero internet dependency — deploy in any environment including regulated and classified networks.</p></div>
-    </div>
-    <div class="card-grid cols-4" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon green">📊</div><h3>System Health Monitoring<span class="new-badge">NEW</span></h3><p>Admin monitoring dashboard with performance metrics, slow query detection, connection health, and distributed request tracing across services.</p></div>
-      <div class="fcard"><div class="fcard-icon green">⚡</div><h3>Built-In Caching<span class="new-badge">NEW</span></h3><p>Optional shared caching layer for high-throughput deployments. Automatic fallback ensures zero downtime if the cache is unavailable.</p></div>
-      <div class="fcard"><div class="fcard-icon green">📋</div><h3>Audit Logging</h3><p>Complete audit trail of who did what, when. Action tracking, resource IDs, actor identification, and IP capture.</p></div>
-      <div class="fcard"><div class="fcard-icon green">📧</div><h3>Email Configuration<span class="new-badge">NEW</span></h3><p>Admin-configurable email delivery settings. Send test emails from the UI, manage password reset flows, and configure invitation emails — no server restart needed.</p></div>
-    </div>
-    <div class="card-grid cols-4" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon green">🚀</div><h3>Scales with You<span class="new-badge">NEW</span></h3><p>Automatic data management for high-volume deployments. The platform stays fast whether you have a hundred traces or a hundred million.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🌐</div><h3>Multi-Environment</h3><p>Dev, staging, production — isolated environments with independent configurations and promotion workflows.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🔒</div><h3>Encrypted Secrets</h3><p>All connector credentials and API keys encrypted at rest. Decrypted only at execution time — secrets never stored in plaintext.</p></div>
-      <div class="fcard"><div class="fcard-icon green">✉️</div><h3>Email Verification</h3><p>Email verification and bot protection for registration security. Automatic corporate domain detection for streamlined team onboarding.</p></div>
-    </div>
-    <div class="metrics-bar">
+    <div class="metrics-bar" style="margin-bottom:0">
       <div class="metric"><div class="val">SSO</div><div class="lbl">Enterprise Auth</div></div>
       <div class="metric"><div class="val">4-Role</div><div class="lbl">RBAC System</div></div>
       <div class="metric"><div class="val">Air-Gap</div><div class="lbl">Ready to Deploy</div></div>
@@ -971,24 +645,99 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   </div>
 </section>
 
-<!-- ===== VISUAL IDENTITY ===== -->
-<section class="sec-alt">
-  <div class="container">
-    <div class="sec-label cyan">Visual Identity</div>
-    <div class="sec-title">A User Interface that commands attention.</div>
-    <div class="sec-desc">FastAIAgent ships with a dual-theme system designed for long working sessions. Not an afterthought — a deliberate visual language for AI operations.</div>
-    <div class="card-grid cols-2">
-      <div class="fcard" style="background:linear-gradient(135deg,#0a0a12,#0f0f1a);border-color:rgba(0,212,255,.15)">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:#00d4ff;margin-bottom:12px">MIDNIGHT OPERATOR</div>
-        <h3 style="font-size:20px;margin-bottom:12px;color:#eee">Dark Mode</h3>
-        <p style="color:#8b8b9e">Deep navy-black canvas with cyan and violet accents. Reduced eye strain for extended sessions. Optimised contrast ratios for accessibility.</p>
-        <div style="display:flex;gap:8px;margin-top:16px"><div style="width:32px;height:32px;border-radius:8px;background:#0a0a12;border:1px solid #27272a"></div><div style="width:32px;height:32px;border-radius:8px;background:#00d4ff"></div><div style="width:32px;height:32px;border-radius:8px;background:#7b61ff"></div><div style="width:32px;height:32px;border-radius:8px;background:#ff6b2b"></div><div style="width:32px;height:32px;border-radius:8px;background:#10b981"></div></div>
+<!-- ===== PRICING ===== -->
+<section id="pricing">
+  <div class="container" style="text-align:center">
+    <div class="sec-label cyan" style="justify-content:center">Pricing</div>
+    <div class="sec-title" style="margin:0 auto 16px">Start free. Scale when ready.</div>
+    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">The SDK is open-source and always free. The platform offers a generous free tier — upgrade when your agents need team features, higher limits, or enterprise compliance.</div>
+    <div class="tier-grid" style="max-width:1000px;margin:0 auto">
+      <div class="tier-card">
+        <div class="tier-name" style="color:var(--text-muted)">Free</div>
+        <div class="tier-price">$0</div>
+        <ul class="tier-list">
+          <li>1,000 traces / month</li>
+          <li>5 agents, 3 chains</li>
+          <li>10 prompts, 20 eval runs</li>
+          <li>1 user, 1 project</li>
+          <li>Community support</li>
+          <li>Full SDK (unlimited)</li>
+        </ul>
+        <div style="margin-top:24px"><a href="https://app.fastaiagent.net/" class="btn-secondary" style="width:100%;justify-content:center">Start Free</a></div>
       </div>
-      <div class="fcard" style="background:linear-gradient(135deg,#f8f9fa,#ffffff);border-color:rgba(0,136,170,.12);box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-violet);margin-bottom:12px">CLEAN LAB</div>
-        <h3 style="font-size:20px;margin-bottom:12px;color:#111">Light Mode</h3>
-        <p style="color:#555">Clinical white canvas with deep blue accents. Maximum readability for document-heavy workflows and presentations.</p>
-        <div style="display:flex;gap:8px;margin-top:16px"><div style="width:32px;height:32px;border-radius:8px;background:#ffffff;border:1px solid #e5e7eb"></div><div style="width:32px;height:32px;border-radius:8px;background:#0088aa"></div><div style="width:32px;height:32px;border-radius:8px;background:#6366f1"></div><div style="width:32px;height:32px;border-radius:8px;background:#ea580c"></div><div style="width:32px;height:32px;border-radius:8px;background:#059669"></div></div>
+      <div class="tier-card featured">
+        <div class="tier-name" style="color:var(--accent-cyan)">Pro</div>
+        <div class="tier-price">$299<span>/mo</span></div>
+        <ul class="tier-list">
+          <li>25,000 traces / month</li>
+          <li>50 agents, 100 chains, Unlimited Prompts</li>
+          <li>10 users</li>
+          <li>Compare Mode &amp; Prompt Optimization</li>
+          <li>Online Eval Policies</li>
+          <li>Priority support</li>
+        </ul>
+        <div style="margin-top:24px"><a href="https://app.fastaiagent.net/" class="btn-primary" style="width:100%;justify-content:center">Upgrade to Pro</a></div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name" style="color:var(--accent-violet)">Enterprise</div>
+        <div class="tier-price">Custom</div>
+        <ul class="tier-list">
+          <li>Unlimited everything</li>
+          <li>SSO + 4-Role RBAC</li>
+          <li>Audit trails &amp; compliance</li>
+          <li>Air-gapped deployment</li>
+          <li>FastAIShield (EU AI Act)</li>
+          <li>Annotation queues</li>
+          <li>Dedicated support &amp; SLA</li>
+        </ul>
+        <div style="margin-top:24px"><a href="https://fastaiagent.net/demo" class="btn-secondary" style="width:100%;justify-content:center">Book Demo</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INTEGRATIONS ===== -->
+<section class="sec-alt">
+  <div class="container" style="text-align:center">
+    <div class="sec-label orange" style="justify-content:center">Integrations &amp; Ecosystem</div>
+    <div class="sec-title" style="margin:0 auto 16px">Connects to your stack.</div>
+    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">Multi-provider LLM support, 29+ connectors, MCP protocol native, and growing vector DB and observability integrations. No vendor lock-in — bring your own models, tools, and infrastructure.</div>
+    <div class="card-grid cols-3" style="max-width:900px;margin:0 auto;text-align:left">
+      <div class="fcard">
+        <div class="fcard-icon cyan">🧠</div>
+        <h3>LLM Providers</h3>
+        <p>OpenAI, Anthropic, Azure OpenAI, Ollama, AWS Bedrock, Google Vertex, and custom endpoints via enterprise gateway auth.</p>
+        <div class="tag">Multi-Provider</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-icon orange">🔌</div>
+        <h3>29+ Connectors</h3>
+        <p>Databases, cloud storage, messaging, CRM, email, data processing, and REST/GraphQL. Each connector is reusable across all agents.</p>
+        <div class="tag">Pre-Built</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-icon violet">⚡</div>
+        <h3>MCP Protocol</h3>
+        <p>First-class support for Anthropic's Model Context Protocol. Connect external MCP servers, host your own, and discover tools dynamically.</p>
+        <div class="tag">Native Support</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-icon green">🗄</div>
+        <h3>Vector Databases</h3>
+        <p>Built-in vector store with plans for Qdrant, ChromaDB, Pinecone, Weaviate, and pgvector adapters.</p>
+        <div class="tag">Expanding</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-icon violet">📊</div>
+        <h3>MLflow Integration</h3>
+        <p>Export traces and eval runs to MLflow. Bridge AI agent quality with your existing ML experiment tracking infrastructure.</p>
+        <div class="tag">Built-In</div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-icon cyan">🔭</div>
+        <h3>OpenTelemetry</h3>
+        <p>OTel-native tracing with BatchSpanProcessor. Export to any OTel-compatible backend — Datadog, Grafana, or your own collector.</p>
+        <div class="tag">OTel Native</div>
       </div>
     </div>
   </div>
@@ -999,7 +748,7 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
   <div class="container" style="text-align:center">
     <div class="sec-label cyan" style="justify-content:center">Part of the FastAIFoundry Ecosystem</div>
     <div class="sec-title" style="margin:0 auto 16px">Agent is just the Beginning.</div>
-    <div class="sec-desc" style="margin:0 auto 48px;max-width:640px;text-align:center">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Consume them in Workspace. Ground them in context. Govern them at scale.</div>
+    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Consume them in Workspace. Ground them in context. Govern them at scale.</div>
     <div class="card-grid cols-4" style="max-width:1100px;margin:0 auto">
       <div class="fcard" style="text-align:center;border-color:rgba(0,136,170,.2)">
         <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#e8f6fa"/><circle cx="62" cy="56" r="30" fill="#fff" stroke="#0088aa" stroke-width="6"/><path d="M58 38L52 54H64L55 76" stroke="#006688" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
@@ -1033,9 +782,21 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
 <footer class="footer">
   <div class="container">
     <div class="footer-brand">Fast<span class="gradient-text">AI</span>Foundry</div>
-    <div class="footer-sub">Build intelligent agents. Ground them in context. Govern them at scale.</div>
-    <div class="footer-links"><a href="#">Documentation</a><a href="#">GitHub</a><a href="#">API Reference</a><a href="#">Blog</a><a href="#">Contact</a></div>
-    <div class="footer-copy">© 2026 FastAIFoundry. Self-hosted. Open architecture. Your data stays yours.</div>
+    <div class="footer-sub">Every tool gives you pieces. We close the loop.</div>
+    <div class="footer-ctas">
+      <a href="https://app.fastaiagent.net/" class="footer-cta-primary">Start Free →</a>
+      <a href="https://fastaiagent.net/demo" class="footer-cta-secondary">Book a Demo</a>
+      <a href="https://github.com/fastai-foundry/fastaiagent-sdk" class="footer-cta-secondary">GitHub →</a>
+    </div>
+    <div class="footer-links">
+      <a href="#">Documentation</a>
+      <a href="https://github.com/fastai-foundry/fastaiagent-sdk">GitHub</a>
+      <a href="#">API Reference</a>
+      <a href="#">Blog</a>
+      <a href="#">Discord</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 FastAIFoundry. Open-source SDK · Self-hosted platform · Your data stays yours.</div>
   </div>
 </footer>
 
