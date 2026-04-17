@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FastAIAgent — Build, Deploy & Govern AI Agents</title>
+<meta name="description" content="The only AI agent platform with a closed-loop operational system. From failing trace to fixed agent in 10 minutes." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0b0d;
+    --panel:#101115;
+    --panel-2:#16181d;
+    --line:#22252c;
+    --line-2:#2c3038;
+    --ink:#f2efe8;
+    --ink-2:#b6b5ad;
+    --ink-3:#74756f;
+    --teal:#5eead4;
+    --teal-deep:#14b8a6;
+    --amber:#f5b544;
+    --rose:#f87171;
+    --ok:#a3e635;
+    --shadow: 0 1px 0 rgba(255,255,255,.04) inset;
+  }
+  :root[data-theme="light"]{
+    --bg:#f5f3ee;
+    --panel:#ffffff;
+    --panel-2:#faf8f2;
+    --line:#e2ded3;
+    --line-2:#cfcabb;
+    --ink:#13151a;
+    --ink-2:#4a4d56;
+    --ink-3:#7c7e85;
+    --teal:#0d9488;
+    --teal-deep:#0f766e;
+    --amber:#b45309;
+    --rose:#b91c1c;
+    --ok:#4d7c0f;
+    --shadow: 0 1px 0 rgba(0,0,0,.02) inset;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+  .mono{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-feature-settings:"ss01","zero"}
+  .serif{font-family:"Instrument Serif",ui-serif,Georgia,serif;font-style:italic;font-weight:400}
+  ::selection{background:var(--teal);color:#0a0b0d}
+
+  /* backdrop grid */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at 50% 30%, black 10%, transparent 75%);
+    opacity:.5;
+  }
+
+  .wrap{max-width:1360px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+
+  /* nav */
+  nav.top{
+    position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:color-mix(in oklab, var(--bg) 72%, transparent);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-row{display:flex;align-items:center;gap:28px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:-.01em}
+  .brand-mark{width:22px;height:22px;position:relative;display:inline-block}
+  .brand-mark::before,.brand-mark::after{content:"";position:absolute;inset:0;border:1.5px solid var(--ink);border-radius:50%}
+  .brand-mark::after{transform:rotate(45deg) scale(.55);border-color:var(--teal);border-style:dashed}
+  .nav-links{display:flex;gap:22px;margin-left:24px;font-size:13.5px;color:var(--ink-2)}
+  .nav-links a{transition:color .15s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .chip{font-size:11.5px;padding:4px 9px;border:1px solid var(--line-2);border-radius:3px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 14px;border-radius:4px;font-size:13.5px;font-weight:500;
+    border:1px solid var(--line-2);color:var(--ink);cursor:pointer;background:transparent;
+    transition:all .15s;
+  }
+  .btn:hover{border-color:var(--ink);background:color-mix(in oklab, var(--ink) 4%, transparent)}
+  .btn-primary{background:var(--teal);color:#0a0b0d;border-color:var(--teal)}
+  .btn-primary:hover{background:var(--teal-deep);border-color:var(--teal-deep);color:#fff}
+  :root[data-theme="light"] .btn-primary{color:#fff}
+  .btn-ghost{border-color:transparent;color:var(--ink-2)}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--line-2);background:transparent}
+
+  .theme-toggle{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:4px;cursor:pointer;background:transparent;color:var(--ink-2)}
+  .theme-toggle:hover{color:var(--ink);border-color:var(--ink)}
+
+  /* HERO */
+  section.hero{padding:72px 0 100px;position:relative}
+  .hero-grid{display:grid;grid-template-columns: 1.15fr .85fr; gap:64px; align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-2);letter-spacing:.04em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--line);border-radius:3px;background:color-mix(in oklab, var(--panel) 50%, transparent)}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in oklab, var(--ok) 22%, transparent)}
+  h1.display{
+    font-family:Inter;font-weight:600;letter-spacing:-.035em;
+    font-size: clamp(52px, 7vw, 92px); line-height:.96; margin:22px 0 22px;
+  }
+  h1.display .accent{color:var(--teal);font-family:"Instrument Serif";font-style:italic;font-weight:400;letter-spacing:-.02em}
+  h1.display .under{position:relative;white-space:nowrap}
+  h1.display .under::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--teal);opacity:.55}
+  .lede{font-size:18px;line-height:1.55;color:var(--ink-2);max-width:560px;margin-bottom:30px}
+  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pip{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);padding:8px 12px;border:1px dashed var(--line-2);border-radius:3px;cursor:pointer;transition:all .15s;background:var(--panel)}
+  .pip:hover{color:var(--ink);border-color:var(--teal);border-style:solid}
+  .pip::before{content:"$ ";color:var(--teal)}
+
+  .hero-meta{margin-top:54px;display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .hero-meta > div{padding:18px 20px;border-right:1px solid var(--line)}
+  .hero-meta > div:last-child{border-right:none}
+  .hero-meta .k{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+  .hero-meta .v{font-size:15px;font-weight:500;color:var(--ink)}
+
+  /* HERO loop diagram */
+  .loop-stage{
+    position:relative; aspect-ratio:1/1; width:100%; max-width:520px; margin-left:auto;
+  }
+  .loop-stage svg{width:100%;height:100%;overflow:visible}
+  .loop-node{
+    position:absolute;transform:translate(-50%,-50%);
+    background:var(--panel);border:1px solid var(--line-2);border-radius:4px;
+    padding:8px 12px;font-family:"JetBrains Mono",monospace;font-size:12px;
+    display:flex;align-items:center;gap:8px;white-space:nowrap;
+    box-shadow:var(--shadow);
+  }
+  .loop-node .idx{font-size:10px;color:var(--ink-3)}
+  .loop-node.active{border-color:var(--teal);color:var(--ink);background:color-mix(in oklab, var(--teal) 12%, var(--panel))}
+  .loop-node.active .idx{color:var(--teal)}
+  .loop-center{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    text-align:center;
+  }
+  .loop-center .big{font-family:"Instrument Serif";font-style:italic;font-size:68px;line-height:1;color:var(--ink)}
+  .loop-center .sub{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;margin-top:8px}
+
+  /* section header */
+  .sec-head{display:grid;grid-template-columns: 220px 1fr; gap:48px;padding:88px 0 44px;border-top:1px solid var(--line)}
+  .sec-kicker{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;padding-top:6px}
+  .sec-kicker .n{color:var(--teal)}
+  .sec-title{font-size: clamp(32px, 3.6vw, 48px); letter-spacing:-.025em; line-height:1.05; font-weight:600;margin:0 0 16px;max-width:820px}
+  .sec-sub{color:var(--ink-2);font-size:16px;line-height:1.55;max-width:680px}
+
+  /* LOOP COMPARE */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .compare-col{background:var(--panel);padding:32px}
+  .compare-col.good{background:color-mix(in oklab, var(--teal) 4%, var(--panel))}
+  .c-tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:16px}
+  .c-tag.bad{background:color-mix(in oklab, var(--rose) 15%, transparent);color:var(--rose)}
+  .c-tag.good{background:color-mix(in oklab, var(--teal) 18%, transparent);color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .c-tag.good{color:var(--teal)}
+  .c-title{font-size:28px;font-weight:600;letter-spacing:-.02em;margin-bottom:10px}
+  .c-title .time{font-family:"JetBrains Mono",monospace;font-weight:500;color:var(--ink-2);font-size:18px;margin-left:10px}
+  .compare-col.good .c-title .time{color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .compare-col.good .c-title .time{color:var(--teal)}
+  .c-desc{color:var(--ink-2);font-size:14.5px;line-height:1.55;margin-bottom:22px}
+  .c-steps{list-style:none;margin:0;padding:0;font-family:"JetBrains Mono",monospace;font-size:12.5px}
+  .c-steps li{display:flex;gap:10px;padding:8px 0;border-top:1px dashed var(--line);color:var(--ink-2)}
+  .c-steps li:first-child{border-top:none}
+  .c-steps .mark{width:18px;color:var(--ink-3);flex-shrink:0}
+  .c-steps.bad .mark{color:var(--rose)}
+  .c-steps.good .mark{color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .c-steps.good .mark{color:var(--teal)}
+
+  /* ENTRY POINTS */
+  .entries{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .entry{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:28px;position:relative;overflow:hidden}
+  .entry::after{content:"";position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at top right, color-mix(in oklab, var(--teal) 18%, transparent), transparent 70%);pointer-events:none}
+  .entry .who{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+  .entry h3{font-size:26px;letter-spacing:-.02em;margin:0 0 10px;font-weight:600}
+  .entry .desc{color:var(--ink-2);font-size:14.5px;line-height:1.55;margin-bottom:22px}
+  .entry ul{list-style:none;margin:0 0 22px;padding:0;font-size:13.5px}
+  .entry ul li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;color:var(--ink-2);border-top:1px dashed var(--line)}
+  .entry ul li:first-child{border-top:none}
+  .entry ul li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--teal);margin-top:9px;flex-shrink:0}
+
+  /* SDK CODE */
+  .sdk-grid{display:grid;grid-template-columns: 1fr 1fr;gap:32px;align-items:flex-start}
+  .sdk-list{list-style:none;margin:0;padding:0;font-size:14.5px}
+  .sdk-list li{padding:14px 0;border-top:1px solid var(--line);color:var(--ink-2);display:grid;grid-template-columns:22px 1fr;gap:14px}
+  .sdk-list li:first-child{border-top:1px solid var(--line)}
+  .sdk-list li b{color:var(--ink);font-weight:600}
+  .sdk-list .check{color:var(--teal);font-family:"JetBrains Mono",monospace;font-weight:600}
+  .code{
+    background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;
+    box-shadow: 0 20px 48px -32px rgba(0,0,0,.4);
+  }
+  .code-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel-2);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2)}
+  .code-head .dots{display:flex;gap:5px}
+  .code-head .dots i{width:9px;height:9px;border-radius:50%;background:var(--line-2);display:inline-block}
+  .code-head .file{margin-left:6px}
+  .code-head .tag{margin-left:auto;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+  .code pre{margin:0;padding:22px 22px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.65;color:var(--ink);overflow-x:auto;white-space:pre}
+  .tk-k{color:var(--amber)} /* keyword */
+  .tk-s{color:var(--teal)} /* string */
+  .tk-c{color:var(--ink-3)} /* comment */
+  .tk-f{color:#c084fc} /* func */
+  .tk-n{color:#93c5fd} /* name */
+  :root[data-theme="light"] .tk-f{color:#7c3aed}
+  :root[data-theme="light"] .tk-n{color:#1d4ed8}
+
+  .sdk-grid2{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--panel)}
+  .sdk-tile{padding:22px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+  .sdk-tile:nth-child(4n){border-right:none}
+  .sdk-tile:nth-last-child(-n+4){border-bottom:none}
+  .sdk-tile .badge{position:absolute;top:18px;right:18px;font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;background:color-mix(in oklab, var(--teal) 15%, transparent);color:var(--teal-deep);border-radius:2px}
+  :root:not([data-theme="light"]) .sdk-tile .badge{color:var(--teal)}
+  .sdk-tile .ico{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--teal);margin-bottom:16px;display:block;font-weight:500}
+  .sdk-tile h4{font-size:15px;margin:0 0 6px;font-weight:600;letter-spacing:-.01em}
+  .sdk-tile p{margin:0;color:var(--ink-2);font-size:13px;line-height:1.5}
+
+  /* PLATFORM */
+  .plat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .plat-card{background:var(--panel);padding:26px 24px 24px;position:relative;min-height:180px}
+  .plat-card.only{background:color-mix(in oklab, var(--teal) 6%, var(--panel))}
+  .plat-card .only-tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;color:var(--teal-deep);text-transform:uppercase;margin-bottom:14px;display:inline-block}
+  :root:not([data-theme="light"]) .plat-card .only-tag{color:var(--teal)}
+  .plat-card .cat{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+  .plat-card h4{font-size:17px;margin:0 0 8px;font-weight:600;letter-spacing:-.01em}
+  .plat-card p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.55}
+  .plat-card .glyph{position:absolute;top:20px;right:22px;font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:15px}
+
+  /* REPLAY */
+  .replay{border:1px solid var(--line);border-radius:4px;background:var(--panel);overflow:hidden;box-shadow:0 40px 80px -50px rgba(0,0,0,.5)}
+  .replay-head{display:flex;align-items:center;gap:18px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel-2);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2)}
+  .replay-head .title{color:var(--ink);font-weight:600}
+  .replay-head .kv{display:flex;gap:4px}
+  .replay-head .kv .k{color:var(--ink-3)}
+  .replay-head .spacer{flex:1}
+  .replay-body{display:grid;grid-template-columns: 280px 1fr;min-height:420px}
+  .trace{border-right:1px solid var(--line);padding:14px 0}
+  .trace-row{display:flex;align-items:center;gap:10px;padding:10px 20px;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);border-left:2px solid transparent;cursor:pointer;transition:all .15s}
+  .trace-row:hover{background:color-mix(in oklab, var(--ink) 3%, transparent)}
+  .trace-row.active{background:color-mix(in oklab, var(--teal) 8%, transparent);border-left-color:var(--teal);color:var(--ink)}
+  .trace-row .step{width:16px;color:var(--ink-3);font-size:10.5px}
+  .trace-row.active .step{color:var(--teal)}
+  .trace-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .trace-row .ms{color:var(--ink-3);font-size:10.5px}
+  .trace-row.active .ms{color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .trace-row.active .ms{color:var(--teal)}
+  .trace-row .fork{color:var(--amber);margin-left:4px}
+
+  .replay-detail{padding:24px 28px;display:flex;flex-direction:column;gap:18px;min-width:0}
+  .rd-title{display:flex;align-items:center;gap:14px;padding-bottom:6px}
+  .rd-title .num{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+  .rd-title h4{font-size:20px;font-weight:600;letter-spacing:-.015em;margin:0;flex:1}
+  .rd-title .tool-tag{font-family:"JetBrains Mono",monospace;font-size:10.5px;background:color-mix(in oklab, var(--amber) 18%, transparent);color:var(--amber);padding:3px 8px;border-radius:2px;letter-spacing:.08em}
+  .fork-btn{display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 10px;border:1px dashed var(--amber);color:var(--amber);border-radius:3px;cursor:pointer;background:transparent}
+  .fork-btn:hover{background:color-mix(in oklab, var(--amber) 10%, transparent)}
+  .io-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-width:0}
+  .io-box{border:1px solid var(--line);border-radius:3px;min-width:0;overflow:hidden}
+  .io-box .lab{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .io-box pre{margin:0;padding:12px 14px;font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.55;color:var(--ink);overflow-x:auto;white-space:pre}
+
+  .replay-foot{display:grid;grid-template-columns: 1fr auto 1fr;gap:24px;padding:16px 20px;border-top:1px solid var(--line);background:var(--panel-2);align-items:center}
+  .meter{display:flex;flex-direction:column;gap:6px}
+  .meter .lab{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+  .meter .val{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink)}
+  .meter .val b{color:var(--teal-deep);font-weight:600}
+  :root:not([data-theme="light"]) .meter .val b{color:var(--teal)}
+  .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:4px}
+  .bar i{display:block;height:100%;background:var(--teal);border-radius:2px}
+  .nav-foot{display:flex;gap:8px;justify-content:center;align-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2)}
+  .nav-foot button{border:1px solid var(--line-2);background:transparent;color:var(--ink);padding:6px 12px;border-radius:3px;font-family:inherit;font-size:12px;cursor:pointer}
+  .nav-foot button:hover{border-color:var(--ink)}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .price-card{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:30px 28px;display:flex;flex-direction:column;gap:18px;position:relative}
+  .price-card.hi{border-color:var(--teal);box-shadow:0 20px 60px -40px color-mix(in oklab, var(--teal) 60%, transparent)}
+  .price-card.hi::before{content:"Most Popular";position:absolute;top:-10px;left:28px;font-family:"JetBrains Mono",monospace;font-size:10.5px;padding:3px 9px;background:var(--teal);color:#0a0b0d;border-radius:2px;letter-spacing:.06em;text-transform:uppercase}
+  .price-name{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em}
+  .price-val{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1}
+  .price-val small{font-size:14px;color:var(--ink-2);font-weight:400;margin-left:6px;letter-spacing:0}
+  .price-list{list-style:none;margin:0;padding:0;font-size:13.5px;flex:1}
+  .price-list li{padding:9px 0;border-top:1px dashed var(--line);color:var(--ink-2);display:flex;gap:10px}
+  .price-list li:first-child{border-top:none}
+  .price-list li::before{content:"+";color:var(--teal);font-family:"JetBrains Mono",monospace;font-weight:600;width:12px;flex-shrink:0}
+
+  /* ECOSYSTEM */
+  .eco-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .eco-card{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:22px;position:relative;min-height:180px;display:flex;flex-direction:column;gap:10px}
+  .eco-card.here{border-color:var(--teal);background:color-mix(in oklab, var(--teal) 5%, var(--panel))}
+  .eco-state{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;align-self:flex-start;padding:2px 7px;border:1px solid var(--line-2);border-radius:2px}
+  .eco-card.here .eco-state{color:var(--teal-deep);border-color:var(--teal)}
+  :root:not([data-theme="light"]) .eco-card.here .eco-state{color:var(--teal)}
+  .eco-card h5{font-size:17px;margin:8px 0 4px;font-weight:600;letter-spacing:-.01em}
+  .eco-card p{margin:0;color:var(--ink-2);font-size:12.5px;line-height:1.5}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);padding:72px 0 40px;margin-top:100px}
+  .foot-top{display:grid;grid-template-columns: 1.5fr 1fr 1fr 1fr; gap:40px;margin-bottom:48px}
+  .foot-big{font-family:"Instrument Serif";font-style:italic;font-size:52px;line-height:1;letter-spacing:-.02em}
+  .foot-big .t{color:var(--teal);display:block}
+  .foot-col h6{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px;font-weight:500}
+  .foot-col a{display:block;padding:5px 0;color:var(--ink-2);font-size:13.5px}
+  .foot-col a:hover{color:var(--ink)}
+  .foot-bar{display:flex;justify-content:space-between;align-items:center;padding-top:30px;border-top:1px solid var(--line);font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-3);flex-wrap:wrap;gap:10px}
+
+  /* big closing type */
+  .closer{padding:80px 0;border-top:1px solid var(--line)}
+  .closer h2{font-size: clamp(48px, 7vw, 96px); letter-spacing:-.035em;font-weight:600;line-height:.98;margin:0 0 28px;max-width:18ch}
+  .closer h2 em{font-family:"Instrument Serif";font-style:italic;font-weight:400;color:var(--teal)}
+  .closer .row{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* Tweaks panel */
+  .tweaks{
+    position:fixed;right:18px;bottom:18px;z-index:90;
+    background:var(--panel);border:1px solid var(--line-2);border-radius:6px;
+    padding:14px 16px;display:none;flex-direction:column;gap:10px;width:260px;
+    box-shadow:0 20px 60px -20px rgba(0,0,0,.5);font-size:13px;
+  }
+  .tweaks.on{display:flex}
+  .tweaks h6{font-family:"JetBrains Mono",monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:0 0 2px;font-weight:500}
+  .tweak-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .tweak-row label{color:var(--ink-2);font-size:12.5px}
+  .swatches{display:flex;gap:6px}
+  .sw{width:22px;height:22px;border-radius:3px;border:1px solid var(--line-2);cursor:pointer;position:relative}
+  .sw.sel::after{content:"";position:absolute;inset:-3px;border:1.5px solid var(--ink);border-radius:5px}
+  .tweak-row select{background:var(--panel-2);color:var(--ink);border:1px solid var(--line-2);border-radius:3px;padding:4px 6px;font-family:inherit;font-size:12px}
+
+  @media (max-width: 980px){
+    .wrap{padding:0 22px}
+    .hero-grid{grid-template-columns:1fr;gap:40px}
+    .loop-stage{max-width:440px;margin:0 auto}
+    .hero-meta{grid-template-columns:repeat(2,1fr)}
+    .hero-meta > div{border-right:none;border-bottom:1px solid var(--line)}
+    .sec-head{grid-template-columns:1fr;gap:16px}
+    .compare{grid-template-columns:1fr}
+    .entries{grid-template-columns:1fr}
+    .sdk-grid{grid-template-columns:1fr}
+    .sdk-grid2{grid-template-columns:repeat(2,1fr)}
+    .sdk-grid2 .sdk-tile:nth-child(2n){border-right:none}
+    .sdk-grid2 .sdk-tile:nth-last-child(-n+2){border-bottom:none}
+    .plat-grid{grid-template-columns:1fr}
+    .replay-body{grid-template-columns:1fr}
+    .trace{border-right:none;border-bottom:1px solid var(--line)}
+    .io-grid{grid-template-columns:1fr}
+    .price-grid{grid-template-columns:1fr}
+    .eco-grid{grid-template-columns:repeat(2,1fr)}
+    .foot-top{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top">
+  <div class="wrap nav-row">
+    <a href="#" class="brand"><span class="brand-mark"></span> FastAIAgent<span class="chip" style="margin-left:8px">SDK v0.1.8</span></a>
+    <div class="nav-links">
+      <a href="#loop">The Loop</a>
+      <a href="#sdk">SDK</a>
+      <a href="#platform">Platform</a>
+      <a href="#replay">Replay</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/fastaifoundry/fastaiagent-sdk">GitHub ↗</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <a class="btn btn-ghost" href="https://fastaiagent.net/demo">Book demo</a>
+      <a class="btn btn-primary" href="https://app.fastaiagent.net/">Start free →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><span class="dot"></span> SDK v0.1.8 · Open Source · Apache 2.0</span>
+      <h1 class="display">
+        Build, Deploy<br>
+        &amp; Govern <span class="accent">AI&nbsp;Agents</span><br>
+        <span class="under">in one closed loop.</span>
+      </h1>
+      <p class="lede">
+        Every tool gives you pieces — FastAIAgent closes the loop. Develop → Trace → Feedback → Eval → Optimize → Deploy, in a single system. From failing trace to fixed agent in <b style="color:var(--ink)">10 minutes</b>, not 4 hours.
+      </p>
+      <div class="hero-cta">
+        <a href="https://app.fastaiagent.net/" class="btn btn-primary">Start free
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="https://fastaiagent.net/demo" class="btn">Book a demo</a>
+        <button class="pip mono" id="copyCmd" title="Click to copy">pip install fastaiagent</button>
+      </div>
+
+      <div class="hero-meta mono">
+        <div><div class="k">Models</div><div class="v">Multi-LLM</div></div>
+        <div><div class="k">Connectors</div><div class="v">29+</div></div>
+        <div><div class="k">Protocol</div><div class="v">MCP Native</div></div>
+        <div><div class="k">License</div><div class="v">Apache 2.0</div></div>
+        <div><div class="k">Deploy</div><div class="v">SaaS · Self-host</div></div>
+      </div>
+    </div>
+
+    <!-- Loop diagram -->
+    <div class="loop-stage" id="loopStage">
+      <svg viewBox="-260 -260 520 520" aria-hidden="true">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g stroke="currentColor" stroke-width="1" fill="none" style="color:var(--line)">
+          <circle cx="0" cy="0" r="200" stroke-dasharray="2 5" opacity=".7"/>
+          <circle cx="0" cy="0" r="140" opacity=".4"/>
+          <circle cx="0" cy="0" r="80" opacity=".3"/>
+        </g>
+        <g stroke="currentColor" stroke-width="1.4" fill="none" style="color:var(--teal)" stroke-dasharray="3 4">
+          <circle cx="0" cy="0" r="200" pathLength="360" stroke-dashoffset="0" id="loopPath">
+            <animate attributeName="stroke-dashoffset" from="0" to="-360" dur="40s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </svg>
+      <!-- Nodes positioned at angles on r=200 -->
+      <div class="loop-node" data-step="1" style="left:calc(50% + 200px * 0);top:calc(50% + 200px * -1)"><span class="idx">01</span> Develop</div>
+      <div class="loop-node" data-step="2" style="left:calc(50% + 200px * 0.782);top:calc(50% + 200px * -0.623)"><span class="idx">02</span> Trace</div>
+      <div class="loop-node" data-step="3" style="left:calc(50% + 200px * 0.975);top:calc(50% + 200px * 0.223)"><span class="idx">03</span> Feedback</div>
+      <div class="loop-node" data-step="4" style="left:calc(50% + 200px * 0.434);top:calc(50% + 200px * 0.901)"><span class="idx">04</span> Eval</div>
+      <div class="loop-node" data-step="5" style="left:calc(50% + 200px * -0.434);top:calc(50% + 200px * 0.901)"><span class="idx">05</span> Optimize</div>
+      <div class="loop-node" data-step="6" style="left:calc(50% + 200px * -0.975);top:calc(50% + 200px * 0.223)"><span class="idx">06</span> Compare</div>
+      <div class="loop-node" data-step="7" style="left:calc(50% + 200px * -0.782);top:calc(50% + 200px * -0.623)"><span class="idx">07</span> Deploy</div>
+      <div class="loop-center">
+        <div class="big">the loop</div>
+        <div class="sub mono">7 steps · 1 data plane</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOOP / COMPARE -->
+<section id="loop">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">01</span> / The Operational Loop</div>
+    <div>
+      <h2 class="sec-title">One system. Seven steps. <span class="serif" style="color:var(--teal)">Zero context switching.</span></h2>
+      <p class="sec-sub">Most teams stitch together 3–4 tools to go from a failing agent to a fixed one. FastAIAgent is the only platform where trace, feedback, eval, optimization, comparison, and deployment happen in a single closed loop — so every production failure becomes a shipped improvement, not a fire drill.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="compare">
+      <div class="compare-col">
+        <span class="c-tag bad">Without FastAIAgent</span>
+        <div class="c-title">4 Hours Per Failure <span class="time mono">~4h 00m</span></div>
+        <div class="c-desc">Every production failure is a multi-hour context-switching fire drill across 3–4 different tools.</div>
+        <ul class="c-steps bad mono">
+          <li><span class="mark">✗</span> Failing trace surfaces in observability tool</li>
+          <li><span class="mark">✗</span> Copy-paste into notebook, hand-write test case</li>
+          <li><span class="mark">✗</span> Switch to prompt tool, rewrite by intuition</li>
+          <li><span class="mark">✗</span> Manually run eval. Open spreadsheet. Compare.</li>
+          <li><span class="mark">✗</span> Deploy. Pray. Repeat next week.</li>
+        </ul>
+      </div>
+      <div class="compare-col good">
+        <span class="c-tag good">With FastAIAgent</span>
+        <div class="c-title">10 Minutes Per Failure <span class="time mono">~0h 10m</span></div>
+        <div class="c-desc">One system. Thumbs-down is the first click; deploy is the last. No context switch between them.</div>
+        <ul class="c-steps good mono">
+          <li><span class="mark">→</span> Failing trace, click 👎 — eval case auto-created</li>
+          <li><span class="mark">→</span> Prompt Optimizer rewrites with context from the trace</li>
+          <li><span class="mark">→</span> Compare Mode A/B tests old vs. new on real cases</li>
+          <li><span class="mark">→</span> Ship the winner. SDK pulls the new version.</li>
+          <li><span class="mark">✓</span> Production-fixed. Eval suite permanently stronger.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENTRY POINTS -->
+<section>
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">02</span> / Two Entry Points</div>
+    <div>
+      <h2 class="sec-title">Built for engineers. <span class="serif" style="color:var(--teal)">Designed for teams.</span></h2>
+      <p class="sec-sub">Whether you write Python or build in a UI, you get the same trace dashboard, the same prompt registry, the same eval framework. One data plane, two front doors.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="entries">
+      <div class="entry">
+        <div class="who">⌨ For Engineers</div>
+        <h3>Open-Source SDK</h3>
+        <div class="desc">Build agents in Python. Run locally. Connect to the platform for observability, prompt management, and eval — when you're ready.</div>
+        <ul>
+          <li>Multi-provider LLM (OpenAI, Anthropic, Ollama, Azure, Bedrock)</li>
+          <li>Structured output, streaming, tool calling</li>
+          <li>Supervisor-Worker multi-agent teams</li>
+          <li>Chain orchestration with cycles, checkpoints, HITL</li>
+          <li>Eval framework with 7+ scorers and LLM judge</li>
+          <li>Local KB (ingestion, chunking, embedding, search)</li>
+          <li><span class="mono">fa.connect()</span> for platform services</li>
+        </ul>
+        <button class="pip mono" onclick="copyPip(this)">pip install fastaiagent</button>
+      </div>
+      <div class="entry">
+        <div class="who">🖥 For Teams</div>
+        <h3>Full Platform</h3>
+        <div class="desc">Build agents in the UI. Visual chain editor. Configure connectors. Test in the Playground. Monitor in the dashboard. No SDK required.</div>
+        <ul>
+          <li>Visual Workflow Editor with drag-and-drop canvas</li>
+          <li>29+ pre-built connectors and hosted MCP servers</li>
+          <li>Advanced RAG with hybrid search and reranking</li>
+          <li>Prompt Registry with auto-optimization</li>
+          <li>Agent Replay with fork-and-rerun debugging</li>
+          <li>RBAC, SSO, audit trails, SaaS billing</li>
+          <li>Air-gapped deployment for regulated environments</li>
+        </ul>
+        <a href="https://app.fastaiagent.net/" class="btn btn-primary">Start free →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SDK -->
+<section id="sdk">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">03</span> / Open-Source SDK</div>
+    <div>
+      <h2 class="sec-title">Five lines to your <span class="serif" style="color:var(--teal)">first agent.</span></h2>
+      <p class="sec-sub">The <span class="mono">fastaiagent</span> SDK is open-source (Apache 2.0) and runs anywhere Python runs. Start standalone — add the platform later with a single <span class="mono">fa.connect()</span> call.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="sdk-grid">
+      <ul class="sdk-list">
+        <li><span class="check">✓</span><span><b>Multi-Provider LLM</b> — OpenAI, Anthropic, Ollama, Azure, Bedrock, and custom endpoints</span></li>
+        <li><span class="check">✓</span><span><b>Streaming + Structured Output</b> — SSE parsing across providers with <span class="mono">response_format</span></span></li>
+        <li><span class="check">✓</span><span><b>Context / DI</b> — <span class="mono">RunContext[T]</span> passes DB connections, API clients, and state to tools</span></li>
+        <li><span class="check">✓</span><span><b>Guardrails</b> — 5 types, 5 built-ins. Input, output, tool-call, and tool-result positions</span></li>
+        <li><span class="check">✓</span><span><b>fa.connect()</b> — Traces flow up, prompts flow down, evals flow both ways. Platform is optional.</span></li>
+      </ul>
+
+      <div class="code">
+        <div class="code-head">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="file">quickstart.py</span>
+          <span class="tag">apache 2.0 · pypi: fastaiagent</span>
+        </div>
+<pre><span class="tk-k">import</span> <span class="tk-n">fastaiagent</span> <span class="tk-k">as</span> <span class="tk-n">fa</span>
+
+<span class="tk-c"># Connect to platform (optional)</span>
+<span class="tk-n">fa</span>.<span class="tk-f">connect</span>(api_key=<span class="tk-s">"fa_k_..."</span>, project=<span class="tk-s">"my-project"</span>)
+
+<span class="tk-c"># Define your agent</span>
+<span class="tk-n">agent</span> = <span class="tk-n">fa</span>.<span class="tk-f">Agent</span>(
+    name=<span class="tk-s">"support-bot"</span>,
+    model=<span class="tk-s">"gpt-4o"</span>,
+    system_prompt=<span class="tk-s">"You are a helpful support agent."</span>,
+    tools=[<span class="tk-n">search_kb</span>, <span class="tk-n">create_ticket</span>],
+    guardrails=[<span class="tk-n">pii_filter</span>, <span class="tk-n">toxicity_check</span>],
+)
+
+<span class="tk-c"># Run it — traces auto-export, prompts pull from registry</span>
+<span class="tk-n">result</span> = <span class="tk-k">await</span> <span class="tk-n">agent</span>.<span class="tk-f">run</span>(<span class="tk-s">"I can't log in to my account"</span>)</pre>
+      </div>
+    </div>
+
+    <!-- SDK feature grid -->
+    <div class="sdk-grid2">
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⇄</span><h4>Supervisor-Worker</h4><p>Multi-agent orchestration with context passthrough, streaming delegation, and callable dynamic prompts.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⛓</span><h4>Chain Orchestration</h4><p>Cyclic graphs, checkpointing, HITL gates, parallel execution, conditional routing — in code.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">∆</span><h4>Eval Framework</h4><p>7+ scorers, LLM-as-Judge, trajectory & session eval. Publish to platform in one call.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">≡</span><h4>Local Knowledge Base</h4><p>Ingestion, multi-strategy chunking, embedding, vector search — fully local, no platform needed.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">↻</span><h4>Agent Replay</h4><p>Fork any execution at any step, re-run with modified inputs. The feature no other framework has.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⌘</span><h4>Prompt Registry</h4><p>Version, compose with fragments, pull from platform with <span class="mono">PromptRegistry(source=…)</span>.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⊹</span><h4>OTel Tracing</h4><p>OpenTelemetry spans with BatchSpanProcessor. Local SQLite or export to platform.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">◈</span><h4>5 Guardrail Types</h4><p>Input, output, tool-call, tool-result, content. 5 built-in guards plus custom definitions.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM -->
+<section id="platform">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">04</span> / Complete Agent OS</div>
+    <div>
+      <h2 class="sec-title">Everything to build, ship, <span class="serif" style="color:var(--teal)">and improve agents.</span></h2>
+      <p class="sec-sub">Everything SDK agents need to go to production — and everything teams need to manage them at scale. One platform. No tool-stitching. No context switching.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="plat-grid">
+      <div class="plat-card only">
+        <span class="only-tag">Only in FastAIAgent</span>
+        <span class="glyph mono">◎</span>
+        <h4>Closed-Loop Operations</h4>
+        <p>Develop → Trace → Feedback → Eval → Optimize → Compare → Deploy, in one system. Negative feedback auto-creates eval cases. Prompt Optimizer rewrites. Compare Mode A/B tests.</p>
+      </div>
+      <div class="plat-card only">
+        <span class="only-tag">Only in FastAIAgent</span>
+        <span class="glyph mono">↻</span>
+        <h4>Agent Replay</h4>
+        <p>Step through any execution span-by-span. Fork from any point and re-run with modified inputs. Compare original vs. forked outcomes side by side.</p>
+      </div>
+      <div class="plat-card only">
+        <span class="only-tag">Only in FastAIAgent</span>
+        <span class="glyph mono">=</span>
+        <h4>One Data Plane</h4>
+        <p>Open-source SDK and full platform share the same trace dashboard, prompt registry, and eval framework. <span class="mono">fa.connect()</span> bridges them with one call.</p>
+      </div>
+
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⟐</span>
+        <h4>Visual Workflow Editor</h4>
+        <p>Drag-and-drop canvas with cyclic graphs, conditional routing, parallel execution, HITL nodes, and checkpointing — no orchestration code needed.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">≡</span>
+        <h4>Advanced RAG Pipeline</h4>
+        <p>Hybrid search, reranking, query rewriting, adaptive routing, self-grading, contextual enrichment — 20+ configurable retrieval flags.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⑂</span>
+        <h4>Prompt Registry &amp; Optimizer</h4>
+        <p>Versioning, fragments, 3-mode auto-optimization, Compare Mode A/B testing, version analytics, approval workflows.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⌖</span>
+        <h4>Observability &amp; Tracing</h4>
+        <p>Full hierarchical traces: LLM calls, tool invocations, tokens, latency, cost — linked to the exact prompt version used.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⚖</span>
+        <h4>Evaluation Intelligence</h4>
+        <p>LLM-as-Judge scoring, RAG eval (Ragas), annotation queues, online eval policies, A/B comparisons, CI/CD eval API, MLflow.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⟡</span>
+        <h4>Agent Memory</h4>
+        <p>Long-term memory across conversations with automatic extraction. Provider-agnostic. Configurable thresholds and vector-based recall.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">✦</span>
+        <h4>Synthetic Data</h4>
+        <p>LLM-powered test data from schemas. Preview with any connector, export to eval datasets. Bootstrap testing without manual collection.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">◐</span>
+        <h4>Chat &amp; Sim</h4>
+        <p>Streaming playground with tool call viz. Multi-turn sim with persona-driven users, session scorers, and trajectory analysis.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⌘</span>
+        <h4>29+ Connectors &amp; MCP</h4>
+        <p>Databases, storage, messaging, CRM, email, data processing. First-class MCP support with hosted servers.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">◑</span>
+        <h4>Human-in-the-Loop</h4>
+        <p>Approval policies on tool calls. Chain pause for human input. Signed webhooks. Context-aware intelligent rejection.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⟿</span>
+        <h4>Public API</h4>
+        <p>RESTful API at <span class="mono">/public/v1/</span>. Scoped keys, rate limiting, SSE streaming, feedback, webhooks.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Enterprise</span><span class="glyph mono">✶</span>
+        <h4>Enterprise Infrastructure</h4>
+        <p>SSO + 4-role RBAC, air-gapped deployment, audit trails, encrypted secrets, EU AI Act compliance via FastAIShield.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPLAY -->
+<section id="replay">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">05</span> / Agent Replay</div>
+    <div>
+      <h2 class="sec-title">Time-travel debugging <span class="serif" style="color:var(--teal)">for AI agents.</span></h2>
+      <p class="sec-sub">Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore "what if?" scenarios. Available in both the SDK and the platform.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="replay" id="replayWidget">
+      <div class="replay-head">
+        <span class="title">▶ Replay: Customer Support Agent</span>
+        <span class="spacer"></span>
+        <span class="kv"><span class="k">steps</span>&nbsp;<b style="color:var(--ink)">7</b></span>
+        <span class="kv"><span class="k">tokens</span>&nbsp;<b style="color:var(--ink)">1,847</b></span>
+        <span class="kv"><span class="k">cost</span>&nbsp;<b style="color:var(--ink)">$0.0062</b></span>
+        <span class="kv"><span class="k">duration</span>&nbsp;<b style="color:var(--ink)">2.4s</b></span>
+      </div>
+      <div class="replay-body">
+        <div class="trace" id="traceList">
+          <!-- rows injected -->
+        </div>
+        <div class="replay-detail">
+          <div class="rd-title">
+            <span class="num" id="rdStep">Step 4 · of 7</span>
+            <h4 id="rdTitle">get_customer</h4>
+            <span class="tool-tag" id="rdTag">TOOL</span>
+            <button class="fork-btn"><span>⑂</span> Fork from here</button>
+          </div>
+          <div class="io-grid">
+            <div class="io-box">
+              <div class="lab">Input</div>
+<pre id="rdIn">{
+  "tool_name": "salesforce.get_account",
+  "arguments": {
+    "account_name": "Acme Corp"
+  }
+}</pre>
+            </div>
+            <div class="io-box">
+              <div class="lab">Output</div>
+<pre id="rdOut">{
+  "id": "001Dn00000X8kPQ",
+  "name": "Acme Corp",
+  "employees": 520,
+  "annual_revenue": 48000000
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="replay-foot">
+        <div class="meter">
+          <div class="lab">Tokens</div>
+          <div class="val"><b id="tokNow">1,073</b> / 1,847</div>
+          <div class="bar"><i id="tokBar" style="width:58%"></i></div>
+        </div>
+        <div class="nav-foot">
+          <button id="prevBtn">◀ Prev</button>
+          <span id="stepLabel">Step 4 of 7 · ⑂ 1 fork</span>
+          <button id="nextBtn">Next ▶</button>
+        </div>
+        <div class="meter" style="text-align:right">
+          <div class="lab">Cost</div>
+          <div class="val"><b id="costNow">$0.0028</b> / $0.0062</div>
+          <div class="bar"><i id="costBar" style="width:45%"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">06</span> / Pricing</div>
+    <div>
+      <h2 class="sec-title">Start free. <span class="serif" style="color:var(--teal)">Scale when ready.</span></h2>
+      <p class="sec-sub">The SDK is open-source and always free. The platform offers a generous free tier — upgrade when your agents need team features, higher limits, or enterprise compliance.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-name mono">Free</div>
+        <div class="price-val">$0 <small>/ forever</small></div>
+        <ul class="price-list">
+          <li>5,000 spans / month</li>
+          <li>5 agents, 5 chains</li>
+          <li>10 prompts, 20 eval runs</li>
+          <li>1 user, 1 project</li>
+          <li>Community support</li>
+          <li>Full SDK — unlimited</li>
+        </ul>
+        <a href="https://app.fastaiagent.net/" class="btn">Start free →</a>
+      </div>
+      <div class="price-card hi">
+        <div class="price-name mono">Pro</div>
+        <div class="price-val">$149<small>/ mo</small></div>
+        <ul class="price-list">
+          <li>50,000 spans / month</li>
+          <li>Unlimited agents, chains, prompts</li>
+          <li>10 users</li>
+          <li>Compare Mode &amp; Prompt Optimization</li>
+          <li>Online Eval Policies</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="https://app.fastaiagent.net/" class="btn btn-primary">Upgrade to Pro</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name mono">Enterprise</div>
+        <div class="price-val">Custom</div>
+        <ul class="price-list">
+          <li>Unlimited everything</li>
+          <li>SSO + 4-Role RBAC</li>
+          <li>Audit trails &amp; compliance</li>
+          <li>Air-gapped deployment</li>
+          <li>FastAIShield (EU AI Act)</li>
+          <li>Annotation queues · Dedicated SLA</li>
+        </ul>
+        <a href="https://fastaiagent.net/demo" class="btn">Book demo →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM -->
+<section>
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">07</span> / FastAIFoundry Ecosystem</div>
+    <div>
+      <h2 class="sec-title">Agent is just <span class="serif" style="color:var(--teal)">the beginning.</span></h2>
+      <p class="sec-sub">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Consume them in Workspace. Ground them in context. Govern them at scale.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="eco-grid">
+      <div class="eco-card here">
+        <span class="eco-state">You are here</span>
+        <h5>FastAIAgent</h5>
+        <p>Build, test, deploy, run intelligent agents with visual workflows, RAG, prompt optimization, and full lifecycle management.</p>
+      </div>
+      <div class="eco-card">
+        <span class="eco-state">Live</span>
+        <h5>FastAIWorkspace</h5>
+        <p>Thin-client consumption portal for business users. Run agents, view structured results — no technical skills required.</p>
+      </div>
+      <div class="eco-card">
+        <span class="eco-state">Coming Soon</span>
+        <h5>FastAIContext</h5>
+        <p>Business Context layer. Knowledge graphs, entity resolution, and semantic understanding that makes agents org-aware.</p>
+      </div>
+      <div class="eco-card">
+        <span class="eco-state">Live</span>
+        <h5>FastAIShield</h5>
+        <p>AI Governance &amp; Compliance. Risk assessment, audit trails, and regulatory readiness for EU AI Act and beyond.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSER -->
+<section class="closer">
+  <div class="wrap">
+    <h2>Every tool gives you <em>pieces.</em><br>We close the <em>loop.</em></h2>
+    <div class="row">
+      <a href="https://app.fastaiagent.net/" class="btn btn-primary">Start free →</a>
+      <a href="https://fastaiagent.net/demo" class="btn">Book a demo</a>
+      <a href="https://github.com/fastaifoundry/fastaiagent-sdk" class="btn">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-big">Fast<span class="t">AI</span>Foundry</div>
+        <p style="color:var(--ink-2);max-width:340px;margin-top:18px;font-size:13.5px;line-height:1.6">The agent operating system. Open-source SDK. Self-hosted platform. Your data stays yours.</p>
+      </div>
+      <div class="foot-col">
+        <h6>Product</h6>
+        <a href="#loop">The Loop</a>
+        <a href="#sdk">SDK</a>
+        <a href="#platform">Platform</a>
+        <a href="#replay">Agent Replay</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="foot-col">
+        <h6>Developers</h6>
+        <a href="https://github.com/fastaifoundry/fastaiagent-sdk">GitHub</a>
+        <a href="https://pypi.org/project/fastaiagent/">PyPI</a>
+        <a href="#">Documentation</a>
+        <a href="#">API Reference</a>
+        <a href="#">MCP Servers</a>
+      </div>
+      <div class="foot-col">
+        <h6>Company</h6>
+        <a href="#">Blog</a>
+        <a href="#">Discord</a>
+        <a href="https://fastaiagent.net/demo">Book a demo</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <span>© 2026 FastAIFoundry · Apache 2.0 SDK · Self-hosted platform</span>
+      <span>v0.1.0 · updated <span id="stamp">today</span></span>
+    </div>
+  </div>
+</footer>
+
+<!-- TWEAKS -->
+<div class="tweaks" id="tweaks">
+  <h6>Tweaks</h6>
+  <div class="tweak-row">
+    <label>Accent</label>
+    <div class="swatches" id="swatches">
+      <button class="sw sel" data-accent="teal"   style="background:#14b8a6"></button>
+      <button class="sw"     data-accent="violet" style="background:#8b5cf6"></button>
+      <button class="sw"     data-accent="amber"  style="background:#f59e0b"></button>
+      <button class="sw"     data-accent="rose"   style="background:#f43f5e"></button>
+      <button class="sw"     data-accent="lime"   style="background:#84cc16"></button>
+    </div>
+  </div>
+  <div class="tweak-row">
+    <label>Theme</label>
+    <select id="tweakTheme">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+    </select>
+  </div>
+  <div class="tweak-row">
+    <label>Loop spin</label>
+    <select id="tweakSpin">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+    </select>
+  </div>
+  <div class="tweak-row">
+    <label>Grid backdrop</label>
+    <select id="tweakGrid">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+    </select>
+  </div>
+</div>
+
+<script>
+  // ---- TWEAK DEFAULTS (edit mode persistable) ----
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "teal",
+    "theme": "dark",
+    "loopSpin": "on",
+    "gridBackdrop": "on"
+  }/*EDITMODE-END*/;
+
+  const STORE_KEY = "faa_tweaks";
+  function loadTweaks(){
+    try{ return Object.assign({}, TWEAK_DEFAULTS, JSON.parse(localStorage.getItem(STORE_KEY)||"{}")); }
+    catch(e){ return {...TWEAK_DEFAULTS}; }
+  }
+  function saveTweaks(t){ localStorage.setItem(STORE_KEY, JSON.stringify(t)); }
+  const state = loadTweaks();
+
+  // ---- THEME ----
+  function applyTheme(t){
+    document.documentElement.dataset.theme = t;
+    const btn = document.getElementById("themeBtn");
+    btn.innerHTML = t === "light"
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
+    document.getElementById("tweakTheme").value = t;
+  }
+  document.getElementById("themeBtn").addEventListener("click", ()=>{
+    state.theme = state.theme === "light" ? "dark" : "light";
+    applyTheme(state.theme); saveTweaks(state);
+  });
+
+  // ---- ACCENT ----
+  const ACCENTS = {
+    teal:   { main:"#5eead4", deep:"#14b8a6", mainL:"#0d9488", deepL:"#0f766e" },
+    violet: { main:"#c4b5fd", deep:"#8b5cf6", mainL:"#7c3aed", deepL:"#6d28d9" },
+    amber:  { main:"#fcd34d", deep:"#f59e0b", mainL:"#b45309", deepL:"#92400e" },
+    rose:   { main:"#fda4af", deep:"#f43f5e", mainL:"#be123c", deepL:"#9f1239" },
+    lime:   { main:"#bef264", deep:"#84cc16", mainL:"#4d7c0f", deepL:"#3f6212" },
+  };
+  function applyAccent(name){
+    const a = ACCENTS[name] || ACCENTS.teal;
+    const isLight = state.theme === "light";
+    document.documentElement.style.setProperty("--teal", isLight ? a.mainL : a.main);
+    document.documentElement.style.setProperty("--teal-deep", isLight ? a.deepL : a.deep);
+    document.querySelectorAll("#swatches .sw").forEach(s=>{
+      s.classList.toggle("sel", s.dataset.accent===name);
+    });
+  }
+  document.querySelectorAll("#swatches .sw").forEach(s=>{
+    s.addEventListener("click", ()=>{
+      state.accent = s.dataset.accent;
+      applyAccent(state.accent); saveTweaks(state);
+    });
+  });
+
+  // Re-apply accent on theme change
+  const _applyTheme = applyTheme;
+  applyTheme = function(t){ _applyTheme(t); applyAccent(state.accent); };
+
+  // ---- TWEAK SELECTS ----
+  document.getElementById("tweakTheme").addEventListener("change", e=>{
+    state.theme = e.target.value; applyTheme(state.theme); saveTweaks(state);
+  });
+  document.getElementById("tweakSpin").addEventListener("change", e=>{
+    state.loopSpin = e.target.value;
+    const anim = document.querySelector("#loopPath animate");
+    if(anim) anim.setAttribute("dur", state.loopSpin==="on" ? "40s" : "0s");
+    if(state.loopSpin==="off" && anim){ anim.setAttribute("dur","999999s"); }
+    saveTweaks(state);
+  });
+  document.getElementById("tweakGrid").addEventListener("change", e=>{
+    state.gridBackdrop = e.target.value;
+    document.body.style.setProperty("--_grid", state.gridBackdrop==="on" ? "1" : "0");
+    document.body.classList.toggle("no-grid", state.gridBackdrop==="off");
+    saveTweaks(state);
+  });
+  // inject grid-off rule
+  const gs = document.createElement("style");
+  gs.textContent = "body.no-grid::before{display:none}";
+  document.head.appendChild(gs);
+
+  // Initial apply
+  applyTheme(state.theme);
+  applyAccent(state.accent);
+  if(state.gridBackdrop==="off"){ document.body.classList.add("no-grid"); }
+  document.getElementById("tweakSpin").value = state.loopSpin;
+  document.getElementById("tweakGrid").value = state.gridBackdrop;
+
+  // ---- EDIT MODE (Tweaks toolbar integration) ----
+  window.addEventListener("message", (e)=>{
+    if(!e.data || typeof e.data !== "object") return;
+    if(e.data.type === "__activate_edit_mode") document.getElementById("tweaks").classList.add("on");
+    if(e.data.type === "__deactivate_edit_mode") document.getElementById("tweaks").classList.remove("on");
+  });
+  try { window.parent.postMessage({type:"__edit_mode_available"}, "*"); } catch(e){}
+
+  // ---- Loop hover highlight ----
+  const nodes = document.querySelectorAll(".loop-node");
+  let active = 1;
+  function setActive(n){
+    active = n;
+    nodes.forEach(el=>el.classList.toggle("active", +el.dataset.step===n));
+  }
+  setActive(1);
+  nodes.forEach(el=> el.addEventListener("mouseenter", ()=> setActive(+el.dataset.step)));
+  // auto-cycle
+  setInterval(()=>{
+    if(state.loopSpin==="off") return;
+    setActive(active%7 + 1);
+  }, 1800);
+
+  // ---- Replay interactive ----
+  const STEPS = [
+    { name:"System Prompt",   tag:"setup",  tagCls:"setup",  ms:0,   tok:12,   cost:0.00002, in:'{\n  "role": "system",\n  "content": "You are a helpful support agent.\\nUse tools. Be concise."\n}', out:'(none — context injection)'},
+    { name:"LLM Call #1",     tag:"LLM",    tagCls:"llm",    ms:520, tok:412,  cost:0.00088, in:'{\n  "model": "gpt-4o",\n  "messages": [...],\n  "tools": [\"search_kb\", \"get_customer\", \"create_ticket\"]\n}', out:'{\n  "tool_calls": [\n    { "name": "search_kb", "args": {"q": "login failure"} }\n  ]\n}'},
+    { name:"KB: Search Docs", tag:"KB",     tagCls:"kb",     ms:85,  tok:0,    cost:0,       in:'{\n  "query": "login failure",\n  "top_k": 3\n}', out:'[\n  { "id":"kb_217", "score":0.91, "title":"Password reset flow" },\n  { "id":"kb_041", "score":0.82, "title":"MFA troubleshooting" },\n  { "id":"kb_189", "score":0.77, "title":"Account lockout policy" }\n]'},
+    { name:"get_customer",    tag:"TOOL",   tagCls:"tool",   ms:180, tok:0,    cost:0,       in:'{\n  "tool_name": "salesforce.get_account",\n  "arguments": {\n    "account_name": "Acme Corp"\n  }\n}', out:'{\n  "id": "001Dn00000X8kPQ",\n  "name": "Acme Corp",\n  "employees": 520,\n  "annual_revenue": 48000000\n}'},
+    { name:"Memory Retrieve", tag:"MEM",    tagCls:"mem",    ms:42,  tok:0,    cost:0,       in:'{\n  "user_id": "u_8831",\n  "top_k": 2\n}', out:'[\n  { "fact":"User prefers email over phone", "score":0.88 },\n  { "fact":"Previously escalated a billing issue", "score":0.74 }\n]'},
+    { name:"LLM Call #2",     tag:"LLM",    tagCls:"llm",    ms:680, tok:891,  cost:0.00191, in:'{\n  "model": "gpt-4o",\n  "messages": [...with KB, customer, memory...]\n}', out:'{\n  "content": "Hi! I pulled up your Acme Corp account...",\n  "finish_reason": "stop"\n}'},
+    { name:"Final Response",  tag:"OUT",    tagCls:"out",    ms:0,   tok:544,  cost:0.00119, in:'(composed by LLM Call #2)', out:'"Hi! I pulled up your Acme Corp account. Looks like MFA was\\nrecently enabled. I\'ve sent a reset link to your work email. If\\nthat doesn\'t work, I\'ll escalate to a specialist."'},
+  ];
+  const traceList = document.getElementById("traceList");
+  STEPS.forEach((s, i)=>{
+    const r = document.createElement("div");
+    r.className = "trace-row";
+    r.dataset.idx = i;
+    r.innerHTML = `
+      <span class="step">${String(i+1).padStart(2,'0')}</span>
+      <span class="name">${s.name}</span>
+      ${i===3 ? '<span class="fork">⑂</span>' : ''}
+      <span class="ms">${s.ms}ms</span>`;
+    r.addEventListener("click", ()=> selectStep(i));
+    traceList.appendChild(r);
+  });
+  let cur = 3;
+  function selectStep(i){
+    cur = i;
+    document.querySelectorAll(".trace-row").forEach(el=> el.classList.toggle("active", +el.dataset.idx===i));
+    const s = STEPS[i];
+    document.getElementById("rdStep").textContent  = `Step ${i+1} · of ${STEPS.length}`;
+    document.getElementById("rdTitle").textContent = s.name;
+    document.getElementById("rdTag").textContent   = s.tag;
+    document.getElementById("rdIn").textContent    = s.in;
+    document.getElementById("rdOut").textContent   = s.out;
+    // running totals
+    let totTok=0, totCost=0;
+    for(let k=0;k<=i;k++){ totTok += STEPS[k].tok; totCost += STEPS[k].cost; }
+    document.getElementById("tokNow").textContent  = totTok.toLocaleString();
+    document.getElementById("costNow").textContent = "$"+totCost.toFixed(4);
+    document.getElementById("tokBar").style.width  = Math.min(100, totTok/1847*100)+"%";
+    document.getElementById("costBar").style.width = Math.min(100, totCost/0.0062*100)+"%";
+    document.getElementById("stepLabel").textContent = `Step ${i+1} of ${STEPS.length}${i===3 ? " · ⑂ 1 fork":""}`;
+  }
+  document.getElementById("prevBtn").addEventListener("click", ()=> selectStep((cur-1+STEPS.length)%STEPS.length));
+  document.getElementById("nextBtn").addEventListener("click", ()=> selectStep((cur+1)%STEPS.length));
+  selectStep(3);
+
+  // ---- Copy pip ----
+  function copyPip(el){
+    const t = (el && el.textContent) ? el.textContent.trim() : "pip install fastaiagent";
+    try{ navigator.clipboard.writeText(t); }catch(e){}
+    const old = el.textContent; el.textContent = "copied ✓";
+    setTimeout(()=>{ el.textContent = old; }, 1200);
+  }
+  window.copyPip = copyPip;
+  document.getElementById("copyCmd").addEventListener("click", function(){ copyPip(this); });
+
+  // ---- date stamp ----
+  document.getElementById("stamp").textContent = new Date().toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+</script>
+
+</body>
+</html>
