@@ -1,432 +1,513 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FastAIAgent — Every Tool Gives You Pieces. We Close the Loop.</title>
-<meta name="description" content="The complete AI agent platform and open-source SDK. Build, monitor, evaluate, and optimize AI agents with the only closed-loop operational system. From code to production in minutes.">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FastAIAgent — Build, Deploy & Govern AI Agents</title>
+<meta name="description" content="The only AI agent platform with a closed-loop operational system. From failing trace to fixed agent in 10 minutes." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:16px}
-body{font-family:'DM Sans',sans-serif;background:#f8f9fb;color:#4a4a5a;line-height:1.7;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
+  :root{
+    --bg:#0a0b0d;
+    --panel:#101115;
+    --panel-2:#16181d;
+    --line:#22252c;
+    --line-2:#2c3038;
+    --ink:#f2efe8;
+    --ink-2:#b6b5ad;
+    --ink-3:#74756f;
+    --teal:#5eead4;
+    --teal-deep:#14b8a6;
+    --amber:#f5b544;
+    --rose:#f87171;
+    --ok:#a3e635;
+    --shadow: 0 1px 0 rgba(255,255,255,.04) inset;
+  }
+  :root[data-theme="light"]{
+    --bg:#f5f3ee;
+    --panel:#ffffff;
+    --panel-2:#faf8f2;
+    --line:#e2ded3;
+    --line-2:#cfcabb;
+    --ink:#13151a;
+    --ink-2:#4a4d56;
+    --ink-3:#7c7e85;
+    --teal:#0d9488;
+    --teal-deep:#0f766e;
+    --amber:#b45309;
+    --rose:#b91c1c;
+    --ok:#4d7c0f;
+    --shadow: 0 1px 0 rgba(0,0,0,.02) inset;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+  .mono{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-feature-settings:"ss01","zero"}
+  .serif{font-family:"Instrument Serif",ui-serif,Georgia,serif;font-style:italic;font-weight:400}
+  ::selection{background:var(--teal);color:#0a0b0d}
 
-:root{
-  --accent-cyan:#0088aa;
-  --accent-violet:#6366f1;
-  --accent-orange:#ea580c;
-  --accent-green:#059669;
-  --accent-rose:#dc2626;
-  --surface:#ffffff;
-  --surface-raised:#f1f3f7;
-  --surface-hover:#e8eaef;
-  --border:#e0e2e8;
-  --border-light:#ccd0d8;
-  --text-primary:#111827;
-  --text-secondary:#4b5563;
-  --text-muted:#9ca3af;
-  --mono:'Space Mono',monospace;
-  --display:'Playfair Display',serif;
-  --body:'DM Sans',sans-serif;
-  --max-w:1200px;
-}
+  /* backdrop grid */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at 50% 30%, black 10%, transparent 75%);
+    opacity:.5;
+  }
 
-.container{max-width:var(--max-w);margin:0 auto;padding:0 32px}
-.mono{font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;font-size:11px}
-.gradient-text{background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.gradient-text-warm{background:linear-gradient(135deg,var(--accent-orange),var(--accent-rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .wrap{max-width:1360px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
 
-body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:9999;opacity:.3}
+  /* nav */
+  nav.top{
+    position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:color-mix(in oklab, var(--bg) 72%, transparent);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-row{display:flex;align-items:center;gap:28px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:-.01em}
+  .brand-mark{width:22px;height:22px;position:relative;display:inline-block}
+  .brand-mark::before,.brand-mark::after{content:"";position:absolute;inset:0;border:1.5px solid var(--ink);border-radius:50%}
+  .brand-mark::after{transform:rotate(45deg) scale(.55);border-color:var(--teal);border-style:dashed}
+  .nav-links{display:flex;gap:22px;margin-left:24px;font-size:13.5px;color:var(--ink-2)}
+  .nav-links a{transition:color .15s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .chip{font-size:11.5px;padding:4px 9px;border:1px solid var(--line-2);border-radius:3px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 14px;border-radius:4px;font-size:13.5px;font-weight:500;
+    border:1px solid var(--line-2);color:var(--ink);cursor:pointer;background:transparent;
+    transition:all .15s;
+  }
+  .btn:hover{border-color:var(--ink);background:color-mix(in oklab, var(--ink) 4%, transparent)}
+  .btn-primary{background:var(--teal);color:#0a0b0d;border-color:var(--teal)}
+  .btn-primary:hover{background:var(--teal-deep);border-color:var(--teal-deep);color:#fff}
+  :root[data-theme="light"] .btn-primary{color:#fff}
+  .btn-ghost{border-color:transparent;color:var(--ink-2)}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--line-2);background:transparent}
 
-/* ===== TOPBAR ===== */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 32px;
-  background:rgba(255,255,255,.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.topbar-inner{max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
-.topbar-logo{display:flex;align-items:center;gap:10px}
-.topbar-logo svg{width:28px;height:28px}
-.topbar-logo span{font-weight:700;font-size:17px;color:var(--text-primary);letter-spacing:-.3px}
-.topbar-logo .foundry{font-weight:400;color:var(--text-muted);font-size:12px;margin-left:2px}
-.topbar-nav{display:flex;gap:28px;align-items:center}
-.topbar-nav a{font-size:13px;color:var(--text-secondary);transition:color .2s}
-.topbar-nav a:hover{color:var(--text-primary)}
-.topbar-cta{font-size:12px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;
-  padding:8px 20px;border:1px solid var(--accent-cyan);color:var(--accent-cyan);border-radius:6px;transition:all .2s}
-.topbar-cta:hover{background:var(--accent-cyan);color:#fff}
-.topbar-cta-fill{font-size:12px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;
-  padding:8px 20px;background:var(--accent-cyan);color:#fff;border:1px solid var(--accent-cyan);border-radius:6px;transition:all .2s}
-.topbar-cta-fill:hover{background:#006d88}
-.topbar-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--text-secondary);width:32px;height:32px}
-.topbar-toggle svg{width:24px;height:24px}
+  .theme-toggle{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:4px;cursor:pointer;background:transparent;color:var(--ink-2)}
+  .theme-toggle:hover{color:var(--ink);border-color:var(--ink)}
 
-/* ===== HERO ===== */
-.hero{padding:180px 0 120px;position:relative;text-align:center;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);
-  width:800px;height:800px;background:radial-gradient(circle,rgba(0,136,170,.05) 0%,rgba(99,102,241,.03) 40%,transparent 70%);pointer-events:none}
-.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--border),transparent)}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 8px;
-  background:var(--surface);border:1px solid var(--border);border-radius:100px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 8px var(--accent-green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.hero-badge span{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase}
-.hero h1{font-family:var(--display);font-size:clamp(42px,6vw,72px);font-weight:800;color:var(--text-primary);line-height:1.1;margin-bottom:24px;letter-spacing:-1px}
-.hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:18px;color:var(--text-secondary);max-width:720px;margin:0 auto 40px;line-height:1.8;font-weight:300}
-.hero-ctas{display:flex;justify-content:center;gap:16px;margin-bottom:48px;flex-wrap:wrap}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--accent-cyan);color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--accent-cyan)}
-.btn-primary:hover{background:#006d88;border-color:#006d88}
-.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--surface);color:var(--text-primary);border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--border)}
-.btn-secondary:hover{border-color:var(--border-light);background:var(--surface-raised)}
-.btn-sdk{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:var(--text-primary);color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--text-primary);font-family:var(--mono);font-size:13px;letter-spacing:.5px}
-.btn-sdk:hover{background:#2d3748}
-.hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
-.hero-stat{text-align:center}
-.hero-stat .val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text-primary)}
-.hero-stat .label{font-size:12px;color:var(--text-muted);margin-top:4px}
+  /* HERO */
+  section.hero{padding:72px 0 100px;position:relative}
+  .hero-grid{display:grid;grid-template-columns: 1.15fr .85fr; gap:64px; align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-2);letter-spacing:.04em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--line);border-radius:3px;background:color-mix(in oklab, var(--panel) 50%, transparent)}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in oklab, var(--ok) 22%, transparent)}
+  h1.display{
+    font-family:Inter;font-weight:600;letter-spacing:-.035em;
+    font-size: clamp(52px, 7vw, 92px); line-height:.96; margin:22px 0 22px;
+  }
+  h1.display .accent{color:var(--teal);font-family:"Instrument Serif";font-style:italic;font-weight:400;letter-spacing:-.02em}
+  h1.display .under{position:relative;white-space:nowrap}
+  h1.display .under::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--teal);opacity:.55}
+  .lede{font-size:18px;line-height:1.55;color:var(--ink-2);max-width:560px;margin-bottom:30px}
+  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pip{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);padding:8px 12px;border:1px dashed var(--line-2);border-radius:3px;cursor:pointer;transition:all .15s;background:var(--panel)}
+  .pip:hover{color:var(--ink);border-color:var(--teal);border-style:solid}
+  .pip::before{content:"$ ";color:var(--teal)}
 
-/* ===== SECTIONS ===== */
-section{padding:100px 0;position:relative}
-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
-.sec-label{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.sec-label::before{content:'';width:24px;height:1px}
-.sec-label.cyan{color:var(--accent-cyan)}.sec-label.cyan::before{background:var(--accent-cyan)}
-.sec-label.violet{color:var(--accent-violet)}.sec-label.violet::before{background:var(--accent-violet)}
-.sec-label.orange{color:var(--accent-orange)}.sec-label.orange::before{background:var(--accent-orange)}
-.sec-label.green{color:var(--accent-green)}.sec-label.green::before{background:var(--accent-green)}
-.sec-label.rose{color:var(--accent-rose)}.sec-label.rose::before{background:var(--accent-rose)}
-.sec-title{font-family:var(--display);font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--text-primary);line-height:1.2;margin-bottom:16px;letter-spacing:-.5px}
-.sec-desc{font-size:16px;color:var(--text-secondary);max-width:560px;line-height:1.8;margin-bottom:48px;font-weight:300}
-.sec-desc-wide{font-size:16px;color:var(--text-secondary);max-width:720px;line-height:1.8;margin-bottom:48px;font-weight:300}
-.sec-alt{background:var(--surface-raised)}
+  .hero-meta{margin-top:54px;display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .hero-meta > div{padding:18px 20px;border-right:1px solid var(--line)}
+  .hero-meta > div:last-child{border-right:none}
+  .hero-meta .k{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+  .hero-meta .v{font-size:15px;font-weight:500;color:var(--ink)}
 
-/* ===== CARDS ===== */
-.card-grid{display:grid;gap:16px}
-.card-grid.cols-2{grid-template-columns:repeat(2,1fr)}
-.card-grid.cols-3{grid-template-columns:repeat(3,1fr)}
-.card-grid.cols-4{grid-template-columns:repeat(4,1fr)}
-.fcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;overflow:hidden;transition:border-color .3s,transform .2s,box-shadow .3s;box-shadow:0 1px 3px rgba(0,0,0,.03)}
-.fcard:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
-.fcard-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px}
-.fcard-icon.cyan{background:rgba(0,136,170,.06);border:1px solid rgba(0,136,170,.12)}
-.fcard-icon.violet{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.12)}
-.fcard-icon.orange{background:rgba(234,88,12,.06);border:1px solid rgba(234,88,12,.12)}
-.fcard-icon.green{background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.12)}
-.fcard-icon.rose{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.12)}
-.fcard h3{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
-.fcard p{font-size:13.5px;color:var(--text-secondary);line-height:1.7}
-.fcard .tag{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-top:16px;display:inline-block}
-.new-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1px;background:var(--accent-cyan);color:#fff;padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:6px}
-.ent-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1px;background:var(--accent-violet);color:#fff;padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:6px}
-.oss-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:1px;background:var(--text-primary);color:#fff;padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:6px}
+  /* HERO loop diagram */
+  .loop-stage{
+    position:relative; aspect-ratio:1/1; width:100%; max-width:520px; margin-left:auto;
+  }
+  .loop-stage svg{width:100%;height:100%;overflow:visible}
+  .loop-node{
+    position:absolute;transform:translate(-50%,-50%);
+    background:var(--panel);border:1px solid var(--line-2);border-radius:4px;
+    padding:8px 12px;font-family:"JetBrains Mono",monospace;font-size:12px;
+    display:flex;align-items:center;gap:8px;white-space:nowrap;
+    box-shadow:var(--shadow);
+  }
+  .loop-node .idx{font-size:10px;color:var(--ink-3)}
+  .loop-node.active{border-color:var(--teal);color:var(--ink);background:color-mix(in oklab, var(--teal) 12%, var(--panel))}
+  .loop-node.active .idx{color:var(--teal)}
+  .loop-center{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    text-align:center;
+  }
+  .loop-center .big{font-family:"Instrument Serif";font-style:italic;font-size:68px;line-height:1;color:var(--ink)}
+  .loop-center .sub{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;margin-top:8px}
 
-/* ===== LAYOUTS ===== */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.split.reverse{direction:rtl}.split.reverse>*{direction:ltr}
-.features-list{list-style:none;margin-top:28px}
-.features-list li{padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:12px}
-.features-list li:last-child{border-bottom:none}
-.features-list .check{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
-.check.cyan{background:rgba(0,136,170,.08);color:var(--accent-cyan);border:1px solid rgba(0,136,170,.15)}
-.check.violet{background:rgba(99,102,241,.08);color:var(--accent-violet);border:1px solid rgba(99,102,241,.15)}
-.check.orange{background:rgba(234,88,12,.08);color:var(--accent-orange);border:1px solid rgba(234,88,12,.15)}
-.check.green{background:rgba(5,150,105,.08);color:var(--accent-green);border:1px solid rgba(5,150,105,.15)}
-.check.rose{background:rgba(220,38,38,.08);color:var(--accent-rose);border:1px solid rgba(220,38,38,.15)}
+  /* section header */
+  .sec-head{display:grid;grid-template-columns: 220px 1fr; gap:48px;padding:88px 0 44px;border-top:1px solid var(--line)}
+  .sec-kicker{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;padding-top:6px}
+  .sec-kicker .n{color:var(--teal)}
+  .sec-title{font-size: clamp(32px, 3.6vw, 48px); letter-spacing:-.025em; line-height:1.05; font-weight:600;margin:0 0 16px;max-width:820px}
+  .sec-sub{color:var(--ink-2);font-size:16px;line-height:1.55;max-width:680px}
 
-/* ===== LIFECYCLE / LOOP ===== */
-.lifecycle{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:32px 0}
-.lc-step{padding:10px 20px;border-radius:8px;font-size:12px;font-weight:600;text-align:center;color:var(--text-primary);border:1px solid;min-width:90px}
-.lc-arrow{color:var(--text-muted);font-size:16px}
-.lc-step.s1{background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15)}
-.lc-step.s2{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15)}
-.lc-step.s3{background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.15)}
-.lc-step.s4{background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15)}
-.lc-step.s5{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15)}
+  /* LOOP COMPARE */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .compare-col{background:var(--panel);padding:32px}
+  .compare-col.good{background:color-mix(in oklab, var(--teal) 4%, var(--panel))}
+  .c-tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:16px}
+  .c-tag.bad{background:color-mix(in oklab, var(--rose) 15%, transparent);color:var(--rose)}
+  .c-tag.good{background:color-mix(in oklab, var(--teal) 18%, transparent);color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .c-tag.good{color:var(--teal)}
+  .c-title{font-size:28px;font-weight:600;letter-spacing:-.02em;margin-bottom:10px}
+  .c-title .time{font-family:"JetBrains Mono",monospace;font-weight:500;color:var(--ink-2);font-size:18px;margin-left:10px}
+  .compare-col.good .c-title .time{color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .compare-col.good .c-title .time{color:var(--teal)}
+  .c-desc{color:var(--ink-2);font-size:14.5px;line-height:1.55;margin-bottom:22px}
+  .c-steps{list-style:none;margin:0;padding:0;font-family:"JetBrains Mono",monospace;font-size:12.5px}
+  .c-steps li{display:flex;gap:10px;padding:8px 0;border-top:1px dashed var(--line);color:var(--ink-2)}
+  .c-steps li:first-child{border-top:none}
+  .c-steps .mark{width:18px;color:var(--ink-3);flex-shrink:0}
+  .c-steps.bad .mark{color:var(--rose)}
+  .c-steps.good .mark{color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .c-steps.good .mark{color:var(--teal)}
 
-/* ===== CODE WINDOW ===== */
-.code-window{background:#1e1e2e;border:1px solid #2a2a3a;border-radius:14px;overflow:hidden;font-family:var(--mono);font-size:12px;line-height:1.8;box-shadow:0 4px 16px rgba(0,0,0,.12)}
-.code-titlebar{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid #2a2a3a;background:rgba(255,255,255,.02)}
-.code-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid #3a3a4a}
-.code-title{font-family:var(--mono);font-size:10px;color:#6b6b8a;letter-spacing:1px;margin-left:8px}
-.code-body{padding:20px 24px;overflow-x:auto;white-space:pre;color:#c8c8d0}
-.code-body .kw{color:#c792ea}.code-body .fn{color:#82aaff}.code-body .str{color:#c3e88d}.code-body .cm{color:#546e7a}.code-body .num{color:#f78c6c}.code-body .op{color:#ff5370}
+  /* ENTRY POINTS */
+  .entries{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .entry{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:28px;position:relative;overflow:hidden}
+  .entry::after{content:"";position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at top right, color-mix(in oklab, var(--teal) 18%, transparent), transparent 70%);pointer-events:none}
+  .entry .who{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+  .entry h3{font-size:26px;letter-spacing:-.02em;margin:0 0 10px;font-weight:600}
+  .entry .desc{color:var(--ink-2);font-size:14.5px;line-height:1.55;margin-bottom:22px}
+  .entry ul{list-style:none;margin:0 0 22px;padding:0;font-size:13.5px}
+  .entry ul li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;color:var(--ink-2);border-top:1px dashed var(--line)}
+  .entry ul li:first-child{border-top:none}
+  .entry ul li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--teal);margin-top:9px;flex-shrink:0}
 
-/* ===== METRICS ===== */
-.metrics-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin:48px 0}
-.metric{background:var(--surface);padding:32px;text-align:center}
-.metric .val{font-family:var(--display);font-size:32px;font-weight:800;color:var(--text-primary);margin-bottom:4px}
-.metric .lbl{font-size:12px;color:var(--text-muted)}
+  /* SDK CODE */
+  .sdk-grid{display:grid;grid-template-columns: 1fr 1fr;gap:32px;align-items:flex-start}
+  .sdk-list{list-style:none;margin:0;padding:0;font-size:14.5px}
+  .sdk-list li{padding:14px 0;border-top:1px solid var(--line);color:var(--ink-2);display:grid;grid-template-columns:22px 1fr;gap:14px}
+  .sdk-list li:first-child{border-top:1px solid var(--line)}
+  .sdk-list li b{color:var(--ink);font-weight:600}
+  .sdk-list .check{color:var(--teal);font-family:"JetBrains Mono",monospace;font-weight:600}
+  .code{
+    background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;
+    box-shadow: 0 20px 48px -32px rgba(0,0,0,.4);
+  }
+  .code-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel-2);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2)}
+  .code-head .dots{display:flex;gap:5px}
+  .code-head .dots i{width:9px;height:9px;border-radius:50%;background:var(--line-2);display:inline-block}
+  .code-head .file{margin-left:6px}
+  .code-head .tag{margin-left:auto;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+  .code pre{margin:0;padding:22px 22px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.65;color:var(--ink);overflow-x:auto;white-space:pre}
+  .tk-k{color:var(--amber)} /* keyword */
+  .tk-s{color:var(--teal)} /* string */
+  .tk-c{color:var(--ink-3)} /* comment */
+  .tk-f{color:#c084fc} /* func */
+  .tk-n{color:#93c5fd} /* name */
+  :root[data-theme="light"] .tk-f{color:#7c3aed}
+  :root[data-theme="light"] .tk-n{color:#1d4ed8}
 
-/* ===== COMPARISON TABLE ===== */
-.compare-table{width:100%;border-collapse:collapse;margin-top:32px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-.compare-table th{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:16px 20px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface-raised)}
-.compare-table th:first-child{width:200px}
-.compare-table th.highlight{color:var(--accent-cyan);background:rgba(0,136,170,.04)}
-.compare-table td{padding:14px 20px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--border)}
-.compare-table td:first-child{font-weight:600;color:var(--text-primary);font-size:13px}
-.compare-table td.highlight{background:rgba(0,136,170,.02)}
-.compare-table tr:last-child td{border-bottom:none}
-.compare-table .yes{color:var(--accent-green);font-weight:700;font-size:14px}
-.compare-table .no{color:var(--text-muted);font-size:14px}
-.compare-table .partial{color:var(--accent-orange);font-size:12px;font-family:var(--mono)}
+  .sdk-grid2{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--panel)}
+  .sdk-tile{padding:22px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+  .sdk-tile:nth-child(4n){border-right:none}
+  .sdk-tile:nth-last-child(-n+4){border-bottom:none}
+  .sdk-tile .badge{position:absolute;top:18px;right:18px;font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 6px;background:color-mix(in oklab, var(--teal) 15%, transparent);color:var(--teal-deep);border-radius:2px}
+  :root:not([data-theme="light"]) .sdk-tile .badge{color:var(--teal)}
+  .sdk-tile .ico{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--teal);margin-bottom:16px;display:block;font-weight:500}
+  .sdk-tile h4{font-size:15px;margin:0 0 6px;font-weight:600;letter-spacing:-.01em}
+  .sdk-tile p{margin:0;color:var(--ink-2);font-size:13px;line-height:1.5}
 
-/* ===== TIER CARDS ===== */
-.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;transition:all .3s}
-.tier-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
-.tier-card.featured{border-color:rgba(0,136,170,.3);box-shadow:0 4px 16px rgba(0,136,170,.08)}
-.tier-name{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.tier-price{font-family:var(--display);font-size:36px;font-weight:800;color:var(--text-primary);margin-bottom:16px}
-.tier-price span{font-size:14px;font-weight:400;color:var(--text-muted)}
-.tier-list{list-style:none;text-align:left;font-size:13px;color:var(--text-secondary);display:flex;flex-direction:column;gap:8px}
-.tier-list li{display:flex;align-items:center;gap:8px}
-.tier-list li::before{content:'✓';font-size:11px;color:var(--accent-green);font-weight:700}
+  /* PLATFORM */
+  .plat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .plat-card{background:var(--panel);padding:26px 24px 24px;position:relative;min-height:180px}
+  .plat-card.only{background:color-mix(in oklab, var(--teal) 6%, var(--panel))}
+  .plat-card .only-tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;color:var(--teal-deep);text-transform:uppercase;margin-bottom:14px;display:inline-block}
+  :root:not([data-theme="light"]) .plat-card .only-tag{color:var(--teal)}
+  .plat-card .cat{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+  .plat-card h4{font-size:17px;margin:0 0 8px;font-weight:600;letter-spacing:-.01em}
+  .plat-card p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.55}
+  .plat-card .glyph{position:absolute;top:20px;right:22px;font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:15px}
 
-/* ===== WORKFLOW ===== */
-.wf-node{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid;font-size:12px;font-weight:600;color:var(--text-primary);position:relative;z-index:2}
-.wf-node.start{background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.2)}
-.wf-node.process{background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.2)}
-.wf-node.llm{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.2)}
-.wf-node.decision{background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.2)}
-.wf-node.end{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.2)}
-.wf-arrow{color:var(--text-muted);font-size:14px;margin:0 6px;display:inline-block}
-.wf-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;justify-content:center}
+  /* REPLAY */
+  .replay{border:1px solid var(--line);border-radius:4px;background:var(--panel);overflow:hidden;box-shadow:0 40px 80px -50px rgba(0,0,0,.5)}
+  .replay-head{display:flex;align-items:center;gap:18px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel-2);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2)}
+  .replay-head .title{color:var(--ink);font-weight:600}
+  .replay-head .kv{display:flex;gap:4px}
+  .replay-head .kv .k{color:var(--ink-3)}
+  .replay-head .spacer{flex:1}
+  .replay-body{display:grid;grid-template-columns: 280px 1fr;min-height:420px}
+  .trace{border-right:1px solid var(--line);padding:14px 0}
+  .trace-row{display:flex;align-items:center;gap:10px;padding:10px 20px;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);border-left:2px solid transparent;cursor:pointer;transition:all .15s}
+  .trace-row:hover{background:color-mix(in oklab, var(--ink) 3%, transparent)}
+  .trace-row.active{background:color-mix(in oklab, var(--teal) 8%, transparent);border-left-color:var(--teal);color:var(--ink)}
+  .trace-row .step{width:16px;color:var(--ink-3);font-size:10.5px}
+  .trace-row.active .step{color:var(--teal)}
+  .trace-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .trace-row .ms{color:var(--ink-3);font-size:10.5px}
+  .trace-row.active .ms{color:var(--teal-deep)}
+  :root:not([data-theme="light"]) .trace-row.active .ms{color:var(--teal)}
+  .trace-row .fork{color:var(--amber);margin-left:4px}
 
-/* ===== PIPELINE ===== */
-.pipeline-flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:32px 0;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
-.pipe-step{padding:10px 16px;border-radius:8px;font-size:11px;font-weight:600;text-align:center;border:1px solid;white-space:nowrap}
-.pipe-arrow{color:var(--text-muted);font-size:14px;flex-shrink:0}
+  .replay-detail{padding:24px 28px;display:flex;flex-direction:column;gap:18px;min-width:0}
+  .rd-title{display:flex;align-items:center;gap:14px;padding-bottom:6px}
+  .rd-title .num{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+  .rd-title h4{font-size:20px;font-weight:600;letter-spacing:-.015em;margin:0;flex:1}
+  .rd-title .tool-tag{font-family:"JetBrains Mono",monospace;font-size:10.5px;background:color-mix(in oklab, var(--amber) 18%, transparent);color:var(--amber);padding:3px 8px;border-radius:2px;letter-spacing:.08em}
+  .fork-btn{display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:5px 10px;border:1px dashed var(--amber);color:var(--amber);border-radius:3px;cursor:pointer;background:transparent}
+  .fork-btn:hover{background:color-mix(in oklab, var(--amber) 10%, transparent)}
+  .io-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-width:0}
+  .io-box{border:1px solid var(--line);border-radius:3px;min-width:0;overflow:hidden}
+  .io-box .lab{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .io-box pre{margin:0;padding:12px 14px;font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.55;color:var(--ink);overflow-x:auto;white-space:pre}
 
-/* ===== CONNECTOR CHIPS ===== */
-.connector-showcase{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
-.conn-chip{padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.conn-chip:hover{border-color:var(--border-light);color:var(--text-primary);background:var(--surface-raised)}
-.conn-chip .conn-dot{width:6px;height:6px;border-radius:50%}
+  .replay-foot{display:grid;grid-template-columns: 1fr auto 1fr;gap:24px;padding:16px 20px;border-top:1px solid var(--line);background:var(--panel-2);align-items:center}
+  .meter{display:flex;flex-direction:column;gap:6px}
+  .meter .lab{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+  .meter .val{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink)}
+  .meter .val b{color:var(--teal-deep);font-weight:600}
+  :root:not([data-theme="light"]) .meter .val b{color:var(--teal)}
+  .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:4px}
+  .bar i{display:block;height:100%;background:var(--teal);border-radius:2px}
+  .nav-foot{display:flex;gap:8px;justify-content:center;align-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2)}
+  .nav-foot button{border:1px solid var(--line-2);background:transparent;color:var(--ink);padding:6px 12px;border-radius:3px;font-family:inherit;font-size:12px;cursor:pointer}
+  .nav-foot button:hover{border-color:var(--ink)}
 
-/* ===== TWO-PATH ===== */
-.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
-.path-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;position:relative;overflow:hidden;transition:all .3s}
-.path-card:hover{border-color:var(--border-light);box-shadow:0 8px 32px rgba(0,0,0,.06)}
-.path-card .path-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
-.path-card h3{font-family:var(--display);font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:12px}
-.path-card p{font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:20px}
-.path-features{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
-.path-features li{font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:8px}
-.path-features li::before{content:'→';color:var(--text-muted);font-size:11px}
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .price-card{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:30px 28px;display:flex;flex-direction:column;gap:18px;position:relative}
+  .price-card.hi{border-color:var(--teal);box-shadow:0 20px 60px -40px color-mix(in oklab, var(--teal) 60%, transparent)}
+  .price-card.hi::before{content:"Most Popular";position:absolute;top:-10px;left:28px;font-family:"JetBrains Mono",monospace;font-size:10.5px;padding:3px 9px;background:var(--teal);color:#0a0b0d;border-radius:2px;letter-spacing:.06em;text-transform:uppercase}
+  .price-name{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em}
+  .price-val{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1}
+  .price-val small{font-size:14px;color:var(--ink-2);font-weight:400;margin-left:6px;letter-spacing:0}
+  .price-list{list-style:none;margin:0;padding:0;font-size:13.5px;flex:1}
+  .price-list li{padding:9px 0;border-top:1px dashed var(--line);color:var(--ink-2);display:flex;gap:10px}
+  .price-list li:first-child{border-top:none}
+  .price-list li::before{content:"+";color:var(--teal);font-family:"JetBrains Mono",monospace;font-weight:600;width:12px;flex-shrink:0}
 
-/* ===== HERO FEATURE VISUAL ===== */
-.hero-feature-visual{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.visual-inner{display:flex;flex-direction:column;gap:20px;padding:40px 48px}
+  /* ECOSYSTEM */
+  .eco-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .eco-card{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:22px;position:relative;min-height:180px;display:flex;flex-direction:column;gap:10px}
+  .eco-card.here{border-color:var(--teal);background:color-mix(in oklab, var(--teal) 5%, var(--panel))}
+  .eco-state{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;align-self:flex-start;padding:2px 7px;border:1px solid var(--line-2);border-radius:2px}
+  .eco-card.here .eco-state{color:var(--teal-deep);border-color:var(--teal)}
+  :root:not([data-theme="light"]) .eco-card.here .eco-state{color:var(--teal)}
+  .eco-card h5{font-size:17px;margin:8px 0 4px;font-weight:600;letter-spacing:-.01em}
+  .eco-card p{margin:0;color:var(--ink-2);font-size:12.5px;line-height:1.5}
 
-/* ===== REPLAY DEMO ===== */
-.replay-demo{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-.replay-demo-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface-raised)}
-.replay-demo-header h4{font-size:14px;font-weight:700;color:var(--text-primary)}
-.replay-meta{display:flex;gap:16px;font-size:11px;color:var(--text-muted);font-family:var(--mono)}
-.replay-body{display:grid;grid-template-columns:240px 1fr}
-.replay-timeline{border-right:1px solid var(--border);padding:12px 0}
-.replay-step{display:flex;align-items:flex-start;gap:10px;padding:9px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;font-size:12px}
-.replay-step:hover{background:var(--surface-raised)}
-.replay-step.active{background:rgba(0,136,170,.04);border-left-color:var(--accent-cyan)}
-.replay-step .step-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
-.replay-step .step-dot.llm{background:var(--accent-violet)}.replay-step .step-dot.tool{background:var(--accent-orange)}
-.replay-step .step-dot.retrieval{background:var(--accent-green)}.replay-step .step-dot.memory{background:var(--accent-cyan)}
-.replay-step .step-name{font-weight:600;color:var(--text-primary);font-size:12px}
-.replay-step .step-meta{font-family:var(--mono);font-size:9.5px;color:var(--text-muted);margin-top:1px}
-.replay-step .fork-icon{margin-left:auto;color:var(--accent-cyan);font-size:11px;flex-shrink:0}
-.replay-detail{padding:20px 24px}
-.replay-detail-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.replay-detail-top h5{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:8px}
-.replay-type-tag{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:4px}
-.replay-type-tag.tool{background:rgba(234,88,12,.08);color:var(--accent-orange);border:1px solid rgba(234,88,12,.15)}
-.replay-fork-btn{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:6px 14px;background:rgba(0,136,170,.06);border:1px solid rgba(0,136,170,.2);border-radius:6px;color:var(--accent-cyan);cursor:pointer;transition:all .2s;text-transform:uppercase}
-.replay-fork-btn:hover{background:rgba(0,136,170,.12);border-color:rgba(0,136,170,.35)}
-.replay-json-block{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--text-secondary);margin-bottom:12px}
-.replay-json-block .jk{color:var(--accent-violet)}.replay-json-block .js{color:var(--accent-green)}.replay-json-block .jn{color:var(--accent-orange)}
-.replay-section-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
-.replay-cost-row{display:flex;align-items:center;gap:10px;font-size:11px;margin-top:4px}
-.replay-cost-row .cost-label{font-family:var(--mono);font-size:10px;color:var(--text-muted);width:44px}
-.replay-cost-row .cost-track{flex:1;height:5px;background:var(--surface-raised);border:1px solid var(--border);border-radius:3px;overflow:hidden}
-.replay-cost-row .cost-fill{height:100%;border-radius:3px}
-.replay-cost-row .cost-fill.tokens{background:var(--accent-violet)}.replay-cost-row .cost-fill.cost{background:var(--accent-cyan)}
-.replay-cost-row .cost-val{font-family:var(--mono);font-size:10px;color:var(--text-secondary);width:90px;text-align:right}
-.replay-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--border);background:var(--surface-raised)}
-.replay-nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:.5px;padding:5px 12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);cursor:pointer;transition:all .15s}
-.replay-nav-btn:hover{border-color:var(--border-light);color:var(--text-primary)}
-.replay-nav-info{font-family:var(--mono);font-size:10px;color:var(--text-muted)}
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);padding:72px 0 40px;margin-top:100px}
+  .foot-top{display:grid;grid-template-columns: 1.5fr 1fr 1fr 1fr; gap:40px;margin-bottom:48px}
+  .foot-big{font-family:"Instrument Serif";font-style:italic;font-size:52px;line-height:1;letter-spacing:-.02em}
+  .foot-big .t{color:var(--teal);display:block}
+  .foot-col h6{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px;font-weight:500}
+  .foot-col a{display:block;padding:5px 0;color:var(--ink-2);font-size:13.5px}
+  .foot-col a:hover{color:var(--ink)}
+  .foot-bar{display:flex;justify-content:space-between;align-items:center;padding-top:30px;border-top:1px solid var(--line);font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-3);flex-wrap:wrap;gap:10px}
 
-/* ===== SUBSECTION ===== */
-.subsec{margin-top:48px;padding-top:48px;border-top:1px solid var(--border)}
-.subsec-label{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+  /* big closing type */
+  .closer{padding:80px 0;border-top:1px solid var(--line)}
+  .closer h2{font-size: clamp(48px, 7vw, 96px); letter-spacing:-.035em;font-weight:600;line-height:.98;margin:0 0 28px;max-width:18ch}
+  .closer h2 em{font-family:"Instrument Serif";font-style:italic;font-weight:400;color:var(--teal)}
+  .closer .row{display:flex;gap:12px;flex-wrap:wrap}
 
-/* ===== FOOTER ===== */
-.footer{padding:80px 0 40px;text-align:center;background:var(--text-primary);color:#fff;position:relative}
-.footer-brand{font-family:var(--display);font-size:28px;font-weight:800;margin-bottom:12px}
-.footer-sub{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:32px}
-.footer-links{display:flex;justify-content:center;gap:32px;margin-bottom:32px;flex-wrap:wrap}
-.footer-links a{font-size:13px;color:rgba(255,255,255,.6);transition:color .2s}
-.footer-links a:hover{color:#fff}
-.footer-ctas{display:flex;justify-content:center;gap:16px;margin-bottom:40px;flex-wrap:wrap}
-.footer-cta-primary{padding:12px 28px;background:var(--accent-cyan);color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid var(--accent-cyan)}
-.footer-cta-primary:hover{background:#006d88}
-.footer-cta-secondary{padding:12px 28px;background:transparent;color:#fff;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;border:1px solid rgba(255,255,255,.2)}
-.footer-cta-secondary:hover{border-color:rgba(255,255,255,.5)}
-.footer-copy{font-size:12px;color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.08);padding-top:24px}
+  /* Tweaks panel */
+  .tweaks{
+    position:fixed;right:18px;bottom:18px;z-index:90;
+    background:var(--panel);border:1px solid var(--line-2);border-radius:6px;
+    padding:14px 16px;display:none;flex-direction:column;gap:10px;width:260px;
+    box-shadow:0 20px 60px -20px rgba(0,0,0,.5);font-size:13px;
+  }
+  .tweaks.on{display:flex}
+  .tweaks h6{font-family:"JetBrains Mono",monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:0 0 2px;font-weight:500}
+  .tweak-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .tweak-row label{color:var(--ink-2);font-size:12.5px}
+  .swatches{display:flex;gap:6px}
+  .sw{width:22px;height:22px;border-radius:3px;border:1px solid var(--line-2);cursor:pointer;position:relative}
+  .sw.sel::after{content:"";position:absolute;inset:-3px;border:1.5px solid var(--ink);border-radius:5px}
+  .tweak-row select{background:var(--panel-2);color:var(--ink);border:1px solid var(--line-2);border-radius:3px;padding:4px 6px;font-family:inherit;font-size:12px}
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:900px){
-  .card-grid.cols-2,.card-grid.cols-3,.card-grid.cols-4{grid-template-columns:1fr}
-  .split{grid-template-columns:1fr;gap:40px}
-  .split.reverse{direction:ltr}
-  .tier-grid{grid-template-columns:1fr}
-  .path-grid{grid-template-columns:1fr}
-  .topbar-nav{display:none;position:absolute;top:64px;left:0;right:0;background:var(--surface);border-bottom:1px solid var(--border);flex-direction:column;padding:20px 32px;gap:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
-  .topbar-nav.open{display:flex}
-  .topbar-toggle{display:block}
-  .hero{padding:140px 0 80px}
-  .hero-stats{gap:24px}
-  .replay-body{grid-template-columns:1fr}
-  .replay-timeline{border-right:none;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:8px 12px;gap:4px}
-  .replay-step{padding:6px 10px;border-left:none;border-bottom:2px solid transparent;white-space:nowrap}
-  .replay-step.active{border-bottom-color:var(--accent-cyan);border-left-color:transparent}
-  .replay-step .step-meta,.replay-step .fork-icon{display:none}
-  .replay-demo-header{flex-direction:column;gap:8px;align-items:flex-start}
-  .compare-table{font-size:12px}
-  .compare-table th,.compare-table td{padding:10px 12px}
-  .pipeline-flow{gap:4px}
-  .pipe-step{font-size:10px;padding:8px 10px}
-}
-@media(max-width:700px){
-  .metrics-bar{grid-template-columns:repeat(2,1fr)}
-  .container{padding:0 20px}
-  .hero h1{font-size:36px}
-  .sec-title{font-size:28px}
-  .hero-ctas{flex-direction:column;align-items:center}
-}
+  @media (max-width: 980px){
+    .wrap{padding:0 22px}
+    .hero-grid{grid-template-columns:1fr;gap:40px}
+    .loop-stage{max-width:440px;margin:0 auto}
+    .hero-meta{grid-template-columns:repeat(2,1fr)}
+    .hero-meta > div{border-right:none;border-bottom:1px solid var(--line)}
+    .sec-head{grid-template-columns:1fr;gap:16px}
+    .compare{grid-template-columns:1fr}
+    .entries{grid-template-columns:1fr}
+    .sdk-grid{grid-template-columns:1fr}
+    .sdk-grid2{grid-template-columns:repeat(2,1fr)}
+    .sdk-grid2 .sdk-tile:nth-child(2n){border-right:none}
+    .sdk-grid2 .sdk-tile:nth-last-child(-n+2){border-bottom:none}
+    .plat-grid{grid-template-columns:1fr}
+    .replay-body{grid-template-columns:1fr}
+    .trace{border-right:none;border-bottom:1px solid var(--line)}
+    .io-grid{grid-template-columns:1fr}
+    .price-grid{grid-template-columns:1fr}
+    .eco-grid{grid-template-columns:repeat(2,1fr)}
+    .foot-top{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+  }
 </style>
 </head>
 <body>
 
-<!-- ===== NAVIGATION ===== -->
-<nav class="topbar">
-  <div class="topbar-inner">
-    <div class="topbar-logo">
-      <svg width="28" height="28" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="120" height="120" rx="28" fill="#e8f6fa"/>
-        <circle cx="62" cy="56" r="30" fill="#fff" stroke="#0088aa" stroke-width="6"/>
-        <path d="M58 38L52 54H64L55 76" stroke="#006688" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      </svg>
-      <span>FastAIAgent<span class="foundry"> by FastAIFoundry</span></span>
-    </div>
-    <button class="topbar-toggle" onclick="document.querySelector('.topbar-nav').classList.toggle('open')" aria-label="Menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
-    <div class="topbar-nav">
+<!-- NAV -->
+<nav class="top">
+  <div class="wrap nav-row">
+    <a href="#" class="brand"><span class="brand-mark"></span> FastAIAgent<span class="chip" style="margin-left:8px">SDK v0.1.8</span></a>
+    <div class="nav-links">
       <a href="#loop">The Loop</a>
       <a href="#sdk">SDK</a>
       <a href="#platform">Platform</a>
       <a href="#replay">Replay</a>
       <a href="#pricing">Pricing</a>
-      <a href="https://github.com/fastaifoundry/fastaiagent-sdk" class="topbar-cta" style="margin-left:4px">GitHub</a>
-      <a href="https://app.fastaiagent.net/" class="topbar-cta-fill">Start Free</a>
+      <a href="https://github.com/fastaifoundry/fastaiagent-sdk">GitHub ↗</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <a class="btn btn-ghost" href="https://fastaiagent.net/demo">Book demo</a>
+      <a class="btn btn-primary" href="https://app.fastaiagent.net/">Start free →</a>
     </div>
   </div>
 </nav>
 
-<!-- ===== HERO ===== -->
-<header class="hero">
-  <div class="container">
-    <div class="hero-badge"><div class="dot"></div><span>SDK v0.1.0 Released · Open Source · Apache 2.0</span></div>
-    <h1>Build, Deploy &amp; Govern<br><em>AI Agents.</em></h1>
-    <p style="font-family:var(--mono);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--accent-cyan);margin-bottom:32px">Every tool gives you pieces — We close the loop.</p>
-    <p class="hero-sub">The only AI agent platform with a closed-loop operational system. Develop → Trace → Feedback → Eval → Optimize → Deploy — and back again. Open-source SDK for developers, full platform for teams. From failing trace to fixed agent in 10 minutes, not 4 hours.</p>
-    <div class="hero-ctas">
-      <a href="https://app.fastaiagent.net/" class="btn-primary">Start Free →</a>
-      <a href="https://fastaiagent.net/demo" class="btn-secondary">Book a Demo</a>
-      <a href="https://pypi.org/project/fastaiagent/" class="btn-sdk">pip install fastaiagent</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="val">Multi-LLM</div><div class="label">Any Provider</div></div>
-      <div class="hero-stat"><div class="val">29+</div><div class="label">Connectors</div></div>
-      <div class="hero-stat"><div class="val">MCP</div><div class="label">Protocol Native</div></div>
-      <div class="hero-stat"><div class="val">Open Source</div><div class="label">Apache 2.0 SDK</div></div>
-      <div class="hero-stat"><div class="val">SaaS</div><div class="label">Or Self-Hosted</div></div>
-    </div>
-  </div>
-</header>
-
-<!-- ===== THE OPERATIONAL LOOP ===== -->
-<section id="loop">
-  <div class="container" style="text-align:center">
-    <div class="sec-label cyan" style="justify-content:center">The Operational Loop</div>
-    <div class="sec-title" style="margin:0 auto 16px">One system. Seven steps.<br>Zero context switching.</div>
-    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">Most teams stitch together 3–4 tools to go from a failing agent to a fixed one. FastAIAgent is the only platform where trace, feedback, eval, optimization, comparison, and deployment happen in a single closed-loop system — so every production failure becomes a shipped improvement, not a fire drill.</div>
-
-    <div class="pipeline-flow" style="max-width:1000px;margin:0 auto 48px">
-      <div class="pipe-step" style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15);color:var(--text-primary)">⌨ Develop</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15);color:var(--text-primary)">📍 Trace</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15);color:var(--text-primary)">👎 Feedback</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15);color:var(--text-primary)">🧪 Eval Case</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(234,88,12,.06);border-color:rgba(234,88,12,.15);color:var(--text-primary)">🤖 Optimize</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(5,150,105,.06);border-color:rgba(5,150,105,.15);color:var(--text-primary)">⟷ Compare</div>
-      <div class="pipe-arrow">→</div>
-      <div class="pipe-step" style="background:rgba(0,136,170,.06);border-color:rgba(0,136,170,.15);color:var(--text-primary)">🚀 Deploy</div>
-      <div class="pipe-arrow">↩</div>
-    </div>
-
-    <div class="card-grid cols-2" style="max-width:900px;margin:0 auto">
-      <div class="fcard" style="border-color:rgba(220,38,38,.15);text-align:left">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-rose);margin-bottom:12px">WITHOUT FASTAIAGENT</div>
-        <h3 style="font-size:18px;margin-bottom:8px">4 Hours Per Failure</h3>
-        <p>Failing trace → manually write test case → manually rewrite prompt → manually test → manually deploy. Every production failure is a multi-hour context-switching fire drill across 3–4 different tools.</p>
-        <div style="margin-top:16px;font-family:var(--display);font-size:28px;font-weight:800;color:var(--accent-rose)">~4 hrs</div>
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><span class="dot"></span> SDK v0.1.0 · Open Source · Apache 2.0</span>
+      <h1 class="display">
+        Build, Deploy<br>
+        &amp; Govern <span class="accent">AI&nbsp;Agents</span><br>
+        <span class="under">in one closed loop.</span>
+      </h1>
+      <p class="lede">
+        Every tool gives you pieces — FastAIAgent closes the loop. Develop → Trace → Feedback → Eval → Optimize → Deploy, in a single system. From failing trace to fixed agent in <b style="color:var(--ink)">10 minutes</b>, not 4 hours.
+      </p>
+      <div class="hero-cta">
+        <a href="https://app.fastaiagent.net/" class="btn btn-primary">Start free
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="https://fastaiagent.net/demo" class="btn">Book a demo</a>
+        <button class="pip mono" id="copyCmd" title="Click to copy">pip install fastaiagent</button>
       </div>
-      <div class="fcard" style="border-color:rgba(0,136,170,.2);text-align:left">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">WITH FASTAIAGENT</div>
-        <h3 style="font-size:18px;margin-bottom:8px">10 Minutes Per Failure</h3>
-        <p>Failing trace → thumbs down → eval case auto-created → Prompt Optimizer rewrites → Compare Mode A/B tests → deploy → SDK pulls new version. All within one system. Zero context switching.</p>
-        <div style="margin-top:16px;font-family:var(--display);font-size:28px;font-weight:800;color:var(--accent-cyan)">~10 min</div>
+
+      <div class="hero-meta mono">
+        <div><div class="k">Models</div><div class="v">Multi-LLM</div></div>
+        <div><div class="k">Connectors</div><div class="v">29+</div></div>
+        <div><div class="k">Protocol</div><div class="v">MCP Native</div></div>
+        <div><div class="k">License</div><div class="v">Apache 2.0</div></div>
+        <div><div class="k">Deploy</div><div class="v">SaaS · Self-host</div></div>
+      </div>
+    </div>
+
+    <!-- Loop diagram -->
+    <div class="loop-stage" id="loopStage">
+      <svg viewBox="-260 -260 520 520" aria-hidden="true">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g stroke="currentColor" stroke-width="1" fill="none" style="color:var(--line)">
+          <circle cx="0" cy="0" r="200" stroke-dasharray="2 5" opacity=".7"/>
+          <circle cx="0" cy="0" r="140" opacity=".4"/>
+          <circle cx="0" cy="0" r="80" opacity=".3"/>
+        </g>
+        <g stroke="currentColor" stroke-width="1.4" fill="none" style="color:var(--teal)" stroke-dasharray="3 4">
+          <circle cx="0" cy="0" r="200" pathLength="360" stroke-dashoffset="0" id="loopPath">
+            <animate attributeName="stroke-dashoffset" from="0" to="-360" dur="40s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </svg>
+      <!-- Nodes positioned at angles on r=200 -->
+      <div class="loop-node" data-step="1" style="left:calc(50% + 200px * 0);top:calc(50% + 200px * -1)"><span class="idx">01</span> Develop</div>
+      <div class="loop-node" data-step="2" style="left:calc(50% + 200px * 0.782);top:calc(50% + 200px * -0.623)"><span class="idx">02</span> Trace</div>
+      <div class="loop-node" data-step="3" style="left:calc(50% + 200px * 0.975);top:calc(50% + 200px * 0.223)"><span class="idx">03</span> Feedback</div>
+      <div class="loop-node" data-step="4" style="left:calc(50% + 200px * 0.434);top:calc(50% + 200px * 0.901)"><span class="idx">04</span> Eval</div>
+      <div class="loop-node" data-step="5" style="left:calc(50% + 200px * -0.434);top:calc(50% + 200px * 0.901)"><span class="idx">05</span> Optimize</div>
+      <div class="loop-node" data-step="6" style="left:calc(50% + 200px * -0.975);top:calc(50% + 200px * 0.223)"><span class="idx">06</span> Compare</div>
+      <div class="loop-node" data-step="7" style="left:calc(50% + 200px * -0.782);top:calc(50% + 200px * -0.623)"><span class="idx">07</span> Deploy</div>
+      <div class="loop-center">
+        <div class="big">the loop</div>
+        <div class="sub mono">7 steps · 1 data plane</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== TWO PATHS ===== -->
-<section class="sec-alt">
-  <div class="container" style="text-align:center">
-    <div class="sec-label violet" style="justify-content:center">Two Entry Points, One Data Plane</div>
-    <div class="sec-title" style="margin:0 auto 16px">Built for engineers.<br>Designed for teams.</div>
-    <div class="sec-desc-wide" style="margin:0 auto 0;text-align:center">Whether you write Python or build in a UI, you get the same trace dashboard, the same prompt registry, the same eval framework.</div>
-    <div class="path-grid">
-      <div class="path-card" style="border-color:rgba(17,24,39,.15)">
-        <div class="path-label" style="color:var(--text-primary)">⌨ For Engineers</div>
+<!-- LOOP / COMPARE -->
+<section id="loop">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">01</span> / The Operational Loop</div>
+    <div>
+      <h2 class="sec-title">One system. Seven steps. <span class="serif" style="color:var(--teal)">Zero context switching.</span></h2>
+      <p class="sec-sub">Most teams stitch together 3–4 tools to go from a failing agent to a fixed one. FastAIAgent is the only platform where trace, feedback, eval, optimization, comparison, and deployment happen in a single closed loop — so every production failure becomes a shipped improvement, not a fire drill.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="compare">
+      <div class="compare-col">
+        <span class="c-tag bad">Without FastAIAgent</span>
+        <div class="c-title">4 Hours Per Failure <span class="time mono">~4h 00m</span></div>
+        <div class="c-desc">Every production failure is a multi-hour context-switching fire drill across 3–4 different tools.</div>
+        <ul class="c-steps bad mono">
+          <li><span class="mark">✗</span> Failing trace surfaces in observability tool</li>
+          <li><span class="mark">✗</span> Copy-paste into notebook, hand-write test case</li>
+          <li><span class="mark">✗</span> Switch to prompt tool, rewrite by intuition</li>
+          <li><span class="mark">✗</span> Manually run eval. Open spreadsheet. Compare.</li>
+          <li><span class="mark">✗</span> Deploy. Pray. Repeat next week.</li>
+        </ul>
+      </div>
+      <div class="compare-col good">
+        <span class="c-tag good">With FastAIAgent</span>
+        <div class="c-title">10 Minutes Per Failure <span class="time mono">~0h 10m</span></div>
+        <div class="c-desc">One system. Thumbs-down is the first click; deploy is the last. No context switch between them.</div>
+        <ul class="c-steps good mono">
+          <li><span class="mark">→</span> Failing trace, click 👎 — eval case auto-created</li>
+          <li><span class="mark">→</span> Prompt Optimizer rewrites with context from the trace</li>
+          <li><span class="mark">→</span> Compare Mode A/B tests old vs. new on real cases</li>
+          <li><span class="mark">→</span> Ship the winner. SDK pulls the new version.</li>
+          <li><span class="mark">✓</span> Production-fixed. Eval suite permanently stronger.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENTRY POINTS -->
+<section>
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">02</span> / Two Entry Points</div>
+    <div>
+      <h2 class="sec-title">Built for engineers. <span class="serif" style="color:var(--teal)">Designed for teams.</span></h2>
+      <p class="sec-sub">Whether you write Python or build in a UI, you get the same trace dashboard, the same prompt registry, the same eval framework. One data plane, two front doors.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="entries">
+      <div class="entry">
+        <div class="who">⌨ For Engineers</div>
         <h3>Open-Source SDK</h3>
-        <p>Build agents in Python. Run locally. Connect to the platform for observability, prompt management, and eval — when you're ready.</p>
-        <ul class="path-features">
+        <div class="desc">Build agents in Python. Run locally. Connect to the platform for observability, prompt management, and eval — when you're ready.</div>
+        <ul>
           <li>Multi-provider LLM (OpenAI, Anthropic, Ollama, Azure, Bedrock)</li>
           <li>Structured output, streaming, tool calling</li>
           <li>Supervisor-Worker multi-agent teams</li>
           <li>Chain orchestration with cycles, checkpoints, HITL</li>
           <li>Eval framework with 7+ scorers and LLM judge</li>
           <li>Local KB (ingestion, chunking, embedding, search)</li>
-          <li><code style="font-size:12px;background:var(--surface-raised);padding:2px 6px;border-radius:4px">fa.connect()</code> for platform services</li>
+          <li><span class="mono">fa.connect()</span> for platform services</li>
         </ul>
-        <a href="https://pypi.org/project/fastaiagent/" class="btn-sdk" style="font-size:12px;padding:10px 24px">pip install fastaiagent</a>
+        <button class="pip mono" onclick="copyPip(this)">pip install fastaiagent</button>
       </div>
-      <div class="path-card" style="border-color:rgba(0,136,170,.2)">
-        <div class="path-label" style="color:var(--accent-cyan)">🖥 For Teams</div>
+      <div class="entry">
+        <div class="who">🖥 For Teams</div>
         <h3>Full Platform</h3>
-        <p>Build agents in the UI. Visual chain editor. Configure connectors. Test in the Playground. Monitor in the dashboard. No SDK required.</p>
-        <ul class="path-features">
+        <div class="desc">Build agents in the UI. Visual chain editor. Configure connectors. Test in the Playground. Monitor in the dashboard. No SDK required.</div>
+        <ul>
           <li>Visual Workflow Editor with drag-and-drop canvas</li>
           <li>29+ pre-built connectors and hosted MCP servers</li>
           <li>Advanced RAG with hybrid search and reranking</li>
@@ -435,240 +516,265 @@ section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;b
           <li>RBAC, SSO, audit trails, SaaS billing</li>
           <li>Air-gapped deployment for regulated environments</li>
         </ul>
-        <a href="https://app.fastaiagent.net/" class="btn-primary" style="font-size:12px;padding:10px 24px">Start Free →</a>
+        <a href="https://app.fastaiagent.net/" class="btn btn-primary">Start free →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== SDK SHOWCASE ===== -->
+<!-- SDK -->
 <section id="sdk">
-  <div class="container">
-    <div class="split">
-      <div>
-        <div class="sec-label cyan">Open-Source SDK</div>
-        <div class="sec-title">Five Lines to Your<br>First Agent.</div>
-        <div class="sec-desc" style="margin-bottom:0">The <code style="font-size:14px;background:var(--surface-raised);padding:2px 8px;border-radius:4px">fastaiagent</code> SDK is open-source (Apache 2.0) and runs anywhere Python runs. Start standalone — add the platform later with a single <code style="font-size:14px;background:var(--surface-raised);padding:2px 8px;border-radius:4px">fa.connect()</code> call.</div>
-        <ul class="features-list">
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Multi-Provider LLM</strong> — OpenAI, Anthropic, Ollama, Azure, Bedrock, and custom endpoints</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Streaming + Structured Output</strong> — SSE parsing across providers with <code>response_format</code> support</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Context/DI</strong> — <code>RunContext[T]</code> passes DB connections, API clients, and runtime state to tools</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">Guardrails</strong> — 5 types, 5 built-ins. Input, output, tool-call, and tool-result positions</span></li>
-          <li><span class="check cyan">✓</span><span><strong style="color:var(--text-primary)">fa.connect()</strong> — Traces flow up, prompts flow down, evals flow both ways. Platform is optional.</span></li>
-        </ul>
-      </div>
-      <div>
-        <div class="code-window">
-          <div class="code-titlebar"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span class="code-title">quickstart.py</span></div>
-          <div class="code-body"><span class="kw">import</span> fastaiagent <span class="kw">as</span> fa
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">03</span> / Open-Source SDK</div>
+    <div>
+      <h2 class="sec-title">Five lines to your <span class="serif" style="color:var(--teal)">first agent.</span></h2>
+      <p class="sec-sub">The <span class="mono">fastaiagent</span> SDK is open-source (Apache 2.0) and runs anywhere Python runs. Start standalone — add the platform later with a single <span class="mono">fa.connect()</span> call.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="sdk-grid">
+      <ul class="sdk-list">
+        <li><span class="check">✓</span><span><b>Multi-Provider LLM</b> — OpenAI, Anthropic, Ollama, Azure, Bedrock, and custom endpoints</span></li>
+        <li><span class="check">✓</span><span><b>Streaming + Structured Output</b> — SSE parsing across providers with <span class="mono">response_format</span></span></li>
+        <li><span class="check">✓</span><span><b>Context / DI</b> — <span class="mono">RunContext[T]</span> passes DB connections, API clients, and state to tools</span></li>
+        <li><span class="check">✓</span><span><b>Guardrails</b> — 5 types, 5 built-ins. Input, output, tool-call, and tool-result positions</span></li>
+        <li><span class="check">✓</span><span><b>fa.connect()</b> — Traces flow up, prompts flow down, evals flow both ways. Platform is optional.</span></li>
+      </ul>
 
-<span class="cm"># Connect to platform (optional)</span>
-fa.<span class="fn">connect</span>(api_key<span class="op">=</span><span class="str">"fa_k_..."</span>, project<span class="op">=</span><span class="str">"my-project"</span>)
+      <div class="code">
+        <div class="code-head">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="file">quickstart.py</span>
+          <span class="tag">apache 2.0 · pypi: fastaiagent</span>
+        </div>
+<pre><span class="tk-k">import</span> <span class="tk-n">fastaiagent</span> <span class="tk-k">as</span> <span class="tk-n">fa</span>
 
-<span class="cm"># Define your agent</span>
-agent <span class="op">=</span> fa.<span class="fn">Agent</span>(
-    name<span class="op">=</span><span class="str">"support-bot"</span>,
-    model<span class="op">=</span><span class="str">"gpt-4o"</span>,
-    system_prompt<span class="op">=</span><span class="str">"You are a helpful support agent."</span>,
-    tools<span class="op">=</span>[search_kb, create_ticket],
-    guardrails<span class="op">=</span>[pii_filter, toxicity_check],
+<span class="tk-c"># Connect to platform (optional)</span>
+<span class="tk-n">fa</span>.<span class="tk-f">connect</span>(api_key=<span class="tk-s">"fa_k_..."</span>, project=<span class="tk-s">"my-project"</span>)
+
+<span class="tk-c"># Define your agent</span>
+<span class="tk-n">agent</span> = <span class="tk-n">fa</span>.<span class="tk-f">Agent</span>(
+    name=<span class="tk-s">"support-bot"</span>,
+    model=<span class="tk-s">"gpt-4o"</span>,
+    system_prompt=<span class="tk-s">"You are a helpful support agent."</span>,
+    tools=[<span class="tk-n">search_kb</span>, <span class="tk-n">create_ticket</span>],
+    guardrails=[<span class="tk-n">pii_filter</span>, <span class="tk-n">toxicity_check</span>],
 )
 
-<span class="cm"># Run it</span>
-result <span class="op">=</span> <span class="kw">await</span> agent.<span class="fn">run</span>(<span class="str">"I can't log in to my account"</span>)
-
-<span class="cm"># Traces auto-export to platform</span>
-<span class="cm"># Prompts pull from registry</span>
-<span class="cm"># Eval results publish back</span></div>
-        </div>
-        <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
-          <div class="conn-chip"><span class="conn-dot" style="background:var(--text-primary)"></span>Apache 2.0</div>
-          <div class="conn-chip"><span class="conn-dot" style="background:var(--accent-cyan)"></span>PyPI: fastaiagent</div>
-          <div class="conn-chip"><span class="conn-dot" style="background:var(--accent-violet)"></span>GitHub</div>
-        </div>
+<span class="tk-c"># Run it — traces auto-export, prompts pull from registry</span>
+<span class="tk-n">result</span> = <span class="tk-k">await</span> <span class="tk-n">agent</span>.<span class="tk-f">run</span>(<span class="tk-s">"I can't log in to my account"</span>)</pre>
       </div>
     </div>
 
-    <!-- SDK Features Grid -->
-    <div class="card-grid cols-4" style="margin-top:48px">
-      <div class="fcard"><div class="fcard-icon cyan">🔀</div><h3>Supervisor-Worker<span class="oss-badge">SDK</span></h3><p>Multi-agent orchestration with context passthrough, streaming delegation, and callable dynamic prompts.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">⛓</div><h3>Chain Orchestration<span class="oss-badge">SDK</span></h3><p>Cyclic graphs, checkpointing, HITL gates, parallel execution, and conditional routing — all in code.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">🧪</div><h3>Eval Framework<span class="oss-badge">SDK</span></h3><p>7+ scorers, LLM-as-Judge, trajectory eval, session eval. Publish results to platform with one call.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">📚</div><h3>Local Knowledge Base<span class="oss-badge">SDK</span></h3><p>Document ingestion, multi-strategy chunking, embedding, and vector search — fully local, no platform needed.</p></div>
-    </div>
-    <div class="card-grid cols-4" style="margin-top:16px">
-      <div class="fcard"><div class="fcard-icon cyan">🔄</div><h3>Agent Replay<span class="oss-badge">SDK</span></h3><p>Fork any execution at any step and re-run with modified inputs. The debugging feature no other framework has.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">📋</div><h3>Prompt Registry<span class="oss-badge">SDK</span></h3><p>Version, compose with fragments, pull from platform. <code style="font-size:11px">PromptRegistry(source="platform")</code> for team-managed prompts.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">🔭</div><h3>OTel Tracing<span class="oss-badge">SDK</span></h3><p>OpenTelemetry spans with BatchSpanProcessor. Local SQLite storage or export to platform via <code style="font-size:11px">fa.connect()</code>.</p></div>
-      <div class="fcard"><div class="fcard-icon cyan">🛡</div><h3>5 Guardrail Types<span class="oss-badge">SDK</span></h3><p>Input, output, tool-call, tool-result, and content guardrails. 5 built-in guards plus custom definitions.</p></div>
+    <!-- SDK feature grid -->
+    <div class="sdk-grid2">
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⇄</span><h4>Supervisor-Worker</h4><p>Multi-agent orchestration with context passthrough, streaming delegation, and callable dynamic prompts.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⛓</span><h4>Chain Orchestration</h4><p>Cyclic graphs, checkpointing, HITL gates, parallel execution, conditional routing — in code.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">∆</span><h4>Eval Framework</h4><p>7+ scorers, LLM-as-Judge, trajectory & session eval. Publish to platform in one call.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">≡</span><h4>Local Knowledge Base</h4><p>Ingestion, multi-strategy chunking, embedding, vector search — fully local, no platform needed.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">↻</span><h4>Agent Replay</h4><p>Fork any execution at any step, re-run with modified inputs. The feature no other framework has.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⌘</span><h4>Prompt Registry</h4><p>Version, compose with fragments, pull from platform with <span class="mono">PromptRegistry(source=…)</span>.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">⊹</span><h4>OTel Tracing</h4><p>OpenTelemetry spans with BatchSpanProcessor. Local SQLite or export to platform.</p></div>
+      <div class="sdk-tile"><span class="badge">SDK</span><span class="ico">◈</span><h4>5 Guardrail Types</h4><p>Input, output, tool-call, tool-result, content. 5 built-in guards plus custom definitions.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ===== THE COMPLETE AGENT OPERATING SYSTEM ===== -->
-<section id="platform" class="sec-alt">
-  <div class="container">
-    <div class="sec-label violet">The Complete Agent Operating System</div>
-    <div class="sec-title">Everything to build, ship, and improve AI agents.</div>
-    <div class="sec-desc-wide">Everything SDK agents need to go to production — and everything teams need to manage them at scale. One platform. No tool-stitching. No context switching.</div>
-
-    <!-- Differentiators -->
-    <div class="card-grid cols-3">
-      <div class="fcard" style="border-color:rgba(0,136,170,.2)">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">ONLY IN FASTAIAGENT</div>
-        <h3 style="font-size:18px;margin-bottom:10px">Closed-Loop Operations</h3>
-        <p>Develop → Trace → Feedback → Eval Case → Optimize → Compare → Deploy — in one system. Negative feedback auto-creates eval cases. Prompt Optimizer rewrites. Compare Mode A/B tests. Ship without switching tools.</p>
-      </div>
-      <div class="fcard" style="border-color:rgba(0,136,170,.2)">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">ONLY IN FASTAIAGENT</div>
-        <h3 style="font-size:18px;margin-bottom:10px">Agent Replay</h3>
-        <p>Step through any execution span-by-span. Fork from any point and re-run with modified inputs. Compare original vs. forked outcomes side by side. Time-travel debugging for AI agents.</p>
-      </div>
-      <div class="fcard" style="border-color:rgba(0,136,170,.2)">
-        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--accent-cyan);margin-bottom:12px">ONLY IN FASTAIAGENT</div>
-        <h3 style="font-size:18px;margin-bottom:10px">SDK + Platform, One Data Plane</h3>
-        <p>Open-source SDK and full platform share the same trace dashboard, prompt registry, and eval framework. <code style="font-size:12px;background:var(--surface-raised);padding:2px 6px;border-radius:4px">fa.connect()</code> bridges them with a single call.</p>
-      </div>
+<!-- PLATFORM -->
+<section id="platform">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">04</span> / Complete Agent OS</div>
+    <div>
+      <h2 class="sec-title">Everything to build, ship, <span class="serif" style="color:var(--teal)">and improve agents.</span></h2>
+      <p class="sec-sub">Everything SDK agents need to go to production — and everything teams need to manage them at scale. One platform. No tool-stitching. No context switching.</p>
     </div>
+  </div>
+  <div class="wrap">
+    <div class="plat-grid">
+      <div class="plat-card only">
+        <span class="only-tag">Only in FastAIAgent</span>
+        <span class="glyph mono">◎</span>
+        <h4>Closed-Loop Operations</h4>
+        <p>Develop → Trace → Feedback → Eval → Optimize → Compare → Deploy, in one system. Negative feedback auto-creates eval cases. Prompt Optimizer rewrites. Compare Mode A/B tests.</p>
+      </div>
+      <div class="plat-card only">
+        <span class="only-tag">Only in FastAIAgent</span>
+        <span class="glyph mono">↻</span>
+        <h4>Agent Replay</h4>
+        <p>Step through any execution span-by-span. Fork from any point and re-run with modified inputs. Compare original vs. forked outcomes side by side.</p>
+      </div>
+      <div class="plat-card only">
+        <span class="only-tag">Only in FastAIAgent</span>
+        <span class="glyph mono">=</span>
+        <h4>One Data Plane</h4>
+        <p>Open-source SDK and full platform share the same trace dashboard, prompt registry, and eval framework. <span class="mono">fa.connect()</span> bridges them with one call.</p>
+      </div>
 
-    <!-- Full Capability Grid -->
-    <div style="margin-top:48px;padding-top:48px;border-top:1px solid var(--border)">
-      <div class="sec-label violet">Platform Capabilities</div>
-      <div class="card-grid cols-4" style="margin-top:24px">
-        <div class="fcard"><div class="fcard-icon violet">⟐</div><h3>Visual Workflow Editor</h3><p>Drag-and-drop canvas with cyclic graphs, conditional routing, parallel execution, HITL nodes, and checkpointing — no orchestration code needed.</p></div>
-        <div class="fcard"><div class="fcard-icon green">📚</div><h3>Advanced RAG Pipeline</h3><p>Hybrid search, reranking, query rewriting, adaptive routing, self-grading, contextual enrichment — 20+ configurable retrieval feature flags.</p></div>
-        <div class="fcard"><div class="fcard-icon rose">⑂</div><h3>Prompt Registry &amp; Optimizer</h3><p>Versioning, fragments, 3-mode auto-optimization, Compare Mode A/B testing, version analytics, and approval workflows.</p></div>
-        <div class="fcard"><div class="fcard-icon violet">📍</div><h3>Observability &amp; Tracing</h3><p>Full hierarchical traces: LLM calls, tool invocations, tokens, latency, cost — linked to the exact prompt version used.</p></div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⟐</span>
+        <h4>Visual Workflow Editor</h4>
+        <p>Drag-and-drop canvas with cyclic graphs, conditional routing, parallel execution, HITL nodes, and checkpointing — no orchestration code needed.</p>
       </div>
-      <div class="card-grid cols-4" style="margin-top:16px">
-        <div class="fcard"><div class="fcard-icon violet">⚖️</div><h3>Evaluation Intelligence</h3><p>LLM-as-Judge scoring, RAG eval (Ragas), annotation queues, online eval policies, A/B comparisons, CI/CD eval API, and MLflow integration.</p></div>
-        <div class="fcard"><div class="fcard-icon cyan">🧠</div><h3>Agent Memory</h3><p>Long-term memory across conversations with automatic extraction. Provider-agnostic — works with any LLM. Configurable thresholds and vector-based recall.</p></div>
-        <div class="fcard"><div class="fcard-icon violet">🧬</div><h3>Synthetic Data Generation</h3><p>LLM-powered test data from schemas. Preview with any connector, export to eval datasets. Bootstrap testing without manual data collection.</p></div>
-        <div class="fcard"><div class="fcard-icon cyan">💬</div><h3>Chat &amp; Conversation Simulator</h3><p>Streaming playground with tool call visualization. Multi-turn conversation simulator with persona-driven users, session scorers, and trajectory analysis.</p></div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">≡</span>
+        <h4>Advanced RAG Pipeline</h4>
+        <p>Hybrid search, reranking, query rewriting, adaptive routing, self-grading, contextual enrichment — 20+ configurable retrieval flags.</p>
       </div>
-      <div class="card-grid cols-4" style="margin-top:16px">
-        <div class="fcard"><div class="fcard-icon orange">🔌</div><h3>29+ Connectors &amp; MCP</h3><p>Databases, storage, messaging, CRM, email, and data processing. First-class MCP support with hosted servers.</p></div>
-        <div class="fcard"><div class="fcard-icon rose">🛡</div><h3>Human-in-the-Loop</h3><p>Approval policies on tool calls. Chain pause for human input. Signed webhooks. Context-aware intelligent rejection.</p></div>
-        <div class="fcard"><div class="fcard-icon cyan">🔗</div><h3>Public API &amp; Streaming</h3><p>RESTful API at <code style="font-size:11px">/public/v1/</code>. Scoped keys, rate limiting, SSE streaming, feedback, and webhooks.</p></div>
-        <div class="fcard"><div class="fcard-icon green">🔐</div><h3>Enterprise Infrastructure</h3><p>SSO + 4-role RBAC, air-gapped deployment, audit trails, encrypted secrets, and EU AI Act compliance via FastAIShield.</p></div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⑂</span>
+        <h4>Prompt Registry &amp; Optimizer</h4>
+        <p>Versioning, fragments, 3-mode auto-optimization, Compare Mode A/B testing, version analytics, approval workflows.</p>
       </div>
-    </div>
-
-    <div class="metrics-bar" style="margin-bottom:0">
-      <div class="metric"><div class="val">29+</div><div class="lbl">Connectors</div></div>
-      <div class="metric"><div class="val">MCP</div><div class="lbl">Protocol Native</div></div>
-      <div class="metric"><div class="val">Full API</div><div class="lbl">Embed Anywhere</div></div>
-      <div class="metric"><div class="val">Air-Gap</div><div class="lbl">Ready to Deploy</div></div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⌖</span>
+        <h4>Observability &amp; Tracing</h4>
+        <p>Full hierarchical traces: LLM calls, tool invocations, tokens, latency, cost — linked to the exact prompt version used.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⚖</span>
+        <h4>Evaluation Intelligence</h4>
+        <p>LLM-as-Judge scoring, RAG eval (Ragas), annotation queues, online eval policies, A/B comparisons, CI/CD eval API, MLflow.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⟡</span>
+        <h4>Agent Memory</h4>
+        <p>Long-term memory across conversations with automatic extraction. Provider-agnostic. Configurable thresholds and vector-based recall.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">✦</span>
+        <h4>Synthetic Data</h4>
+        <p>LLM-powered test data from schemas. Preview with any connector, export to eval datasets. Bootstrap testing without manual collection.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">◐</span>
+        <h4>Chat &amp; Sim</h4>
+        <p>Streaming playground with tool call viz. Multi-turn sim with persona-driven users, session scorers, and trajectory analysis.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⌘</span>
+        <h4>29+ Connectors &amp; MCP</h4>
+        <p>Databases, storage, messaging, CRM, email, data processing. First-class MCP support with hosted servers.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">◑</span>
+        <h4>Human-in-the-Loop</h4>
+        <p>Approval policies on tool calls. Chain pause for human input. Signed webhooks. Context-aware intelligent rejection.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Platform</span><span class="glyph mono">⟿</span>
+        <h4>Public API</h4>
+        <p>RESTful API at <span class="mono">/public/v1/</span>. Scoped keys, rate limiting, SSE streaming, feedback, webhooks.</p>
+      </div>
+      <div class="plat-card">
+        <span class="cat">Enterprise</span><span class="glyph mono">✶</span>
+        <h4>Enterprise Infrastructure</h4>
+        <p>SSO + 4-role RBAC, air-gapped deployment, audit trails, encrypted secrets, EU AI Act compliance via FastAIShield.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ===== AGENT REPLAY ===== -->
+<!-- REPLAY -->
 <section id="replay">
-  <div class="container">
-    <div class="sec-label cyan">Agent Replay — The Feature Nobody Else Has</div>
-    <div class="sec-title">Time-Travel Debugging for AI Agents.</div>
-    <div class="sec-desc-wide">Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore "what if?" scenarios. Available in both the SDK and the platform.</div>
-
-    <div class="replay-demo">
-      <div class="replay-demo-header">
-        <h4>▶ Replay: <span style="color:var(--accent-cyan)">Customer Support Agent</span></h4>
-        <div class="replay-meta">
-          <span>Steps: <strong>7</strong></span>
-          <span>Tokens: <strong>1,847</strong></span>
-          <span>Cost: <strong>$0.0062</strong></span>
-          <span>Duration: <strong>2.4s</strong></span>
-        </div>
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">05</span> / Agent Replay</div>
+    <div>
+      <h2 class="sec-title">Time-travel debugging <span class="serif" style="color:var(--teal)">for AI agents.</span></h2>
+      <p class="sec-sub">Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore "what if?" scenarios. Available in both the SDK and the platform.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="replay" id="replayWidget">
+      <div class="replay-head">
+        <span class="title">▶ Replay: Customer Support Agent</span>
+        <span class="spacer"></span>
+        <span class="kv"><span class="k">steps</span>&nbsp;<b style="color:var(--ink)">7</b></span>
+        <span class="kv"><span class="k">tokens</span>&nbsp;<b style="color:var(--ink)">1,847</b></span>
+        <span class="kv"><span class="k">cost</span>&nbsp;<b style="color:var(--ink)">$0.0062</b></span>
+        <span class="kv"><span class="k">duration</span>&nbsp;<b style="color:var(--ink)">2.4s</b></span>
       </div>
       <div class="replay-body">
-        <div class="replay-timeline">
-          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">System Prompt</div><div class="step-meta">setup · 0ms</div></div></div>
-          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">LLM Call #1</div><div class="step-meta">gpt-4o · 520ms · 412 tok</div></div></div>
-          <div class="replay-step"><div class="step-dot retrieval"></div><div><div class="step-name">KB: Search Docs</div><div class="step-meta">3 chunks · 85ms</div></div></div>
-          <div class="replay-step active"><div class="step-dot tool"></div><div><div class="step-name">Tool: get_customer</div><div class="step-meta">salesforce · 180ms</div></div><div class="fork-icon">⑂</div></div>
-          <div class="replay-step"><div class="step-dot memory"></div><div><div class="step-name">Memory Retrieve</div><div class="step-meta">2 entries · 42ms</div></div></div>
-          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">LLM Call #2</div><div class="step-meta">gpt-4o · 680ms · 891 tok</div></div></div>
-          <div class="replay-step"><div class="step-dot llm"></div><div><div class="step-name">Final Response</div><div class="step-meta">output · 544 tok</div></div></div>
+        <div class="trace" id="traceList">
+          <!-- rows injected -->
         </div>
         <div class="replay-detail">
-          <div class="replay-detail-top">
-            <h5>Step 4: get_customer <span class="replay-type-tag tool">TOOL</span></h5>
-            <button class="replay-fork-btn">⑂ Fork from here</button>
+          <div class="rd-title">
+            <span class="num" id="rdStep">Step 4 · of 7</span>
+            <h4 id="rdTitle">get_customer</h4>
+            <span class="tool-tag" id="rdTag">TOOL</span>
+            <button class="fork-btn"><span>⑂</span> Fork from here</button>
           </div>
-          <div class="replay-section-lbl">Input</div>
-          <div class="replay-json-block">{
-  <span class="jk">"tool_name"</span>: <span class="js">"salesforce.get_account"</span>,
-  <span class="jk">"arguments"</span>: {
-    <span class="jk">"account_name"</span>: <span class="js">"Acme Corp"</span>
+          <div class="io-grid">
+            <div class="io-box">
+              <div class="lab">Input</div>
+<pre id="rdIn">{
+  "tool_name": "salesforce.get_account",
+  "arguments": {
+    "account_name": "Acme Corp"
   }
-}</div>
-          <div class="replay-section-lbl">Output</div>
-          <div class="replay-json-block">{
-  <span class="jk">"id"</span>: <span class="js">"001Dn00000X8kPQ"</span>,
-  <span class="jk">"name"</span>: <span class="js">"Acme Corp"</span>,
-  <span class="jk">"employees"</span>: <span class="jn">520</span>,
-  <span class="jk">"annual_revenue"</span>: <span class="jn">48000000</span>
-}</div>
-          <div class="replay-cost-row"><div class="cost-label">tokens</div><div class="cost-track"><div class="cost-fill tokens" style="width:58%"></div></div><div class="cost-val">1,073 / 1,847</div></div>
-          <div class="replay-cost-row" style="margin-top:6px"><div class="cost-label">cost</div><div class="cost-track"><div class="cost-fill cost" style="width:45%"></div></div><div class="cost-val">$0.0028 / $0.0062</div></div>
+}</pre>
+            </div>
+            <div class="io-box">
+              <div class="lab">Output</div>
+<pre id="rdOut">{
+  "id": "001Dn00000X8kPQ",
+  "name": "Acme Corp",
+  "employees": 520,
+  "annual_revenue": 48000000
+}</pre>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="replay-nav">
-        <button class="replay-nav-btn">◀ Prev</button>
-        <div class="replay-nav-info">Step 4 of 7 · <span style="color:var(--accent-cyan)">⑂ 1 fork</span></div>
-        <button class="replay-nav-btn">Next ▶</button>
+      <div class="replay-foot">
+        <div class="meter">
+          <div class="lab">Tokens</div>
+          <div class="val"><b id="tokNow">1,073</b> / 1,847</div>
+          <div class="bar"><i id="tokBar" style="width:58%"></i></div>
+        </div>
+        <div class="nav-foot">
+          <button id="prevBtn">◀ Prev</button>
+          <span id="stepLabel">Step 4 of 7 · ⑂ 1 fork</span>
+          <button id="nextBtn">Next ▶</button>
+        </div>
+        <div class="meter" style="text-align:right">
+          <div class="lab">Cost</div>
+          <div class="val"><b id="costNow">$0.0028</b> / $0.0062</div>
+          <div class="bar"><i id="costBar" style="width:45%"></i></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== ENTERPRISE ===== -->
-<section>
-  <div class="container">
-    <div class="sec-label green">Enterprise Ready</div>
-    <div class="sec-title">Built for Regulated Environments.</div>
-    <div class="sec-desc-wide">4-role RBAC, SSO, encrypted secrets, audit trails, air-gapped deployment, and FastAIShield for EU AI Act compliance. No cloud dependency. No vendor lock-in. Your data stays yours.</div>
-
-    <div class="card-grid cols-4">
-      <div class="fcard"><div class="fcard-icon green">🔐</div><h3>SSO + RBAC</h3><p>Enterprise single sign-on with 4-role permission hierarchy: App Admin, Domain Admin, Developer, Viewer.</p></div>
-      <div class="fcard"><div class="fcard-icon green">📦</div><h3>Air-Gapped Deploy</h3><p>Standalone deployment bundles with pre-built images. Zero internet dependency for classified and regulated networks.</p></div>
-      <div class="fcard"><div class="fcard-icon green">📋</div><h3>Audit Logging</h3><p>Complete audit trail: who did what, when. Action tracking, resource IDs, actor identification, and IP capture.</p></div>
-      <div class="fcard"><div class="fcard-icon green">🛡</div><h3>FastAIShield<span class="ent-badge">ENTERPRISE</span></h3><p>EU AI Act compliance platform. Risk assessment, accountability framework (19 roles), audit trails, and regulatory reporting.</p></div>
-    </div>
-
-    <div class="metrics-bar" style="margin-bottom:0">
-      <div class="metric"><div class="val">SSO</div><div class="lbl">Enterprise Auth</div></div>
-      <div class="metric"><div class="val">4-Role</div><div class="lbl">RBAC System</div></div>
-      <div class="metric"><div class="val">Air-Gap</div><div class="lbl">Ready to Deploy</div></div>
-      <div class="metric"><div class="val">Zero</div><div class="lbl">Cloud Dependencies</div></div>
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">06</span> / Pricing</div>
+    <div>
+      <h2 class="sec-title">Start free. <span class="serif" style="color:var(--teal)">Scale when ready.</span></h2>
+      <p class="sec-sub">The SDK is open-source and always free. The platform offers a generous free tier — upgrade when your agents need team features, higher limits, or enterprise compliance.</p>
     </div>
   </div>
-</section>
-
-<!-- ===== PRICING ===== -->
-<section id="pricing">
-  <div class="container" style="text-align:center">
-    <div class="sec-label cyan" style="justify-content:center">Pricing</div>
-    <div class="sec-title" style="margin:0 auto 16px">Start free. Scale when ready.</div>
-    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">The SDK is open-source and always free. The platform offers a generous free tier — upgrade when your agents need team features, higher limits, or enterprise compliance.</div>
-    <div class="tier-grid" style="max-width:1000px;margin:0 auto">
-      <div class="tier-card">
-        <div class="tier-name" style="color:var(--text-muted)">Free</div>
-        <div class="tier-price">$0</div>
-        <ul class="tier-list">
-          <li>5000 spans / month</li>
+  <div class="wrap">
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-name mono">Free</div>
+        <div class="price-val">$0 <small>/ forever</small></div>
+        <ul class="price-list">
+          <li>5,000 spans / month</li>
           <li>5 agents, 5 chains</li>
           <li>10 prompts, 20 eval runs</li>
           <li>1 user, 1 project</li>
           <li>Community support</li>
-          <li>Full SDK (unlimited)</li>
+          <li>Full SDK — unlimited</li>
         </ul>
-        <div style="margin-top:24px"><a href="https://app.fastaiagent.net/" class="btn-secondary" style="width:100%;justify-content:center">Start Free</a></div>
+        <a href="https://app.fastaiagent.net/" class="btn">Start free →</a>
       </div>
-      <div class="tier-card featured">
-        <div class="tier-name" style="color:var(--accent-cyan)">Pro</div>
-        <div class="tier-price">$199<span>/mo</span></div>
-        <ul class="tier-list">
+      <div class="price-card hi">
+        <div class="price-name mono">Pro</div>
+        <div class="price-val">$149<small>/ mo</small></div>
+        <ul class="price-list">
           <li>50,000 spans / month</li>
           <li>Unlimited agents, chains, prompts</li>
           <li>10 users</li>
@@ -676,134 +782,317 @@ result <span class="op">=</span> <span class="kw">await</span> agent.<span class
           <li>Online Eval Policies</li>
           <li>Priority support</li>
         </ul>
-        <div style="margin-top:24px"><a href="https://app.fastaiagent.net/" class="btn-primary" style="width:100%;justify-content:center">Upgrade to Pro</a></div>
+        <a href="https://app.fastaiagent.net/" class="btn btn-primary">Upgrade to Pro</a>
       </div>
-      <div class="tier-card">
-        <div class="tier-name" style="color:var(--accent-violet)">Enterprise</div>
-        <div class="tier-price">Custom</div>
-        <ul class="tier-list">
+      <div class="price-card">
+        <div class="price-name mono">Enterprise</div>
+        <div class="price-val">Custom</div>
+        <ul class="price-list">
           <li>Unlimited everything</li>
           <li>SSO + 4-Role RBAC</li>
           <li>Audit trails &amp; compliance</li>
           <li>Air-gapped deployment</li>
           <li>FastAIShield (EU AI Act)</li>
-          <li>Annotation queues</li>
-          <li>Dedicated support &amp; SLA</li>
+          <li>Annotation queues · Dedicated SLA</li>
         </ul>
-        <div style="margin-top:24px"><a href="https://fastaiagent.net/demo" class="btn-secondary" style="width:100%;justify-content:center">Book Demo</a></div>
+        <a href="https://fastaiagent.net/demo" class="btn">Book demo →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== INTEGRATIONS ===== -->
-<section class="sec-alt">
-  <div class="container" style="text-align:center">
-    <div class="sec-label orange" style="justify-content:center">Integrations &amp; Ecosystem</div>
-    <div class="sec-title" style="margin:0 auto 16px">Connects to your stack.</div>
-    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">Multi-provider LLM support, 29+ connectors, MCP protocol native, and growing vector DB and observability integrations. No vendor lock-in — bring your own models, tools, and infrastructure.</div>
-    <div class="card-grid cols-3" style="max-width:900px;margin:0 auto;text-align:left">
-      <div class="fcard">
-        <div class="fcard-icon cyan">🧠</div>
-        <h3>LLM Providers</h3>
-        <p>OpenAI, Anthropic, Azure OpenAI, Ollama, AWS Bedrock, Google Vertex, and custom endpoints via enterprise gateway auth.</p>
-        <div class="tag">Multi-Provider</div>
-      </div>
-      <div class="fcard">
-        <div class="fcard-icon orange">🔌</div>
-        <h3>29+ Connectors</h3>
-        <p>Databases, cloud storage, messaging, CRM, email, data processing, and REST/GraphQL. Each connector is reusable across all agents.</p>
-        <div class="tag">Pre-Built</div>
-      </div>
-      <div class="fcard">
-        <div class="fcard-icon violet">⚡</div>
-        <h3>MCP Protocol</h3>
-        <p>First-class support for Anthropic's Model Context Protocol. Connect external MCP servers, host your own, and discover tools dynamically.</p>
-        <div class="tag">Native Support</div>
-      </div>
-      <div class="fcard">
-        <div class="fcard-icon green">🗄</div>
-        <h3>Vector Databases</h3>
-        <p>Built-in vector store with plans for Qdrant, ChromaDB, Pinecone, Weaviate, and pgvector adapters.</p>
-        <div class="tag">Expanding</div>
-      </div>
-      <div class="fcard">
-        <div class="fcard-icon violet">📊</div>
-        <h3>MLflow Integration</h3>
-        <p>Export traces and eval runs to MLflow. Bridge AI agent quality with your existing ML experiment tracking infrastructure.</p>
-        <div class="tag">Built-In</div>
-      </div>
-      <div class="fcard">
-        <div class="fcard-icon cyan">🔭</div>
-        <h3>OpenTelemetry</h3>
-        <p>OTel-native tracing with BatchSpanProcessor. Export to any OTel-compatible backend — Datadog, Grafana, or your own collector.</p>
-        <div class="tag">OTel Native</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== ECOSYSTEM ===== -->
+<!-- ECOSYSTEM -->
 <section>
-  <div class="container" style="text-align:center">
-    <div class="sec-label cyan" style="justify-content:center">Part of the FastAIFoundry Ecosystem</div>
-    <div class="sec-title" style="margin:0 auto 16px">Agent is just the Beginning.</div>
-    <div class="sec-desc-wide" style="margin:0 auto 48px;text-align:center">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Consume them in Workspace. Ground them in context. Govern them at scale.</div>
-    <div class="card-grid cols-4" style="max-width:1100px;margin:0 auto">
-      <div class="fcard" style="text-align:center;border-color:rgba(0,136,170,.2)">
-        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#e8f6fa"/><circle cx="62" cy="56" r="30" fill="#fff" stroke="#0088aa" stroke-width="6"/><path d="M58 38L52 54H64L55 76" stroke="#006688" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
-        <h3 class="gradient-text" style="font-size:18px">FastAIAgent</h3>
-        <p style="margin-top:8px">Build, test, deploy, and run intelligent agents with visual workflows, advanced RAG, prompt optimization, and full lifecycle management.</p>
-        <div class="mono" style="color:var(--accent-cyan);margin-top:12px;font-size:9px">You are here</div>
+  <div class="wrap sec-head">
+    <div class="sec-kicker"><span class="n">07</span> / FastAIFoundry Ecosystem</div>
+    <div>
+      <h2 class="sec-title">Agent is just <span class="serif" style="color:var(--teal)">the beginning.</span></h2>
+      <p class="sec-sub">FastAIAgent is the execution engine within the broader FastAIFoundry product family. Build agents here. Consume them in Workspace. Ground them in context. Govern them at scale.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="eco-grid">
+      <div class="eco-card here">
+        <span class="eco-state">You are here</span>
+        <h5>FastAIAgent</h5>
+        <p>Build, test, deploy, run intelligent agents with visual workflows, RAG, prompt optimization, and full lifecycle management.</p>
       </div>
-      <div class="fcard" style="text-align:center;border-color:rgba(134,25,143,.15)">
-        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#f5eaf8"/><rect x="12" y="12" width="42" height="42" rx="13" fill="#fff" stroke="#86198F" stroke-width="5" stroke-opacity=".55"/><rect x="66" y="12" width="42" height="42" rx="13" fill="#fff" stroke="#86198F" stroke-width="5" stroke-opacity=".55"/><rect x="12" y="66" width="42" height="42" rx="13" fill="#fff" stroke="#86198F" stroke-width="5" stroke-opacity=".55"/><rect x="66" y="66" width="42" height="42" rx="13" fill="#f3e0f6" stroke="#86198F" stroke-width="5.5"/><path d="M80 76L80 98L98 87Z" fill="#86198F" opacity=".85"/><circle cx="60" cy="60" r="5.5" fill="#86198F" opacity=".9"/></svg></div>
-        <h3 style="font-size:18px;color:#86198F">FastAIWorkspace</h3>
-        <p style="margin-top:8px">Thin-client consumption portal for business users. Run agents, view structured results, and manage work — no technical skills required.</p>
-        <div class="mono" style="color:#86198F;margin-top:12px;font-size:9px">Live</div>
+      <div class="eco-card">
+        <span class="eco-state">Live</span>
+        <h5>FastAIWorkspace</h5>
+        <p>Thin-client consumption portal for business users. Run agents, view structured results — no technical skills required.</p>
       </div>
-      <div class="fcard" style="text-align:center;border-color:rgba(99,102,241,.15)">
-        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#eee8f8"/><path d="M20 52L60 30L100 52L60 74Z" fill="#dcd0ee" stroke="#6b51e0" stroke-width="4" stroke-opacity="0.3"/><path d="M20 66L60 44L100 66L60 88Z" fill="#d6c8ea" stroke="#6b51e0" stroke-width="5" stroke-opacity="0.6"/><circle cx="60" cy="66" r="14" fill="#f0ecf8" stroke="#6b51e0" stroke-width="5"/><path d="M54 62L60 56L66 62L60 68Z" stroke="#4a38b0" stroke-width="4.5" fill="none"/></svg></div>
-        <h3 style="font-size:18px;color:var(--accent-violet)">FastAIContext</h3>
-        <p style="margin-top:8px">The Business Context layer. Knowledge graphs, entity resolution, and semantic understanding that makes agents organisation-aware.</p>
-        <div class="mono" style="color:var(--text-muted);margin-top:12px;font-size:9px">Coming Soon</div>
+      <div class="eco-card">
+        <span class="eco-state">Coming Soon</span>
+        <h5>FastAIContext</h5>
+        <p>Business Context layer. Knowledge graphs, entity resolution, and semantic understanding that makes agents org-aware.</p>
       </div>
-      <div class="fcard" style="text-align:center;border-color:rgba(5,150,105,.15)">
-        <div style="margin:0 auto 16px;width:56px;height:56px"><svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="#e8faf4"/><path d="M60 12L96 28V60C96 82 80 96 60 104C40 96 24 82 24 60V28L60 12Z" fill="#f0fdf8" stroke="#0d9668" stroke-width="5" stroke-linejoin="round"/><path d="M42 58L54 70L78 44" stroke="#0d9668" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
-        <h3 style="font-size:18px;color:var(--accent-green)">FastAIShield</h3>
-        <p style="margin-top:8px">AI Governance and Compliance. Risk assessment, audit trails, and regulatory readiness for EU AI Act and beyond.</p>
-        <div class="mono" style="color:var(--text-muted);margin-top:12px;font-size:9px">Live</div>
+      <div class="eco-card">
+        <span class="eco-state">Live</span>
+        <h5>FastAIShield</h5>
+        <p>AI Governance &amp; Compliance. Risk assessment, audit trails, and regulatory readiness for EU AI Act and beyond.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-brand">Fast<span class="gradient-text">AI</span>Foundry</div>
-    <div class="footer-sub">Every tool gives you pieces. We close the loop.</div>
-    <div class="footer-ctas">
-      <a href="https://app.fastaiagent.net/" class="footer-cta-primary">Start Free →</a>
-      <a href="https://fastaiagent.net/demo" class="footer-cta-secondary">Book a Demo</a>
-      <a href="https://github.com/fastaifoundry/fastaiagent-sdk" class="footer-cta-secondary">GitHub →</a>
+<!-- CLOSER -->
+<section class="closer">
+  <div class="wrap">
+    <h2>Every tool gives you <em>pieces.</em><br>We close the <em>loop.</em></h2>
+    <div class="row">
+      <a href="https://app.fastaiagent.net/" class="btn btn-primary">Start free →</a>
+      <a href="https://fastaiagent.net/demo" class="btn">Book a demo</a>
+      <a href="https://github.com/fastaifoundry/fastaiagent-sdk" class="btn">GitHub ↗</a>
     </div>
-    <div class="footer-links">
-      <a href="#">Documentation</a>
-      <a href="https://github.com/fastaifoundry/fastaiagent-sdk">GitHub</a>
-      <a href="#">API Reference</a>
-      <a href="#">Blog</a>
-      <a href="#">Discord</a>
-      <a href="#">Contact</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-big">Fast<span class="t">AI</span>Foundry</div>
+        <p style="color:var(--ink-2);max-width:340px;margin-top:18px;font-size:13.5px;line-height:1.6">The agent operating system. Open-source SDK. Self-hosted platform. Your data stays yours.</p>
+      </div>
+      <div class="foot-col">
+        <h6>Product</h6>
+        <a href="#loop">The Loop</a>
+        <a href="#sdk">SDK</a>
+        <a href="#platform">Platform</a>
+        <a href="#replay">Agent Replay</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="foot-col">
+        <h6>Developers</h6>
+        <a href="https://github.com/fastaifoundry/fastaiagent-sdk">GitHub</a>
+        <a href="https://pypi.org/project/fastaiagent/">PyPI</a>
+        <a href="#">Documentation</a>
+        <a href="#">API Reference</a>
+        <a href="#">MCP Servers</a>
+      </div>
+      <div class="foot-col">
+        <h6>Company</h6>
+        <a href="#">Blog</a>
+        <a href="#">Discord</a>
+        <a href="https://fastaiagent.net/demo">Book a demo</a>
+        <a href="#">Contact</a>
+      </div>
     </div>
-    <div class="footer-copy">© 2026 FastAIFoundry. Open-source SDK · Self-hosted platform · Your data stays yours.</div>
+    <div class="foot-bar">
+      <span>© 2026 FastAIFoundry · Apache 2.0 SDK · Self-hosted platform</span>
+      <span>v0.1.0 · updated <span id="stamp">today</span></span>
+    </div>
   </div>
 </footer>
 
+<!-- TWEAKS -->
+<div class="tweaks" id="tweaks">
+  <h6>Tweaks</h6>
+  <div class="tweak-row">
+    <label>Accent</label>
+    <div class="swatches" id="swatches">
+      <button class="sw sel" data-accent="teal"   style="background:#14b8a6"></button>
+      <button class="sw"     data-accent="violet" style="background:#8b5cf6"></button>
+      <button class="sw"     data-accent="amber"  style="background:#f59e0b"></button>
+      <button class="sw"     data-accent="rose"   style="background:#f43f5e"></button>
+      <button class="sw"     data-accent="lime"   style="background:#84cc16"></button>
+    </div>
+  </div>
+  <div class="tweak-row">
+    <label>Theme</label>
+    <select id="tweakTheme">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+    </select>
+  </div>
+  <div class="tweak-row">
+    <label>Loop spin</label>
+    <select id="tweakSpin">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+    </select>
+  </div>
+  <div class="tweak-row">
+    <label>Grid backdrop</label>
+    <select id="tweakGrid">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+    </select>
+  </div>
+</div>
+
 <script>
-document.querySelectorAll('.topbar-nav a').forEach(a=>a.addEventListener('click',()=>{
-  document.querySelector('.topbar-nav').classList.remove('open');
-}));
+  // ---- TWEAK DEFAULTS (edit mode persistable) ----
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "teal",
+    "theme": "dark",
+    "loopSpin": "on",
+    "gridBackdrop": "on"
+  }/*EDITMODE-END*/;
+
+  const STORE_KEY = "faa_tweaks";
+  function loadTweaks(){
+    try{ return Object.assign({}, TWEAK_DEFAULTS, JSON.parse(localStorage.getItem(STORE_KEY)||"{}")); }
+    catch(e){ return {...TWEAK_DEFAULTS}; }
+  }
+  function saveTweaks(t){ localStorage.setItem(STORE_KEY, JSON.stringify(t)); }
+  const state = loadTweaks();
+
+  // ---- THEME ----
+  function applyTheme(t){
+    document.documentElement.dataset.theme = t;
+    const btn = document.getElementById("themeBtn");
+    btn.innerHTML = t === "light"
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
+    document.getElementById("tweakTheme").value = t;
+  }
+  document.getElementById("themeBtn").addEventListener("click", ()=>{
+    state.theme = state.theme === "light" ? "dark" : "light";
+    applyTheme(state.theme); saveTweaks(state);
+  });
+
+  // ---- ACCENT ----
+  const ACCENTS = {
+    teal:   { main:"#5eead4", deep:"#14b8a6", mainL:"#0d9488", deepL:"#0f766e" },
+    violet: { main:"#c4b5fd", deep:"#8b5cf6", mainL:"#7c3aed", deepL:"#6d28d9" },
+    amber:  { main:"#fcd34d", deep:"#f59e0b", mainL:"#b45309", deepL:"#92400e" },
+    rose:   { main:"#fda4af", deep:"#f43f5e", mainL:"#be123c", deepL:"#9f1239" },
+    lime:   { main:"#bef264", deep:"#84cc16", mainL:"#4d7c0f", deepL:"#3f6212" },
+  };
+  function applyAccent(name){
+    const a = ACCENTS[name] || ACCENTS.teal;
+    const isLight = state.theme === "light";
+    document.documentElement.style.setProperty("--teal", isLight ? a.mainL : a.main);
+    document.documentElement.style.setProperty("--teal-deep", isLight ? a.deepL : a.deep);
+    document.querySelectorAll("#swatches .sw").forEach(s=>{
+      s.classList.toggle("sel", s.dataset.accent===name);
+    });
+  }
+  document.querySelectorAll("#swatches .sw").forEach(s=>{
+    s.addEventListener("click", ()=>{
+      state.accent = s.dataset.accent;
+      applyAccent(state.accent); saveTweaks(state);
+    });
+  });
+
+  // Re-apply accent on theme change
+  const _applyTheme = applyTheme;
+  applyTheme = function(t){ _applyTheme(t); applyAccent(state.accent); };
+
+  // ---- TWEAK SELECTS ----
+  document.getElementById("tweakTheme").addEventListener("change", e=>{
+    state.theme = e.target.value; applyTheme(state.theme); saveTweaks(state);
+  });
+  document.getElementById("tweakSpin").addEventListener("change", e=>{
+    state.loopSpin = e.target.value;
+    const anim = document.querySelector("#loopPath animate");
+    if(anim) anim.setAttribute("dur", state.loopSpin==="on" ? "40s" : "0s");
+    if(state.loopSpin==="off" && anim){ anim.setAttribute("dur","999999s"); }
+    saveTweaks(state);
+  });
+  document.getElementById("tweakGrid").addEventListener("change", e=>{
+    state.gridBackdrop = e.target.value;
+    document.body.style.setProperty("--_grid", state.gridBackdrop==="on" ? "1" : "0");
+    document.body.classList.toggle("no-grid", state.gridBackdrop==="off");
+    saveTweaks(state);
+  });
+  // inject grid-off rule
+  const gs = document.createElement("style");
+  gs.textContent = "body.no-grid::before{display:none}";
+  document.head.appendChild(gs);
+
+  // Initial apply
+  applyTheme(state.theme);
+  applyAccent(state.accent);
+  if(state.gridBackdrop==="off"){ document.body.classList.add("no-grid"); }
+  document.getElementById("tweakSpin").value = state.loopSpin;
+  document.getElementById("tweakGrid").value = state.gridBackdrop;
+
+  // ---- EDIT MODE (Tweaks toolbar integration) ----
+  window.addEventListener("message", (e)=>{
+    if(!e.data || typeof e.data !== "object") return;
+    if(e.data.type === "__activate_edit_mode") document.getElementById("tweaks").classList.add("on");
+    if(e.data.type === "__deactivate_edit_mode") document.getElementById("tweaks").classList.remove("on");
+  });
+  try { window.parent.postMessage({type:"__edit_mode_available"}, "*"); } catch(e){}
+
+  // ---- Loop hover highlight ----
+  const nodes = document.querySelectorAll(".loop-node");
+  let active = 1;
+  function setActive(n){
+    active = n;
+    nodes.forEach(el=>el.classList.toggle("active", +el.dataset.step===n));
+  }
+  setActive(1);
+  nodes.forEach(el=> el.addEventListener("mouseenter", ()=> setActive(+el.dataset.step)));
+  // auto-cycle
+  setInterval(()=>{
+    if(state.loopSpin==="off") return;
+    setActive(active%7 + 1);
+  }, 1800);
+
+  // ---- Replay interactive ----
+  const STEPS = [
+    { name:"System Prompt",   tag:"setup",  tagCls:"setup",  ms:0,   tok:12,   cost:0.00002, in:'{\n  "role": "system",\n  "content": "You are a helpful support agent.\\nUse tools. Be concise."\n}', out:'(none — context injection)'},
+    { name:"LLM Call #1",     tag:"LLM",    tagCls:"llm",    ms:520, tok:412,  cost:0.00088, in:'{\n  "model": "gpt-4o",\n  "messages": [...],\n  "tools": [\"search_kb\", \"get_customer\", \"create_ticket\"]\n}', out:'{\n  "tool_calls": [\n    { "name": "search_kb", "args": {"q": "login failure"} }\n  ]\n}'},
+    { name:"KB: Search Docs", tag:"KB",     tagCls:"kb",     ms:85,  tok:0,    cost:0,       in:'{\n  "query": "login failure",\n  "top_k": 3\n}', out:'[\n  { "id":"kb_217", "score":0.91, "title":"Password reset flow" },\n  { "id":"kb_041", "score":0.82, "title":"MFA troubleshooting" },\n  { "id":"kb_189", "score":0.77, "title":"Account lockout policy" }\n]'},
+    { name:"get_customer",    tag:"TOOL",   tagCls:"tool",   ms:180, tok:0,    cost:0,       in:'{\n  "tool_name": "salesforce.get_account",\n  "arguments": {\n    "account_name": "Acme Corp"\n  }\n}', out:'{\n  "id": "001Dn00000X8kPQ",\n  "name": "Acme Corp",\n  "employees": 520,\n  "annual_revenue": 48000000\n}'},
+    { name:"Memory Retrieve", tag:"MEM",    tagCls:"mem",    ms:42,  tok:0,    cost:0,       in:'{\n  "user_id": "u_8831",\n  "top_k": 2\n}', out:'[\n  { "fact":"User prefers email over phone", "score":0.88 },\n  { "fact":"Previously escalated a billing issue", "score":0.74 }\n]'},
+    { name:"LLM Call #2",     tag:"LLM",    tagCls:"llm",    ms:680, tok:891,  cost:0.00191, in:'{\n  "model": "gpt-4o",\n  "messages": [...with KB, customer, memory...]\n}', out:'{\n  "content": "Hi! I pulled up your Acme Corp account...",\n  "finish_reason": "stop"\n}'},
+    { name:"Final Response",  tag:"OUT",    tagCls:"out",    ms:0,   tok:544,  cost:0.00119, in:'(composed by LLM Call #2)', out:'"Hi! I pulled up your Acme Corp account. Looks like MFA was\\nrecently enabled. I\'ve sent a reset link to your work email. If\\nthat doesn\'t work, I\'ll escalate to a specialist."'},
+  ];
+  const traceList = document.getElementById("traceList");
+  STEPS.forEach((s, i)=>{
+    const r = document.createElement("div");
+    r.className = "trace-row";
+    r.dataset.idx = i;
+    r.innerHTML = `
+      <span class="step">${String(i+1).padStart(2,'0')}</span>
+      <span class="name">${s.name}</span>
+      ${i===3 ? '<span class="fork">⑂</span>' : ''}
+      <span class="ms">${s.ms}ms</span>`;
+    r.addEventListener("click", ()=> selectStep(i));
+    traceList.appendChild(r);
+  });
+  let cur = 3;
+  function selectStep(i){
+    cur = i;
+    document.querySelectorAll(".trace-row").forEach(el=> el.classList.toggle("active", +el.dataset.idx===i));
+    const s = STEPS[i];
+    document.getElementById("rdStep").textContent  = `Step ${i+1} · of ${STEPS.length}`;
+    document.getElementById("rdTitle").textContent = s.name;
+    document.getElementById("rdTag").textContent   = s.tag;
+    document.getElementById("rdIn").textContent    = s.in;
+    document.getElementById("rdOut").textContent   = s.out;
+    // running totals
+    let totTok=0, totCost=0;
+    for(let k=0;k<=i;k++){ totTok += STEPS[k].tok; totCost += STEPS[k].cost; }
+    document.getElementById("tokNow").textContent  = totTok.toLocaleString();
+    document.getElementById("costNow").textContent = "$"+totCost.toFixed(4);
+    document.getElementById("tokBar").style.width  = Math.min(100, totTok/1847*100)+"%";
+    document.getElementById("costBar").style.width = Math.min(100, totCost/0.0062*100)+"%";
+    document.getElementById("stepLabel").textContent = `Step ${i+1} of ${STEPS.length}${i===3 ? " · ⑂ 1 fork":""}`;
+  }
+  document.getElementById("prevBtn").addEventListener("click", ()=> selectStep((cur-1+STEPS.length)%STEPS.length));
+  document.getElementById("nextBtn").addEventListener("click", ()=> selectStep((cur+1)%STEPS.length));
+  selectStep(3);
+
+  // ---- Copy pip ----
+  function copyPip(el){
+    const t = (el && el.textContent) ? el.textContent.trim() : "pip install fastaiagent";
+    try{ navigator.clipboard.writeText(t); }catch(e){}
+    const old = el.textContent; el.textContent = "copied ✓";
+    setTimeout(()=>{ el.textContent = old; }, 1200);
+  }
+  window.copyPip = copyPip;
+  document.getElementById("copyCmd").addEventListener("click", function(){ copyPip(this); });
+
+  // ---- date stamp ----
+  document.getElementById("stamp").textContent = new Date().toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
 </script>
+
 </body>
 </html>
