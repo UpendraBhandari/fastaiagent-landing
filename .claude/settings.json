@@ -10,7 +10,8 @@
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,13500 --virtual-time-budget=15000 --screenshot=pricing_full.png \"file:///private/tmp/claude-501/-Users-upendrabhandari-fastaiagent-landing/edcb0121-0773-46d0-bb50-2e19ad2bcfcd/scratchpad/pricing_preview.html\")",
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,12000 --virtual-time-budget=15000 --screenshot=recheck.png \"file:///Users/upendrabhandari/fastaiagent-landing/index_new.html\")",
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,14000 --virtual-time-budget=15000 --screenshot=final.png \"file:///Users/upendrabhandari/fastaiagent-landing/index_new.html\")",
-      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,14000 --virtual-time-budget=15000 --screenshot=final2.png \"file:///Users/upendrabhandari/fastaiagent-landing/index_new.html\")"
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,14000 --virtual-time-budget=15000 --screenshot=final2.png \"file:///Users/upendrabhandari/fastaiagent-landing/index_new.html\")",
+      "Bash(git credential-osxkeychain *)"
     ]
   }
 }
