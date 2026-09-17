@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Enterprise — FastAIAgent</title>
+  <meta name="description" content="FastAIAgent Enterprise is the control plane for AI agents: governance, EU AI Act compliance, approvals, observability and evaluation — without ever running your agents. Your code and credentials never leave your infrastructure.">
+  <link rel="icon" href="./assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="stylesheet" href="./theme.css">
+</helmet>
+<dc-import name="nav" active="enterprise" hint-size="100%,64px"></dc-import>
+
+<section data-screen-label="Enterprise hero" style="padding:clamp(56px,8vw,110px) clamp(20px,4vw,56px) clamp(48px,6vw,80px);background:radial-gradient(900px 500px at 15% -10%,var(--accent-soft),transparent 70%)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center;animation:rise .7s ease both">
+    <div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)"><span style="padding:4px 8px;border:1px solid var(--accent);border-radius:4px">Enterprise</span><span style="color:var(--ink-3)">The control plane for AI agents</span></div>
+      <h1 style="font-family:var(--display);font-size:clamp(40px,5.6vw,80px);font-weight:700;letter-spacing:-.04em;line-height:.96;margin:24px 0 0;text-wrap:balance">Your agents run in your environment. <span style="color:var(--accent)">The control plane never reaches in.</span></h1>
+      <p style="font-size:clamp(17px,1.4vw,20px);line-height:1.55;color:var(--ink-2);max-width:56ch;margin:28px 0 0">Govern, observe, evaluate and approve every agent you run — built for regulated environments, with EU AI Act compliance in the box. Your code, prompts and credentials never leave your infrastructure.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:32px">
+        <a href="#contact" style="display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px" style-hover="filter:brightness(1.08)">Book a walkthrough →</a>
+        <a href="#compliance" style="display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:8px;border:1px solid var(--line-2);color:var(--ink);font-weight:600;font-size:15px" style-hover="border-color:var(--ink-3)">EU AI Act compliance</a>
+        <a href="./pricing.html" style="display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:8px;color:var(--ink-2);font-weight:600;font-size:15px">Pricing</a>
+      </div>
+    </div>
+    <div style="border:1px solid var(--line);border-radius:16px;background:var(--bg-2);padding:24px;font-family:var(--mono);font-size:13px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;letter-spacing:.1em;color:var(--ink-3)"><span>POLICY/eu-ai-act/high-risk</span><span style="color:var(--ok)">CONFORMANT</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:16px">
+        <div><div style="font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.02em">98.4<span style="font-size:16px;color:var(--ink-3)">%</span></div><div style="font-size:11px;color:var(--ink-3)">Conformity</div></div>
+        <div><div style="font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.02em">100<span style="font-size:16px;color:var(--ink-3)">%</span></div><div style="font-size:11px;color:var(--ink-3)">Audit coverage</div></div>
+        <div><div style="font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.02em">2.1<span style="font-size:16px;color:var(--ink-3)">σ</span></div><div style="font-size:11px;color:var(--ink-3)">Drift (7d)</div></div>
+        <div><div style="font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.02em">0<span style="font-size:16px;color:var(--ink-3)">/19 roles</span></div><div style="font-size:11px;color:var(--ink-3)">Open findings</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 20px;padding-top:14px;border-top:1px solid var(--line)">
+        <span style="color:var(--ink-3)">PROVIDER</span><span>Acme Corp</span>
+        <span style="color:var(--ink-3)">DEPLOYER</span><span>Acme Support</span>
+        <span style="color:var(--ink-3)">LEDGER</span><span style="color:var(--ok)">tamper-evident · verified</span>
+        <span style="color:var(--ink-3)">REVIEW</span><span>Q3 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="What you get" style="padding:clamp(48px,6vw,80px) clamp(20px,4vw,56px);border-top:1px solid var(--line)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+    <sc-for list="{{ controls }}" as="c" hint-placeholder-count="6">
+      <div style="border:1px solid var(--line);border-radius:14px;background:var(--bg-2);padding:26px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">{{ c.n }}</div>
+        <h3 style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0">{{ c.title }}</h3>
+        <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:15px">{{ c.body }}</p>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="compliance" data-screen-label="EU AI Act" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2);scroll-margin-top:80px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">EU AI Act &amp; compliance</span><span style="color:var(--ink-3)">governance harness</span></div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">The paper trail <span style="color:var(--accent)">that ships itself.</span></h2>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">A harness without guardrails is just a sandbox. Governance wraps the runtime in EU AI Act compliance, accountability roles, prohibited-practice enforcement, and continuous monitoring — fed directly from the registry, traces, and evals already in the stack. When the auditor asks, the evidence is already there.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">EU AI Act</strong> — high-risk classification, technical doc generation, conformity assessment over a library of 52 controls.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">19-role accountability</strong> — Provider, Deployer, Importer, Distributor, mapped per agent.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Prohibited-practice enforcement</strong> — pre-flight policy check on every run.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Audit trails</strong> — every decision linked to prompt version, model version, memory snapshot, on a tamper-evident ledger.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Continuous monitoring</strong> — drift, bias, performance — alert on threshold breach. See which agents are registered, reporting, or dark.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Compliance reporting</strong> — one-click PDF for auditors, regulators, internal review.</span></li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="border:1px solid var(--line);border-radius:10px;padding:16px 12px;background:var(--bg);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">01</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Classify</div></div>
+        <div style="border:1px solid var(--line);border-radius:10px;padding:16px 12px;background:var(--bg);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">02</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Controls</div></div>
+        <div style="border:1px solid var(--line);border-radius:10px;padding:16px 12px;background:var(--bg);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">03</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Evidence</div></div>
+        <div style="border:1px solid var(--accent);border-radius:10px;padding:16px 12px;background:var(--accent-soft);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--accent)">04</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Scorecard</div></div>
+      </div>
+      <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-compliance.jpg" alt="FastAIAgent Enterprise console — EU AI Act compliance program: score, systems in scope, obligation areas" style="display:block;width:100%;height:auto"></figure>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="approvals" data-screen-label="Human approval" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Human in the loop</span><span style="color:var(--ink-3)">human harness</span></div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Where the loop <span style="color:var(--accent)">meets people.</span></h2>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">An autonomous loop without humans is a liability. "Human in the loop" here means approving a production action before it happens — not a labelling queue. Your people meet the agent in streaming chat, approval queues, and shared sessions, with full audit.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Approval queues</strong> — durable HITL with timer-based escalation; pause for hours or days and resume where you left off.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Approve, modify, reject or expire</strong> — every resolution recorded in an org-wide, append-only ledger.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Session sharing</strong> — pin, comment, reassign, hand off.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Cost dashboards</strong> — tokens, runs, $ per role per agent, with quotas and hard caps.</span></li>
+      </ul>
+    </div>
+    <div style="border:1px solid var(--line);border-radius:16px;background:var(--bg-2);overflow:hidden">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-3)"><span>workspace — #ops · 4 online</span><span style="display:flex;gap:14px"><span>Inbox</span><span style="color:var(--ink)">Approvals · 3</span><span>Sessions</span><span>Audit</span></span></div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;font-size:14px;line-height:1.55">
+        <div style="align-self:flex-end;max-width:85%;padding:12px 14px;border-radius:12px 12px 4px 12px;background:var(--bg-3);color:var(--ink)">Refund order #2841 — customer says it never arrived.</div>
+        <div style="align-self:flex-start;max-width:85%;padding:12px 14px;border-radius:12px 12px 12px 4px;border:1px solid var(--line);color:var(--ink-2)">Found order. Status: <strong style="color:var(--ink);font-weight:600">delivered 2026-04-22</strong>. Customer claim is 11 days post-delivery.</div>
+        <div style="border:1px solid var(--warn);border-radius:12px;padding:16px;background:var(--bg);display:flex;flex-direction:column;gap:10px">
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--warn)">⏸ APPROVAL REQUIRED · stripe.refund</div>
+          <div>Refund <strong style="color:var(--ink);font-weight:600">$184.50</strong> to •••4421 — outside auto-policy window.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+            <span style="padding:8px 14px;border-radius:6px;background:var(--ok);color:#06121a;font-weight:600;font-size:13px">Approve</span>
+            <span style="padding:8px 14px;border-radius:6px;border:1px solid var(--line-2);font-weight:600;font-size:13px">Modify</span>
+            <span style="padding:8px 14px;border-radius:6px;border:1px solid var(--line-2);font-weight:600;font-size:13px">Reject</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="observability" data-screen-label="Observability & Replay" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);scroll-margin-top:80px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:end">
+      <div>
+        <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Observability &amp; Replay</span><span style="color:var(--ink-3)">what every agent actually did</span></div>
+        <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:18px 0 0;text-wrap:balance">See what happened — <span style="color:var(--accent)">and what your controls decided about it.</span></h2>
+      </div>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Every run from every agent lands in one place with tokens, cost and latency. Guardrail verdicts and evaluation scores sit on the exact span that produced them. Fork a real production trace, fix the prompt or tool, rerun — and the incident becomes a regression test.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;margin-top:44px">
+      <figure style="margin:0;display:flex;flex-direction:column;gap:10px"><div style="border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-traces.jpg" alt="Traces list with status, scores, tokens, duration and Replay action" style="display:block;width:100%;height:auto"></div><figcaption style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">Traces — every run, every agent, Replay one click away</figcaption></figure>
+      <figure style="margin:0;display:flex;flex-direction:column;gap:10px"><div style="border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-trace-detail.jpg" alt="Trace detail: span tree with guardrail verdicts and an errored check flagged" style="display:block;width:100%;height:auto"></div><figcaption style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">Trace detail — guardrail verdicts on the span, errored checks never counted as passed</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="guardrails" data-screen-label="Guardrails" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2);scroll-margin-top:80px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
+    <div style="order:2"><figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-guardrails.jpg" alt="FastAIAgent Enterprise console — Guardrails overview: rules, runs, blocked, could-not-run" style="display:block;width:100%;height:auto"></figure></div>
+    <div style="display:flex;flex-direction:column;gap:18px;order:1">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Guardrails</span><span style="color:var(--ink-3)">policy in the decision path</span></div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Can it actually stop something? <span style="color:var(--accent)">Yes.</span></h2>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Observability tools just watch. Here, policy is checked before the agent acts — allow, deny, or require a human — and a governance error is a deny, never a silent pass. Every verdict is recorded next to the trace that produced it.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Ready-made templates</strong> — PII and secret detection, denied topics, content safety, groundedness, JSON schema, classifier and LLM-judge rules.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Actions beyond block</strong> — warn, mask, override and re-ask, with severity levels.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Define once, enforce everywhere</strong> — across every agent and framework; one team can never weaken a shared control.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Honest verdicts</strong> — a control that could not run is reported as exactly that, never folded into "passed".</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="evaluation" data-screen-label="Evaluation" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);scroll-margin-top:80px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Evaluation</span><span style="color:var(--ink-3)">evidence, then a gate</span></div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Proof that a change made the agent better — <span style="color:var(--accent)">and a gate that acts on it.</span></h2>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Every prompt change, model swap or tool fix gets scored before it ships. Sample live traffic continuously, compare versions side by side, and block a release that has no eval evidence behind it.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">30 built-in scorers</strong> plus your own LLM-judge definitions; suites, cases, datasets and synthetic data.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Online evaluation</strong> — continuous sampling of production traffic with windowed trends.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">A/B comparison and simulation</strong> — same input, two versions, one verdict.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Promotion gate</strong> — opt-in, blocks a release without eval evidence; verdicts from your own CI count too.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Human review that holds up</strong> — annotation queues report inter-annotator agreement, so you can show the review was consistent.</span></li>
+      </ul>
+    </div>
+    <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-evaluations.jpg" alt="FastAIAgent Enterprise console — Evaluations overview with suites, runs, datasets and scorers" style="display:block;width:100%;height:auto"></figure>
+  </div>
+</section>
+
+<section id="prompts" data-screen-label="Prompt Registry" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2);scroll-margin-top:80px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
+    <div style="order:2"><figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-prompt-registry.jpg" alt="FastAIAgent Enterprise console — Prompt Registry: versions, deployments, approvals and scan rules" style="display:block;width:100%;height:auto"></figure></div>
+    <div style="display:flex;flex-direction:column;gap:18px;order:1">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Prompt Registry</span><span style="color:var(--ink-3)">one source of truth</span></div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Define a prompt once. <span style="color:var(--accent)">Govern it centrally.</span></h2>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Prompts stop living in code and chat threads. Every version is tracked, reviewed and approved to an environment before any agent can use it — and every production trace records exactly which version ran.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Versions and branches</strong> — semantic versioning with reusable fragments shared across prompts.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Approvals to environments</strong> — dev, staging, production, with a domain-wide review queue.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Security scans on every write</strong> — so one team can never weaken a shared control.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Test cases, analytics and attribution</strong> — see which version drove which outcome.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="studio" data-screen-label="Agent Studio" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Agent Studio</span><span style="color:var(--ink-3)">describe it, then own the code</span></div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Describe an agent in plain text. <span style="color:var(--accent)">Get real SDK code you own.</span></h2>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Studio proposes the workers, tools and guardrails, you refine it together, and every build is a version you can return to. Trial it in a sandbox with your own sample data, then export to your repo — the code is yours.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Wired to the enterprise harness</strong> — the prompt is seeded to the Registry, eval cases linked as a Dataset, guardrails attached from day one.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Runs standalone too</strong> — the exported code connects when a key is present and still runs without one.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Templates</strong> — support assistant, triage team, document analyst.</span></li>
+      </ul>
+    </div>
+    <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-agent-studio-new.jpg" alt="Agent Studio — describe what your agent should do in plain language" style="display:block;width:100%;height:auto"></figure>
+  </div>
+</section>
+
+<section id="boundary" data-screen-label="Runs no agent code" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2)">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">How it connects</span><span style="color:var(--ink-3)">one wire · no shared runtime</span></div>
+    <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:18px 0 0;text-wrap:balance">Govern every agent you run. <span style="color:var(--accent)">Run none of them on our servers.</span></h2>
+    <p style="font-size:16px;line-height:1.6;color:var(--ink-2);max-width:66ch;margin:22px 0 0">Most agent platforms ask you to hand over the runtime. We took the other side of that trade: your agents run on your infrastructure, and the plane only receives what they emit.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;margin-top:44px;align-items:stretch">
+      <div style="border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Your environment</div>
+        <div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em">Agents run here</div>
+        <div style="font-size:14px;color:var(--ink-2);line-height:1.6">Your code, prompts, tools and credentials. Built on the open-source SDK — or LangChain, LangGraph, CrewAI, LlamaIndex via OpenTelemetry.</div>
+      </div>
+      <div style="border:1px dashed var(--accent);border-radius:16px;background:var(--accent-soft);padding:24px;display:flex;flex-direction:column;gap:10px;text-align:center;justify-content:center">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">The only coupling</div>
+        <div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em">Telemetry out · policy in</div>
+        <div style="font-size:14px;color:var(--ink-2);line-height:1.6">Traces, checkpoints and approvals go up. Prompts, knowledge and policy decisions come back. Pushed, never polled.</div>
+      </div>
+      <div style="border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">FastAIAgent Enterprise</div>
+        <div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em">The record, the policy, the evidence</div>
+        <div style="font-size:14px;color:var(--ink-2);line-height:1.6">Observability, governance, knowledge, evaluation, prompt registry, connected state. Multi-tenant, RBAC, SSO.</div>
+      </div>
+    </div>
+    <div style="margin-top:20px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase"><div style="padding:14px 20px;color:var(--ok)">✓ What the plane does</div><div style="padding:14px 20px;color:var(--warn);border-left:1px solid var(--line)">✕ What it never does</div></div>
+      <sc-for list="{{ doesRows }}" as="r" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);font-size:14px;line-height:1.5"><div style="padding:14px 20px;color:var(--ink)">{{ r.does }}</div><div style="padding:14px 20px;color:var(--ink-2);border-left:1px solid var(--line)">{{ r.not }}</div></div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="pillars" data-screen-label="Six pillars" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line)">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">What the plane gives you</div>
+    <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:18px 0 0">Six pillars.</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px;margin-top:48px">
+      <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="6">
+        <div style="border:1px solid var(--line);border-radius:16px;background:var(--bg-2);padding:28px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">{{ p.n }}</div>
+          <h3 style="font-family:var(--display);font-size:24px;font-weight:600;letter-spacing:-.025em;line-height:1.05;margin:0">{{ p.title }}</h3>
+          <p style="margin:0;color:var(--ink-2);line-height:1.55;font-size:15px">{{ p.lede }}</p>
+          <ul style="margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+            <sc-for list="{{ p.items }}" as="i" hint-placeholder-count="3"><li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span>{{ i }}</span></li></sc-for>
+          </ul>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="deploy" data-screen-label="Deployment & questions" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:56px;align-items:start">
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Deployment</div>
+      <h2 style="font-family:var(--display);font-size:clamp(28px,3.4vw,44px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:18px 0 0;text-wrap:balance">Pick the side of the wire you want.</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:28px">
+        <sc-for list="{{ deploy }}" as="d" hint-placeholder-count="3"><div style="border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:22px"><h3 style="font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px">{{ d.t }}</h3><p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:14px">{{ d.d }}</p></div></sc-for>
+      </div>
+      <p style="margin:16px 0 0;font-size:13px;color:var(--ink-3);line-height:1.6">SDK Apache-2.0, works with no plane at all. Enterprise plane proprietary. Coupled by the wire contract alone.</p>
+    </div>
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">What buyers ask</div>
+      <div style="margin-top:22px;border-top:1px solid var(--line)">
+        <sc-for list="{{ advantages }}" as="a" hint-placeholder-count="5">
+          <div style="padding:20px 0;border-bottom:1px solid var(--line)"><div style="font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.02em;line-height:1.25">{{ a.q }}</div><p style="margin:8px 0 0;color:var(--ink-2);line-height:1.6;font-size:15px">{{ a.a }}</p></div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" data-screen-label="Contact" style="padding:clamp(72px,10vw,140px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:radial-gradient(700px 400px at 50% 120%,var(--accent-soft),transparent 70%);scroll-margin-top:80px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:48px;align-items:start">
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Book a walkthrough</div>
+      <h2 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:.98;margin:18px 0 0;text-wrap:balance">Every other agent platform asks you to move your runtime. <span style="color:var(--accent)">This one asks for your telemetry, and gives you back control.</span></h2>
+      <p style="font-size:17px;line-height:1.6;color:var(--ink-2);max-width:54ch;margin:22px 0 0">See it against your own agents, or start with the open-source SDK and connect the plane later. We reply from <a href="mailto:support@fastaifoundry.com" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px">support@fastaifoundry.com</a>.</p>
+    </div>
+    <form action="mailto:support@fastaifoundry.com" method="get" encType="text/plain" style="border:1px solid var(--line);border-radius:16px;background:var(--bg-2);padding:28px;display:grid;gap:14px">
+      <label style="display:grid;gap:6px;font-size:13px;color:var(--ink-2)">Name<input name="name" required="required" style="padding:12px 14px;border-radius:8px;border:1px solid var(--line-2);background:var(--bg);font-size:15px"></label>
+      <label style="display:grid;gap:6px;font-size:13px;color:var(--ink-2)">Work email<input name="email" type="email" required="required" style="padding:12px 14px;border-radius:8px;border:1px solid var(--line-2);background:var(--bg);font-size:15px"></label>
+      <label style="display:grid;gap:6px;font-size:13px;color:var(--ink-2)">Company<input name="company" style="padding:12px 14px;border-radius:8px;border:1px solid var(--line-2);background:var(--bg);font-size:15px"></label>
+      <label style="display:grid;gap:6px;font-size:13px;color:var(--ink-2)">What are you building, and what does your regulator ask for?<textarea name="body" rows="4" style="padding:12px 14px;border-radius:8px;border:1px solid var(--line-2);background:var(--bg);font-size:15px;resize:vertical"></textarea></label>
+      <button type="submit" style="padding:13px 22px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px" style-hover="filter:brightness(1.08)">Book a walkthrough →</button>
+    </form>
+  </div>
+</section>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const controls = [
+      { n: 'E-01 · Identity', title: 'SSO & 4-role RBAC', body: 'Enterprise single sign-on (SAML 2.0 + OIDC) with a 4-role permission hierarchy: App Admin, Domain Admin, Developer, Viewer.' },
+      { n: 'E-02 · Compliance', title: 'EU AI Act, built in', body: 'Risk classification, 19-role accountability, evidence and reporting — fed from the traces and evals already running. Not a separate product.' },
+      { n: 'E-03 · Audit', title: 'Complete audit trail', body: 'Who did what, when. Every decision linked to prompt version, model version and memory snapshot, on a tamper-evident ledger.' },
+      { n: 'E-04 · Approvals', title: 'Humans approve production actions', body: 'An agent about to take a consequential step pauses until a person approves, modifies or rejects — then resumes where it left off.' },
+      { n: 'E-05 · Deployment', title: 'SaaS, self-hosted or air-gapped', body: 'Run the managed plane in the EU, or run the whole plane yourself. Self-hosted is not a stripped variant.' },
+      { n: 'E-06 · Data boundary', title: 'Your data stays yours', body: 'Agents run on your infrastructure. The plane receives telemetry; it never runs your code or touches your model credentials.' }
+    ];
+    const rolesMap = [
+      { role: 'PROVIDER', who: 'Acme Corp · Platform team', status: 'EVIDENCED' },
+      { role: 'DEPLOYER', who: 'Acme Support · Ops', status: 'EVIDENCED' },
+      { role: 'OVERSIGHT', who: 'Risk & Compliance', status: 'EVIDENCED' },
+      { role: 'IMPORTER', who: 'n/a — EU-built', status: 'N/A' }
+    ];
+    const doesRows = [
+      { does: 'Keeps the record: traces, replay, audit', not: 'Run your agents or call an LLM on your behalf' },
+      { does: 'Decides policy and holds approvals', not: 'Hold your conversations in its process' },
+      { does: 'Serves prompts, knowledge and evaluation', not: 'Touch your model credentials' }
+    ];
+    const pillars = [
+      { n: 'P-01', title: 'Observability & Replay', lede: 'See what every agent actually did — and what your controls decided about it.', items: ['Traces with token, cost and latency roll-ups', 'Guardrail verdicts and eval scores attached to the spans that produced them', 'Central Replay: fork a production trace, fix it, and turn the incident into a regression test'] },
+      { n: 'P-02', title: 'Governance', lede: 'Policy that sits in the decision path, not in a dashboard you read afterwards.', items: ['Guardrail templates for PII, secrets, denied topics, content safety, groundedness and more', 'Actions beyond block: warn, mask, override and re-ask', 'Coverage view: which agents are registered, reporting, or dark'] },
+      { n: 'P-03', title: 'Knowledge', lede: 'A retrieval layer good enough to be the reason the answer was right.', items: ['Hybrid search with reranking and relevance gating', 'Governed, connector-fed knowledge bases', 'Weak retrievals routed to a human review queue'] },
+      { n: 'P-04', title: 'Evaluation', lede: 'Evidence that a change made the agent better, and a gate that acts on it.', items: ['30 built-in scorers plus your own judges', 'Continuous sampling of live traffic, A/B comparison, simulation', 'A promotion gate that blocks a release without eval evidence'] },
+      { n: 'P-05', title: 'Prompt & Asset Registry', lede: 'Define a prompt once, govern it centrally, consume it from any agent.', items: ['Versioned prompts with approvals to environments', 'Security scan rules applied on every write', 'Test cases, analytics and attribution'] },
+      { n: 'P-06', title: 'Connected State', lede: 'The system of record for what your agents remember, pause on and survive.', items: ['Org-wide ledger of every human approval', 'Checkpoints replicated centrally — resume after losing the machine', 'Governed memory with right-to-be-forgotten redaction; config mirrored to your git'] }
+    ];
+    const advantages = [
+      { q: '\u201cSo the vendor runs our agents?\u201d', a: 'No. Zero agent code executes on the plane. Your prompts, tools and model credentials stay on your infrastructure — enforced in code, not promised.' },
+      { q: '\u201cObservability tools just watch. Can this actually stop something?\u201d', a: 'Yes. Policy is checked before the agent acts — allow, deny or require approval — and a governance error is a deny, never a silent pass.' },
+      { q: '\u201cWe already use another framework. Are we locked in?\u201d', a: 'No. LangChain, LangGraph, CrewAI, LlamaIndex or plain OpenTelemetry connect with three environment variables — no SDK required.' },
+      { q: '\u201cCan we prove any of this to an auditor?\u201d', a: 'Yes. Evidence is a queryable record joined to the trace, walked classification → controls → evidence → scorecard on a tamper-evident ledger.' },
+      { q: '\u201cWhat if we leave?\u201d', a: 'Your governed configuration is already mirrored into your own git repository, and the SDK is Apache-2.0 and works with no plane at all.' }
+    ];
+    const deploy = [
+      { t: 'SaaS · EU', d: 'We operate the plane with EU data residency. Your agents still run in your environment.' },
+      { t: 'Self-hosted', d: 'Docker Compose or Kubernetes (Helm) on your own infrastructure. Bring your own PostgreSQL, Redis or Qdrant — per service, not all-or-nothing.' },
+      { t: 'Air-gapped', d: 'Standalone deployment bundles with pre-built images. Zero internet dependency for classified and regulated networks.' }
+    ];
+    const guardRows = [
+      { action: 'DENY', bg: 'rgba(248,113,113,.15)', color: '#f87171', rule: 'secret_detection', agent: 'support-bot', when: '2m ago' },
+      { action: 'MASK', bg: 'var(--accent-soft)', color: 'var(--accent)', rule: 'pii_filter · 1 field', agent: 'claims-agent', when: '9m ago' },
+      { action: 'APPROVAL', bg: 'rgba(240,182,74,.15)', color: 'var(--warn)', rule: 'refund > policy window', agent: 'support-bot', when: '14m ago' },
+      { action: 'ALLOW', bg: 'rgba(79,209,165,.15)', color: 'var(--ok)', rule: 'groundedness ≥ 0.9', agent: 'research', when: '21m ago' },
+      { action: 'RE-ASK', bg: 'var(--accent-soft)', color: 'var(--accent)', rule: 'json_schema mismatch', agent: 'billing', when: '33m ago' }
+    ];
+    const evalRows = [
+      { metric: 'Correctness', pct: '92%', val: '92%', delta: '+6.1' },
+      { metric: 'Groundedness', pct: '95%', val: '95%', delta: '+2.4' },
+      { metric: 'Task completion', pct: '88%', val: '88%', delta: '+4.0' },
+      { metric: 'Safety', pct: '100%', val: '100%', delta: '±0' }
+    ];
+    const promptRows = [
+      { v: 'v15.0.0', note: 'Always cite the exact policy section', env: 'PRODUCTION', bg: 'rgba(79,209,165,.15)', color: 'var(--ok)' },
+      { v: 'v15.1.0-rc', note: 'Shorter refund explanation · awaiting review', env: 'STAGING', bg: 'rgba(240,182,74,.15)', color: 'var(--warn)' },
+      { v: 'v14.2.0', note: 'Add multilingual greeting fragment', env: 'RETIRED', bg: 'var(--bg-3)', color: 'var(--ink-3)' },
+      { v: 'v14.0.0', note: 'Baseline support prompt', env: 'RETIRED', bg: 'var(--bg-3)', color: 'var(--ink-3)' }
+    ];
+    return { controls, rolesMap, doesRows, pillars, advantages, deploy, guardRows, evalRows, promptRows };
+  }
+}
+</script>
+</body>
+</html>

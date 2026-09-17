@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Documentation — FastAIAgent</title>
+  <meta name="description" content="Build, debug, evaluate, and operate AI agents. Guides, tutorials, and API reference for the FastAIAgent SDK.">
+  <link rel="icon" href="./assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="stylesheet" href="./theme.css">
+</helmet>
+<dc-import name="nav" active="docs" hint-size="100%,64px"></dc-import>
+
+<section data-screen-label="Docs hero" style="padding:clamp(56px,8vw,100px) clamp(20px,4vw,56px) clamp(40px,5vw,64px)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:48px;align-items:center;animation:rise .7s ease both">
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Documentation</div>
+      <h1 style="font-family:var(--display);font-size:clamp(42px,6vw,80px);font-weight:700;letter-spacing:-.04em;line-height:.96;margin:18px 0 0;text-wrap:balance">Build, debug, evaluate, and operate agents.</h1>
+      <p style="font-size:clamp(17px,1.4vw,19px);line-height:1.55;color:var(--ink-2);max-width:54ch;margin:24px 0 0">The only SDK with fork-and-rerun Agent Replay. Start with a five-minute agent, then follow the loop into tracing, evaluation, and operations.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
+        <a href="https://docs.fastaiagent.net/getting-started/" style="display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px" style-hover="filter:brightness(1.08)">Get started →</a>
+        <a href="https://docs.fastaiagent.net/api-reference/" style="display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:8px;border:1px solid var(--line-2);color:var(--ink);font-weight:600;font-size:15px" style-hover="border-color:var(--ink-3)">API reference</a>
+      </div>
+    </div>
+    <pre style="margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink-2)"><span style="color:var(--ink-3)">$ pip install fastaiagent
+
+</span><span style="color:var(--warn)">from</span> fastaiagent <span style="color:var(--warn)">import</span> Agent, LLMClient
+
+llm = <span style="color:var(--accent)">LLMClient</span>(provider=<span style="color:var(--ok)">"openai"</span>, model=<span style="color:var(--ok)">"gpt-4o"</span>)
+agent = <span style="color:var(--accent)">Agent</span>(name=<span style="color:var(--ok)">"my-agent"</span>, system_prompt=<span style="color:var(--ok)">"You are a helpful assistant."</span>, llm=llm)
+
+result = agent.run(<span style="color:var(--ok)">"What is the capital of France?"</span>)
+print(result.output)
+print(result.trace_id)  <span style="color:var(--ink-3)"># every run is traced — use this ID for replay
+
+</span><span style="color:var(--ink-3)">$ pip install 'fastaiagent[ui]' && fastaiagent ui   # → http://127.0.0.1:7842</span></pre>
+  </div>
+</section>
+
+<section data-screen-label="Sections" style="padding:0 clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px">
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="6">
+      <a href="{{ s.href }}" style="display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);border-radius:14px;background:var(--bg-2);padding:26px;color:var(--ink);transition:border-color .2s" style-hover="border-color:var(--accent)">
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)"><span>{{ s.n }}</span><span style="color:var(--accent)">↗</span></div>
+        <h2 style="font-family:var(--display);font-size:26px;font-weight:600;letter-spacing:-.02em;margin:0">{{ s.title }}</h2>
+        <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:15px">{{ s.body }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px">
+          <sc-for list="{{ s.topics }}" as="t" hint-placeholder-count="4"><span style="font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:4px;background:var(--bg-3);color:var(--ink-2)">{{ t }}</span></sc-for>
+        </div>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Tutorials & migration" style="padding:clamp(64px,9vw,110px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:48px">
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Tutorials</div>
+      <div style="display:flex;flex-direction:column;margin-top:16px;border-top:1px solid var(--line)">
+        <a href="https://docs.fastaiagent.net/tutorials/first-agent/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>Build Your First Agent in 5 Minutes</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/tutorials/trace-langchain/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>Trace a LangChain Agent in 2 Minutes</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/tutorials/debug-with-replay/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>Debug with Agent Replay</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/tutorials/memory-guide/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>Memory, End to End</span><span style="color:var(--ink-3)">↗</span></a>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Templates</div>
+      <div style="display:flex;flex-direction:column;margin-top:16px;border-top:1px solid var(--line)">
+        <a href="https://docs.fastaiagent.net/flagships/deep-research-agent/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>Deep Research Agent</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/flagships/deep-research-financial-extraction/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>Financial Extraction (worked example)</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/flagships/regression-from-trace/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>Regression from Trace</span><span style="color:var(--ink-3)">↗</span></a>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Migration guides</div>
+      <div style="display:flex;flex-direction:column;margin-top:16px;border-top:1px solid var(--line)">
+        <a href="https://docs.fastaiagent.net/migration-guides/from-langgraph/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>From LangGraph</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/migration-guides/from-langsmith/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>From LangSmith</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/migration-guides/from-langfuse/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>From Langfuse</span><span style="color:var(--ink-3)">↗</span></a>
+        <a href="https://docs.fastaiagent.net/migration-guides/from-mlflow/" style="display:flex;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:500"><span>From MLflow</span><span style="color:var(--ink-3)">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const D = 'https://docs.fastaiagent.net/';
+    const sections = [
+      { n: '01', title: 'Get Started', href: D + 'getting-started/', body: 'Install, run your first agent, open the Local UI, and pick a flagship template.', topics: ['Quickstart', 'Local UI', 'Templates', 'Tutorials'] },
+      { n: '02', title: 'Build', href: D + 'agents/concepts/', body: 'Agents, chains with cycles, guardrails, tools, prompts, knowledge bases, LLM providers, multimodal inputs.', topics: ['Agents', 'Chains', 'Guardrails', 'Tools', 'Prompts', 'Knowledge Base', 'LLM', 'Multimodal'] },
+      { n: '03', title: 'Observe', href: D + 'tracing/concepts/', body: 'Tracing, Agent Replay with fidelity guarantees, durability and checkpointers, multi-turn simulation.', topics: ['Tracing', 'Replay', 'Durability', 'Simulation'] },
+      { n: '04', title: 'Evaluate', href: D + 'evaluation/concepts/', body: 'LLM-as-judge, pytest plugin, Agent CI gates, RAG and safety metrics, trajectory scoring, hardening, AutoLLM.', topics: ['Evaluation', 'Agent CI', 'Scorecard', 'AutoLLM', 'Testing'] },
+      { n: '05', title: 'Operate', href: D + 'security/', body: 'Security, environment variables, platform connection, registration, connected HITL and governance, deployment recipes, integrations, CLI.', topics: ['Security', 'Platform', 'Deployment', 'Integrations', 'CLI'] },
+      { n: '06', title: 'Reference', href: D + 'api-reference/', body: 'API reference and migration guides from LangGraph, LangSmith, Langfuse, and MLflow.', topics: ['API reference', 'Migration guides'] }
+    ];
+    return { sections };
+  }
+}
+</script>
+</body>
+</html>

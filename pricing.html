@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Pricing — FastAIAgent</title>
+  <meta name="description" content="Start free. Scale when ready. The SDK is open-source and always free. The platform offers a generous free tier — upgrade for team features, higher limits, or enterprise compliance.">
+  <link rel="icon" href="./assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="stylesheet" href="./theme.css">
+</helmet>
+<dc-import name="nav" active="pricing" hint-size="100%,64px"></dc-import>
+
+<section data-screen-label="Pricing hero" style="padding:clamp(56px,8vw,100px) clamp(20px,4vw,56px) 40px;text-align:center">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Pricing</div>
+    <h1 style="font-family:var(--display);font-size:clamp(42px,6vw,80px);font-weight:700;letter-spacing:-.04em;line-height:.96;margin:18px 0 0;text-wrap:balance">Start free. <span style="color:var(--accent)">Scale when ready.</span></h1>
+    <p style="font-size:clamp(17px,1.4vw,19px);line-height:1.55;color:var(--ink-2);margin:24px auto 0;max-width:56ch">The SDK is open-source and always free. The platform offers a generous free tier — upgrade when your agents need team features, higher limits, or enterprise compliance.</p>
+  </div>
+</section>
+
+<section data-screen-label="Tiers" style="padding:0 clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;align-items:stretch">
+    <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+      <div style="display:flex;flex-direction:column;gap:18px;border:1px solid {{ t.border }};border-radius:16px;background:var(--bg-2);padding:30px">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)"><span>{{ t.n }}</span><span style="color:var(--accent)">{{ t.badge }}</span></div>
+        <div>
+          <h2 style="font-family:var(--display);font-size:30px;font-weight:600;letter-spacing:-.03em;margin:0">{{ t.name }}</h2>
+          <p style="margin:6px 0 0;color:var(--ink-2);font-size:15px;line-height:1.5">{{ t.tagline }}</p>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:6px"><span style="font-family:var(--display);font-size:44px;font-weight:700;letter-spacing:-.04em">{{ t.price }}</span><span style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">{{ t.per }}</span></div>
+        <a href="{{ t.href }}" style="display:inline-flex;justify-content:center;padding:12px 20px;border-radius:8px;font-weight:600;font-size:15px;background:{{ t.btnBg }};color:{{ t.btnColor }};border:1px solid {{ t.btnBorder }}" style-hover="filter:brightness(1.08)">{{ t.cta }}</a>
+        <ul style="margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
+          <sc-for list="{{ t.items }}" as="i" hint-placeholder-count="6">
+            <li style="display:flex;gap:10px"><span style="color:var(--accent)">✓</span><span>{{ i }}</span></li>
+          </sc-for>
+        </ul>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="SDK vs platform" style="padding:clamp(64px,9vw,110px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:48px;align-items:start">
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">SDK vs. platform</div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:18px 0 0;text-wrap:balance">SDK works standalone. <span style="color:var(--accent)">Platform adds the team.</span></h2>
+      <p style="font-size:16px;line-height:1.6;color:var(--ink-2);max-width:56ch;margin:22px 0 0">Runs fully standalone with the Local UI — no Docker, no signup, nothing phones home. Connect to the platform for production observability, prompt management, evaluation dashboards, team collaboration, and HITL approval workflows.</p>
+    </div>
+    <pre style="margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.65;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink-2)"><span style="color:var(--warn)">import</span> fastaiagent <span style="color:var(--warn)">as</span> fa
+
+fa.<span style="color:var(--accent)">connect</span>(api_key=<span style="color:var(--ok)">"fa-..."</span>, project=<span style="color:var(--ok)">"my-project"</span>)
+
+<span style="color:var(--ink-3)"># Traces automatically sent to platform dashboard</span>
+result = agent.run(<span style="color:var(--ok)">"Help me"</span>)
+
+<span style="color:var(--ink-3)"># Pull versioned prompts from platform</span>
+prompt = PromptRegistry().get(<span style="color:var(--ok)">"support-prompt"</span>)
+
+<span style="color:var(--ink-3)"># Publish eval results to platform</span>
+results = evaluate(agent, dataset=dataset)
+results.publish()</pre>
+  </div>
+</section>
+
+<section data-screen-label="FAQ" style="padding:clamp(64px,9vw,110px) clamp(20px,4vw,56px);border-top:1px solid var(--line)">
+  <div style="max-width:820px;margin:0 auto">
+    <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Questions</div>
+    <div style="margin-top:24px;border-top:1px solid var(--line)">
+      <sc-for list="{{ faq }}" as="q" hint-placeholder-count="4">
+        <div style="padding:24px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px 32px">
+          <h3 style="font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:-.02em;margin:0">{{ q.q }}</h3>
+          <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:15px">{{ q.a }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const tiers = [
+      { n: 'T-01', badge: 'Apache 2.0', name: 'Open source', tagline: 'The SDK, the Local UI, and every feature on this site that runs in your process.', price: '$0', per: 'forever', cta: 'pip install fastaiagent', href: 'https://pypi.org/project/fastaiagent/',
+        border: 'var(--line)', btnBg: 'transparent', btnColor: 'var(--ink)', btnBorder: 'var(--line-2)',
+        items: ['Agents, chains, swarms, supervisors, memory', 'Guardrails, evaluation, simulation, AutoLLM', 'Agent Replay — fork, fix, rerun', 'Local UI: traces, evals, playground, topology', 'Durable HITL with SQLite or Postgres', '20+ LLM providers · LangGraph / CrewAI / PydanticAI harness'] },
+      { n: 'T-02', badge: 'Most teams', name: 'Platform', tagline: 'Hosted plane for teams that ship agents together. Free tier included.', price: 'Free', per: 'to start · usage-based beyond', cta: 'Start free →', href: 'https://app.fastaiagent.net',
+        border: 'var(--accent)', btnBg: 'var(--accent)', btnColor: 'var(--accent-ink)', btnBorder: 'var(--accent)',
+        items: ['Everything in open source', 'Production observability across projects', 'Prompt management with version lineage', 'Evaluation dashboards and Agent-CI verdicts', 'Team collaboration and session sharing', 'HITL approval workflows in the workspace'] },
+      { n: 'T-03', badge: 'Control plane', name: 'Enterprise', tagline: 'The control plane for AI agents. Governs, observes and evaluates — runs no agent code.', price: 'Custom', per: 'annual · talk to us', cta: 'Book a walkthrough', href: './enterprise.html#contact',
+        border: 'var(--line)', btnBg: 'transparent', btnColor: 'var(--ink)', btnBorder: 'var(--line-2)',
+        items: ['Central Replay, guardrail verdicts and eval scores joined to traces', '22 guardrail templates across 9 types · POST /policy/decide in the decision path', 'Human approval of production actions with signed webhooks', 'EU AI Act module over 52 seeded controls · hash-chained ledger', 'Domain → Project RBAC, SAML/OIDC SSO, Azure Key Vault secrets', 'SaaS, Docker Compose or Helm — self-hosted opens every feature gate'] }
+    ];
+    const faq = [
+      { q: 'Is the SDK really free?', a: 'Yes. Apache 2.0, runs fully standalone, and nothing phones home. The Local UI ships inside the wheel — no Docker, no signup.' },
+      { q: 'What leaves my machine when I connect to the platform?', a: 'Metadata: aggregates, the gate outcome, thresholds, git provenance, and per-case verdicts with trace IDs. Case inputs and outputs never leave the machine. Preview the payload with fastaiagent eval export --dry-run, or turn it off with connect(export_evals=False) — that flag is final.' },
+      { q: 'Can we self-host?', a: 'Yes. SaaS in the EU, self-hosted on your infrastructure, or air-gapped with standalone deployment bundles. Same binary, same contract.' },
+      { q: 'Do you accept pull requests?', a: 'The SDK is open source but does not accept external pull requests — please file issues on GitHub instead.' }
+    ];
+    return { tiers, faq };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Blog — FastAIAgent</title>
+  <link rel="icon" href="./assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="stylesheet" href="./theme.css">
+  <script src="./markdown.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="./blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="./assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    const slug = new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+    } catch (e) { this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } }); }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    return { meta: this.state.meta, body, hasCover: !!this.state.meta.cover, error: this.state.error };
+  }
+}
+</script>
+</body>
+</html>

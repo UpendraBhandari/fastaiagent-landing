@@ -11,7 +11,10 @@
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,12000 --virtual-time-budget=15000 --screenshot=recheck.png \"file:///Users/upendrabhandari/fastaiagent-landing/index_new.html\")",
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,14000 --virtual-time-budget=15000 --screenshot=final.png \"file:///Users/upendrabhandari/fastaiagent-landing/index_new.html\")",
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,14000 --virtual-time-budget=15000 --screenshot=final2.png \"file:///Users/upendrabhandari/fastaiagent-landing/index_new.html\")",
-      "Bash(git credential-osxkeychain *)"
+      "Bash(git credential-osxkeychain *)",
+      "Bash(file /Users/upendrabhandari/fastaiagent-enterprise/frontend/src/assets/logos/*)",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,900 --virtual-time-budget=8000 --screenshot=logo_dark.png \"file:///Users/upendrabhandari/fastaiagent-landing/index.html\")",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-first-run --window-size=1440,900 --virtual-time-budget=8000 --screenshot=logo_light.png \"file:///private/tmp/claude-501/-Users-upendrabhandari-fastaiagent-landing/edcb0121-0773-46d0-bb50-2e19ad2bcfcd/scratchpad/light_preview.html\")"
     ]
   }
 }
