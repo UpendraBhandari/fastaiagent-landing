@@ -108,9 +108,10 @@
   <div style="max-width:1200px;margin:0 auto">
     <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">/02</span><span style="color:var(--ink)">Features</span><span style="color:var(--ink-3)">available in both the SDK and the platform</span></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:end;margin-top:18px">
-      <h2 style="font-family:var(--display);font-size:clamp(34px,4.6vw,60px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">One system. Seven steps. <span style="color:var(--accent)">Zero context switching.</span></h2>
+      <h2 style="font-family:var(--display);font-size:clamp(34px,4.6vw,60px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Six features. One closed loop. <span style="color:var(--accent)">Zero context switching.</span></h2>
       <p style="font-size:17px;line-height:1.6;color:var(--ink-2);margin:0">Most teams stitch together 3–4 tools to go from a failing agent to a fixed one. FastAIAgent is the only platform where trace, feedback, eval, optimization, comparison, and deployment happen in a single closed-loop system — so every production failure becomes a shipped improvement, not a fire drill.</p>
     </div>
+    
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px;margin-top:56px">
       <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
         <div id="{{ f.id }}" style="display:flex;flex-direction:column;gap:14px;border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:28px;color:var(--ink);scroll-margin-top:90px;transition:border-color .2s" style-hover="border-color:var(--accent)">
@@ -124,6 +125,40 @@
     </div>
   </div>
 </section>
+<section id="replay" data-screen-label="Replay spotlight" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:radial-gradient(900px 500px at 90% 0%,var(--accent-soft),transparent 70%);scroll-margin-top:80px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
+    <div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)"><span style="padding:4px 8px;border:1px solid var(--accent);border-radius:4px">Agent Replay</span><span style="color:var(--ink-3)">no other SDK can do this</span></div>
+      <h2 style="font-family:var(--display);font-size:clamp(36px,5vw,68px);font-weight:700;letter-spacing:-.04em;line-height:.98;margin:20px 0 0;text-wrap:balance">Fork. Fix. Rerun. <span style="color:var(--accent)">From failing trace to fixed agent in 10 minutes, not 4 hours.</span></h2>
+      <p style="font-size:17px;line-height:1.6;color:var(--ink-2);max-width:58ch;margin:22px 0 0">Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore “what if?” scenarios. Save the corrected run as a regression test, so every production failure becomes a permanent test. Available in both the SDK and the platform.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono)">
+        <div><div style="font-size:11px;color:var(--ink-3)">Steps</div><div style="font-family:var(--display);font-weight:600;font-size:22px">7</div></div>
+        <div><div style="font-size:11px;color:var(--ink-3)">Tokens</div><div style="font-family:var(--display);font-weight:600;font-size:22px">1,847</div></div>
+        <div><div style="font-size:11px;color:var(--ink-3)">Cost</div><div style="font-family:var(--display);font-weight:600;font-size:22px">$0.0062</div></div>
+        <div><div style="font-size:11px;color:var(--ink-3)">Duration</div><div style="font-family:var(--display);font-weight:600;font-size:22px">2.4s</div></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
+        <a href="https://docs.fastaiagent.net/tutorials/debug-with-replay/" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px" style-hover="filter:brightness(1.08)">Debug with Replay →</a>
+        <a href="./enterprise.html#observability" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;border:1px solid var(--line-2);color:var(--ink);font-weight:600;font-size:15px" style-hover="border-color:var(--ink-3)">Central Replay in the platform</a>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <pre style="margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink-2)"><span style="color:var(--warn)">from</span> fastaiagent.trace <span style="color:var(--warn)">import</span> Replay
+
+replay = Replay.<span style="color:var(--accent)">load</span>(<span style="color:var(--ok)">"trace_abc123"</span>)   <span style="color:var(--ink-3)"># a production failure</span>
+replay.step_through()
+<span style="color:var(--ink-3)"># Step 3: LLM hallucinated the refund policy ← found it</span>
+
+forked = replay.<span style="color:var(--accent)">fork_at</span>(step=<span style="color:var(--ok)">3</span>)
+forked.modify_prompt(<span style="color:var(--ok)">"Always cite the exact policy section..."</span>)
+result = forked.<span style="color:var(--accent)">rerun</span>()
+
+result.<span style="color:var(--accent)">save_as_test</span>(<span style="color:var(--ok)">"regression_tests.jsonl"</span>)  <span style="color:var(--ink-3)"># caught forever</span></pre>
+      <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-trace-detail.jpg" alt="Trace detail with span tree and Replay span action" style="display:block;width:100%;height:auto"></figure>
+    </div>
+  </div>
+</section>
+
 <section id="build" data-screen-label="Two ways to build" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line)">
   <div style="max-width:1200px;margin:0 auto">
     <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Two ways to build</span><span style="color:var(--ink-3)">same traces · same registry · same evals</span></div>
@@ -310,8 +345,9 @@ class Component extends DCLogic {
   componentDidMount() {
     this.setState({ ticker: this.STEPS.map((s, i) => ({ ...s, time: this.stamp(), key: -i })).slice(0, 6) });
     this._t = setInterval(() => this.advance((this.state.active + 1) % this.STEPS.length), this.SPEED);
+    this._layerT = setInterval(() => { if (!this._manual) this.setState(s => ({ layer: (s.layer + 1) % 4 })); }, 3000);
   }
-  componentWillUnmount() { clearInterval(this._t); }
+  componentWillUnmount() { clearInterval(this._t); clearInterval(this._layerT); }
   renderVals() {
     const N = this.STEPS.length, a = this.state.active;
     const names = this.STEPS.map(s => s.name);
@@ -340,15 +376,15 @@ class Component extends DCLogic {
       { id: 'prompt-registry', num: 'F-03', kicker: 'Versioned', title: 'Prompt Registry', href: 'https://docs.fastaiagent.net/prompts/concepts/',
         body: 'Pull versioned prompts from the registry, iterate in the Prompt Playground with token-by-token streaming, and save any run as an eval case. Every experiment shares the same trace surface as production.',
         code: 'prompt = PromptRegistry().get("support-prompt")\n# /playground → fill {{variables}} → Run\n# → Save as eval case' },
-      { id: 'agent-studio', num: 'F-04', kicker: 'Build · inspect', title: 'Agent Studio', href: 'https://docs.fastaiagent.net/ui/',
-        body: 'See your Chain, Swarm, or Supervisor topology rendered as an interactive graph, and every agent\u2019s dependency graph — tools, knowledge bases, prompts, guardrails, and models — with click-to-inspect node detail.',
-        code: 'app = build_app(runners=[chain])\n# → /workflows/chain/research-then-summarise\n# → /agents/support → Dependencies' },
+      { id: 'knowledge-base', num: 'F-04', kicker: 'Retrieval you own', title: 'Knowledge Base', href: 'https://docs.fastaiagent.net/knowledge-base/concepts/',
+        body: 'Document ingestion, multi-strategy chunking, embedding, and hybrid vector + BM25 search \u2014 fully local, no platform needed. Point at Qdrant, Chroma, or your own backend with one kwarg; or use a platform-hosted KB with hybrid retrieval, reranking and a relevance gate.',
+        code: 'kb = LocalKB(name="product-docs")\nkb.add("docs/")\nkb.search("refund policy", top_k=5)\n# or: fa.PlatformKB(kb_id=...).as_tool()' },
       { id: 'observability', num: 'F-05', kicker: 'Every run', title: 'Observability', href: 'https://docs.fastaiagent.net/tracing/concepts/',
         body: 'Span-tree traces with Gantt-style timing, full-text search across prompts and responses, cost by model / agent / chain node, and trace comparison. One-line instrumentation for LangGraph, CrewAI, PydanticAI, and any OpenTelemetry stack.',
         code: 'from fastaiagent.integrations import langchain as lc\nlc.enable()\n# every LLM, tool, retrieval, graph step → local.db' },
-      { id: 'replay', num: 'F-06', kicker: 'Fork · fix · rerun', title: 'Replay', href: 'https://docs.fastaiagent.net/replay/concepts/',
-        body: 'Step through any agent execution span-by-span. See exactly what the agent thought, which tools it called, what context it had — and fork from any point to explore \u201cwhat if?\u201d scenarios. Save the corrected run as a regression test.',
-        code: 'replay = Replay.load("trace_abc123")\nforked = replay.fork_at(step=3)\nforked.modify_prompt("Always cite the policy…")\nresult = forked.rerun()\nresult.save_as_test("regression_tests.jsonl")' }
+      { id: 'durability', num: 'F-06', kicker: 'Crash-proof', title: 'Durability', href: 'https://docs.fastaiagent.net/durability/concepts/',
+        body: 'Agents that pause for human approval for days and resume after a real SIGKILL. Checkpoints in SQLite locally or Postgres in production, the @idempotent decorator so a paused node never double-charges, and a built-in /approvals UI to drive the resume.',
+        code: 'decision = interrupt(reason="manager_approval")\n# process exits · hours pass · any process:\nchain.aresume("refund-abc", resume_value=Resume(approved=True))' }
     ];
     const diff = [
       { n: '01', dim: 'Model', sub: 'Who picks the brain', closed: 'One vendor. Their roadmap, their SKUs, their price hikes.', openHead: 'BYO model.', open: 'OpenAI today, Anthropic tomorrow, your fine-tune next quarter — one config switch.' },
@@ -368,7 +404,7 @@ class Component extends DCLogic {
     const li = this.state.layer;
     const cur = LAYERS[li];
     const lv = {};
-    LAYERS.forEach((L, i) => { const on = i === li; lv['l' + i] = { tag: L.tag, name: L.name, pick: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ layer: i }); }, border: on ? 'var(--accent)' : 'var(--line-2)', bg: on ? 'var(--accent-soft)' : 'var(--bg-2)', label: on ? 'var(--accent)' : 'var(--ink-3)', title: on ? 'var(--ink)' : 'var(--ink-2)' }; });
+    LAYERS.forEach((L, i) => { const on = i === li; lv['l' + i] = { tag: L.tag, name: L.name, pick: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this._manual = true; clearTimeout(this._resume); this._resume = setTimeout(() => { this._manual = false; }, 12000); this.setState({ layer: i }); }, border: on ? 'var(--accent)' : 'var(--line-2)', bg: on ? 'var(--accent-soft)' : 'var(--bg-2)', label: on ? 'var(--accent)' : 'var(--ink-3)', title: on ? 'var(--ink)' : 'var(--ink-2)' }; });
     const roles = [
       { n: 'R-01', title: 'Builders', who: 'Developers & AI Engineers', surface: 'SDK · Python · APIs', body: 'Wire up the runtime in Python. Plug in your model, register tools, sandbox execution, ship to production with replay and OpenTelemetry traces from the first commit.' },
       { n: 'R-02', title: 'Operators', who: 'Business Teams & Ops', surface: 'Workspace · Chat · Approvals', body: 'Consume agents through a portal, not a terminal. Streaming chat, approval queues with one-click ✓/✗, session sharing, full audit. Zero technical skills required.' },
@@ -377,7 +413,7 @@ class Component extends DCLogic {
       { n: 'R-05', title: 'Finance', who: 'CFOs & Budget Owners', surface: 'Cost · Quota · Billing', body: 'Per-role token tracking. Per-agent cost dashboards. Tiered quota with hard caps. Approve AI investments with real spend data, not optimistic forecasts.' },
       { n: 'R-06', title: 'Product', who: 'Product & Strategy', surface: 'Embed · Adopt · Ship', body: 'Embed agents into your product with brandable widgets. Track adoption with feedback ratings, generative-UI usage, and per-feature trends across your customer base.' }
     ];
-    const plat = { guardrails: 'guardrails', evaluation: 'evaluation', 'prompt-registry': 'prompts', 'agent-studio': 'studio', observability: 'observability', replay: 'observability' };
+    const plat = { guardrails: 'guardrails', evaluation: 'evaluation', 'prompt-registry': 'prompts', 'knowledge-base': 'pillars', observability: 'observability', durability: 'pillars' };
     features.forEach(f => { f.platform = './enterprise.html#' + plat[f.id]; });
     const stack = [
       { k: 'Models', v: 'OpenAI · Anthropic · Azure OpenAI · AWS Bedrock · Google Gemini · Ollama · Groq · Mistral · OpenRouter · DeepSeek · Together · Fireworks · vLLM · custom gateway' },
