@@ -59,8 +59,8 @@
 </section>
 
 <section id="compliance" data-screen-label="EU AI Act" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2);scroll-margin-top:80px">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:18px">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+    <div style="display:flex;flex-direction:column;gap:18px;flex:1 1 340px;min-width:0">
       <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">EU AI Act &amp; compliance</span><span style="color:var(--ink-3)">governance harness</span></div>
       <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">The paper trail <span style="color:var(--accent)">that ships itself.</span></h2>
       <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">A harness without guardrails is just a sandbox. Governance wraps the runtime in EU AI Act compliance, accountability roles, prohibited-practice enforcement, and continuous monitoring — fed directly from the registry, traces, and evals already in the stack. When the auditor asks, the evidence is already there.</p>
@@ -73,14 +73,14 @@
         <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Compliance reporting</strong> — one-click PDF for auditors, regulators, internal review.</span></li>
       </ul>
     </div>
-    <div style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;flex-direction:column;gap:16px;flex:1.6 1 420px;min-width:0">
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
         <div style="border:1px solid var(--line);border-radius:10px;padding:16px 12px;background:var(--bg);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">01</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Classify</div></div>
         <div style="border:1px solid var(--line);border-radius:10px;padding:16px 12px;background:var(--bg);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">02</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Controls</div></div>
         <div style="border:1px solid var(--line);border-radius:10px;padding:16px 12px;background:var(--bg);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--ink-3)">03</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Evidence</div></div>
         <div style="border:1px solid var(--accent);border-radius:10px;padding:16px 12px;background:var(--accent-soft);text-align:center"><div style="font-family:var(--mono);font-size:10px;color:var(--accent)">04</div><div style="font-family:var(--display);font-weight:600;font-size:16px;margin-top:4px">Scorecard</div></div>
       </div>
-      <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-compliance.jpg" alt="FastAIAgent Enterprise console — EU AI Act compliance program: score, systems in scope, obligation areas" style="display:block;width:100%;height:auto"></figure>
+      <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-compliance.jpg" alt="FastAIAgent Enterprise console — EU AI Act compliance program: score, systems in scope, obligation areas" data-src="./assets/console-compliance.jpg" onClick="{{ zoom }}" title="Click to enlarge" style="display:block;width:100%;height:auto;cursor:zoom-in"></figure>
       </div>
     </div>
   </div>
@@ -127,16 +127,16 @@
       <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Every run from every agent lands in one place with tokens, cost and latency. Guardrail verdicts and evaluation scores sit on the exact span that produced them. Fork a real production trace, fix the prompt or tool, rerun — and the incident becomes a regression test.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;margin-top:44px">
-      <figure style="margin:0;display:flex;flex-direction:column;gap:10px"><div style="border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-traces.jpg" alt="Traces list with status, scores, tokens, duration and Replay action" style="display:block;width:100%;height:auto"></div><figcaption style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">Traces — every run, every agent, Replay one click away</figcaption></figure>
-      <figure style="margin:0;display:flex;flex-direction:column;gap:10px"><div style="border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-trace-detail.jpg" alt="Trace detail: span tree with guardrail verdicts and an errored check flagged" style="display:block;width:100%;height:auto"></div><figcaption style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">Trace detail — guardrail verdicts on the span, errored checks never counted as passed</figcaption></figure>
+      <figure style="margin:0;display:flex;flex-direction:column;gap:10px"><div style="border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-traces.jpg" alt="Traces list with status, scores, tokens, duration and Replay action" data-src="./assets/console-traces.jpg" onClick="{{ zoom }}" title="Click to enlarge" style="display:block;width:100%;height:auto;cursor:zoom-in"></div><figcaption style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">Traces — every run, every agent, Replay one click away</figcaption></figure>
+      <figure style="margin:0;display:flex;flex-direction:column;gap:10px"><div style="border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-trace-detail.jpg" alt="Trace detail: span tree with guardrail verdicts and an errored check flagged" data-src="./assets/console-trace-detail.jpg" onClick="{{ zoom }}" title="Click to enlarge" style="display:block;width:100%;height:auto;cursor:zoom-in"></div><figcaption style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">Trace detail — guardrail verdicts on the span, errored checks never counted as passed</figcaption></figure>
     </div>
   </div>
 </section>
 
 <section id="guardrails" data-screen-label="Guardrails" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2);scroll-margin-top:80px">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
-    <div style="order:2"><figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-guardrails.jpg" alt="FastAIAgent Enterprise console — Guardrails overview: rules, runs, blocked, could-not-run" style="display:block;width:100%;height:auto"></figure></div>
-    <div style="display:flex;flex-direction:column;gap:18px;order:1">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+    <div style="flex:1.6 1 420px;min-width:0"><figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-guardrails.jpg" alt="FastAIAgent Enterprise console — Guardrails overview: rules, runs, blocked, could-not-run" data-src="./assets/console-guardrails.jpg" onClick="{{ zoom }}" title="Click to enlarge" style="display:block;width:100%;height:auto;cursor:zoom-in"></figure></div>
+    <div style="display:flex;flex-direction:column;gap:18px;flex:1 1 340px;min-width:0;order:-1">
       <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Guardrails</span><span style="color:var(--ink-3)">policy in the decision path</span></div>
       <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Can it actually stop something? <span style="color:var(--accent)">Yes.</span></h2>
       <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Observability tools just watch. Here, policy is checked before the agent acts — allow, deny, or require a human — and a governance error is a deny, never a silent pass. Every verdict is recorded next to the trace that produced it.</p>
@@ -151,8 +151,8 @@
 </section>
 
 <section id="evaluation" data-screen-label="Evaluation" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);scroll-margin-top:80px">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
-    <div style="display:flex;flex-direction:column;gap:18px">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+    <div style="display:flex;flex-direction:column;gap:18px;flex:1 1 340px;min-width:0">
       <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Evaluation</span><span style="color:var(--ink-3)">evidence, then a gate</span></div>
       <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Proof that a change made the agent better — <span style="color:var(--accent)">and a gate that acts on it.</span></h2>
       <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Every prompt change, model swap or tool fix gets scored before it ships. Sample live traffic continuously, compare versions side by side, and block a release that has no eval evidence behind it.</p>
@@ -164,14 +164,14 @@
         <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Human review that holds up</strong> — annotation queues report inter-annotator agreement, so you can show the review was consistent.</span></li>
       </ul>
     </div>
-    <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-evaluations.jpg" alt="FastAIAgent Enterprise console — Evaluations overview with suites, runs, datasets and scorers" style="display:block;width:100%;height:auto"></figure>
+    <figure style="margin:0;flex:1.6 1 420px;min-width:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-evaluations.jpg" alt="FastAIAgent Enterprise console — Evaluations overview with suites, runs, datasets and scorers" data-src="./assets/console-evaluations.jpg" onClick="{{ zoom }}" title="Click to enlarge" style="display:block;width:100%;height:auto;cursor:zoom-in"></figure>
   </div>
 </section>
 
 <section id="prompts" data-screen-label="Prompt Registry" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line);background:var(--bg-2);scroll-margin-top:80px">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
-    <div style="order:2"><figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-prompt-registry.jpg" alt="FastAIAgent Enterprise console — Prompt Registry: versions, deployments, approvals and scan rules" style="display:block;width:100%;height:auto"></figure></div>
-    <div style="display:flex;flex-direction:column;gap:18px;order:1">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+    <div style="flex:1.6 1 420px;min-width:0"><figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-prompt-registry.jpg" alt="FastAIAgent Enterprise console — Prompt Registry: versions, deployments, approvals and scan rules" data-src="./assets/console-prompt-registry.jpg" onClick="{{ zoom }}" title="Click to enlarge" style="display:block;width:100%;height:auto;cursor:zoom-in"></figure></div>
+    <div style="display:flex;flex-direction:column;gap:18px;flex:1 1 340px;min-width:0;order:-1">
       <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Prompt Registry</span><span style="color:var(--ink-3)">one source of truth</span></div>
       <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Define a prompt once. <span style="color:var(--accent)">Govern it centrally.</span></h2>
       <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Prompts stop living in code and chat threads. Every version is tracked, reviewed and approved to an environment before any agent can use it — and every production trace records exactly which version ran.</p>
@@ -186,8 +186,8 @@
 </section>
 
 <section id="studio" data-screen-label="Agent Studio" style="padding:clamp(64px,9vw,120px) clamp(20px,4vw,56px);border-top:1px solid var(--line)">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:48px;align-items:center">
-    <div style="display:flex;flex-direction:column;gap:18px">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+    <div style="display:flex;flex-direction:column;gap:18px;flex:1 1 340px;min-width:0">
       <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Agent Studio</span><span style="color:var(--ink-3)">describe it, then own the code</span></div>
       <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Describe an agent in plain text. <span style="color:var(--accent)">Get real SDK code you own.</span></h2>
       <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">Studio proposes the workers, tools and guardrails, you refine it together, and every build is a version you can return to. Trial it in a sandbox with your own sample data, then export to your repo — the code is yours.</p>
@@ -197,7 +197,7 @@
         <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Templates</strong> — support assistant, triage team, document analyst.</span></li>
       </ul>
     </div>
-    <figure style="margin:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-agent-studio-new.jpg" alt="Agent Studio — describe what your agent should do in plain language" style="display:block;width:100%;height:auto"></figure>
+    <figure style="margin:0;flex:1.6 1 420px;min-width:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg-2);box-shadow:0 30px 80px -40px rgba(0,0,0,.45)"><img src="./assets/console-agent-studio-new.jpg" alt="Agent Studio — describe what your agent should do in plain language" data-src="./assets/console-agent-studio-new.jpg" onClick="{{ zoom }}" title="Click to enlarge" style="display:block;width:100%;height:auto;cursor:zoom-in"></figure>
   </div>
 </section>
 
@@ -289,11 +289,23 @@
   </div>
 </section>
 
+<sc-if value="{{ zoomOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeZoom }}" style="position:fixed;inset:0;z-index:100;background:rgba(6,8,12,.86);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px);cursor:zoom-out">
+    <img src="{{ zoomSrc }}" alt="" style="max-width:100%;max-height:100%;border-radius:12px;border:1px solid var(--line-2);box-shadow:0 40px 120px rgba(0,0,0,.6)">
+    <div style="position:absolute;top:18px;right:22px;font-family:var(--mono);font-size:12px;color:#eef2f5;padding:8px 12px;border:1px solid rgba(255,255,255,.25);border-radius:6px">Close ✕</div>
+  </div>
+</sc-if>
+
 <dc-import name="footer" hint-size="100%,320px"></dc-import>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
+  state = { zoomSrc: '' };
+  componentDidMount() { this._esc = e => { if (e.key === 'Escape') this.setState({ zoomSrc: '' }); }; window.addEventListener('keydown', this._esc); }
+  componentWillUnmount() { window.removeEventListener('keydown', this._esc); }
   renderVals() {
+    const zoom = e => { const s = e && e.currentTarget && e.currentTarget.getAttribute('data-src'); if (s) this.setState({ zoomSrc: s }); };
+    const closeZoom = () => this.setState({ zoomSrc: '' });
     const controls = [
       { n: 'E-01 · Identity', title: 'SSO & 4-role RBAC', body: 'Enterprise single sign-on (SAML 2.0 + OIDC) with a 4-role permission hierarchy: App Admin, Domain Admin, Developer, Viewer.' },
       { n: 'E-02 · Compliance', title: 'EU AI Act, built in', body: 'Risk classification, 19-role accountability, evidence and reporting — fed from the traces and evals already running. Not a separate product.' },
@@ -352,7 +364,7 @@ class Component extends DCLogic {
       { v: 'v14.2.0', note: 'Add multilingual greeting fragment', env: 'RETIRED', bg: 'var(--bg-3)', color: 'var(--ink-3)' },
       { v: 'v14.0.0', note: 'Baseline support prompt', env: 'RETIRED', bg: 'var(--bg-3)', color: 'var(--ink-3)' }
     ];
-    return { controls, rolesMap, doesRows, pillars, advantages, deploy, guardRows, evalRows, promptRows };
+    return { zoom, closeZoom, zoomOpen: !!this.state.zoomSrc, zoomSrc: this.state.zoomSrc, controls, rolesMap, doesRows, pillars, advantages, deploy, guardRows, evalRows, promptRows };
   }
 }
 </script>
