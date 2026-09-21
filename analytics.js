@@ -2,7 +2,7 @@
 // it ships in the served HTML of every GA-instrumented site. Real secrets
 // (Measurement Protocol api_secret, Data API service accounts) never belong here.
 (function () {
-  var ID = 'G-XXXXXXXXXX';
+  var ID = 'G-HDBM0DGTCR';
   if (ID.indexOf('XXXX') !== -1) return; // not configured yet — stay silent
 
   window.dataLayer = window.dataLayer || [];
