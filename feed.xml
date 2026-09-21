@@ -26,6 +26,15 @@
       <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
+      <title>Your Agents Answered Ten Thousand Customers. How Many Has Anyone Read?</title>
+      <link>https://fastaiagent.net/blog/how-many-answers-has-anyone-read/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/how-many-answers-has-anyone-read/</guid>
+      <pubDate>Wed, 16 Sep 2026 12:00:00 GMT</pubDate>
+      <description>Most teams rely on an LLM judge to grade the rest, and nobody has checked whether the judge is right. When someone asks who reviewed this, a model&apos;s score is not an answer.</description>
+      <category>Evaluation</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
       <title>Which of Your AI Agents Would Fail an EU AI Act Audit Today?</title>
       <link>https://fastaiagent.net/blog/which-agents-would-fail-an-eu-ai-act-audit/</link>
       <guid isPermaLink="true">https://fastaiagent.net/blog/which-agents-would-fail-an-eu-ai-act-audit/</guid>
