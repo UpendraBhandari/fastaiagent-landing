@@ -26,24 +26,6 @@
       <dc:creator>Upendra Bhandari</dc:creator>
     </item>
     <item>
-      <title>Turn every production failure into a regression test</title>
-      <link>https://fastaiagent.net/blog/regression-from-trace/</link>
-      <guid isPermaLink="true">https://fastaiagent.net/blog/regression-from-trace/</guid>
-      <pubDate>Sat, 12 Sep 2026 12:00:00 GMT</pubDate>
-      <description>A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.</description>
-      <category>Replay</category>
-      <dc:creator>FastAIFoundry team</dc:creator>
-    </item>
-    <item>
-      <title>Closing the guardrail audit: three silences and three verdicts</title>
-      <link>https://fastaiagent.net/blog/guardrail-audit-closed/</link>
-      <guid isPermaLink="true">https://fastaiagent.net/blog/guardrail-audit-closed/</guid>
-      <pubDate>Thu, 10 Sep 2026 12:00:00 GMT</pubDate>
-      <description>Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.</description>
-      <category>Guardrails</category>
-      <dc:creator>FastAIFoundry team</dc:creator>
-    </item>
-    <item>
       <title>Can You Prove That Control Actually Operated?</title>
       <link>https://fastaiagent.net/blog/prove-the-control-was-operating/</link>
       <guid isPermaLink="true">https://fastaiagent.net/blog/prove-the-control-was-operating/</guid>
@@ -60,15 +42,6 @@
       <description>An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.</description>
       <category>Compliance</category>
       <dc:creator>Upendra Bhandari</dc:creator>
-    </item>
-    <item>
-      <title>An outage should report INVALID, never a green build</title>
-      <link>https://fastaiagent.net/blog/eval-invalid-not-green/</link>
-      <guid isPermaLink="true">https://fastaiagent.net/blog/eval-invalid-not-green/</guid>
-      <pubDate>Fri, 28 Aug 2026 12:00:00 GMT</pubDate>
-      <description>Agent CI has a failure mode most test runners do not: the thing under test can be fine while the infrastructure behind it is down. Here is how the eval gate handles it.</description>
-      <category>Evaluation</category>
-      <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
       <title>Guardrails Aren&apos;t Just About What Goes Into Your Agent</title>

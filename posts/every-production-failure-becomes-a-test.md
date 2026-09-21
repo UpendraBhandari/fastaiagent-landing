@@ -261,6 +261,4 @@ The closed loop is: develop → trace → replay → fix → regression test →
 
 The result: an agent that gets measurably better over time, with proof.
 
-If you would rather drive this loop from the command line than the browser, [the five-script version](/blog/regression-from-trace/) walks through the same capture, analyze, fix, save and verify cycle in code.
-
 > FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. `pip install fastaiagent` — the SDK is on [GitHub](https://github.com/fastaifoundry/fastaiagent-sdk).
