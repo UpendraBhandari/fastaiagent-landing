@@ -6,7 +6,16 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Wed, 16 Sep 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 21 Sep 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Your Evals Test the Dataset. Production Tests the Agent.</title>
+      <link>https://fastaiagent.net/blog/online-evaluation-policies/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/online-evaluation-policies/</guid>
+      <pubDate>Mon, 21 Sep 2026 12:00:00 GMT</pubDate>
+      <description>An offline eval tells you how your agent handles the cases you thought of. Online evaluation policies score what actually happened — sampled from live traffic, on a schedule, with the failures surfaced rather than averaged away.</description>
+      <category>Evaluation</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
     <item>
       <title>Your Agents Answered Ten Thousand Customers. How Many Has Anyone Read?</title>
       <link>https://fastaiagent.net/blog/how-many-answers-has-anyone-read/</link>
