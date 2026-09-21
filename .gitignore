@@ -1,0 +1,17 @@
+# Local env / secrets — never commit these to a public repo
+.env
+.env.*
+*.pem
+*.key
+*-service-account*.json
+gha-creds-*.json
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Dependencies / build output, if a build step is ever added
+node_modules/
