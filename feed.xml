@@ -26,6 +26,15 @@
       <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
+      <title>Can You Prove That Control Actually Operated?</title>
+      <link>https://fastaiagent.net/blog/prove-the-control-was-operating/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/prove-the-control-was-operating/</guid>
+      <pubDate>Sun, 06 Sep 2026 12:00:00 GMT</pubDate>
+      <description>The question for CISOs and Compliance Officers is no longer whether you have an AI policy. It is whether you can prove a control was operating when the agent made the decision — with a 60-second demo of evidence bound to live runtime.</description>
+      <category>Compliance</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
       <title>Evidence, not attestation</title>
       <link>https://fastaiagent.net/blog/evidence-not-attestation/</link>
       <guid isPermaLink="true">https://fastaiagent.net/blog/evidence-not-attestation/</guid>

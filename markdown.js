@@ -1,12 +1,23 @@
 // Minimal Markdown → HTML for blog posts. Supports front matter, headings, paragraphs,
-// bold/italic, links, images (with captions), inline code, fenced code, blockquotes, lists, hr.
+// bold/italic, links, images and videos (with captions), inline code, fenced code,
+// blockquotes, lists, hr.
 (function () {
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   function inline(s) {
     s = esc(s);
     s = s.replace(/`([^`]+)`/g, (_, c) => '<code>' + c + '</code>');
-    s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+(?:"|&quot;)(.*?)(?:"|&quot;))?\)/g, (_, alt, src, title) =>
-      '<figure><img src="' + src + '" alt="' + alt + '" loading="lazy">' + (title || alt ? '<figcaption>' + (title || alt) + '</figcaption>' : '') + '</figure>');
+    s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+(?:"|&quot;)(.*?)(?:"|&quot;))?\)/g, (_, alt, src, title) => {
+      const cap = (title || alt) ? '<figcaption>' + (title || alt) + '</figcaption>' : '';
+      // A video source renders as a player. Poster is the same path with a
+      // .jpg extension, so a still is shown before playback and in previews.
+      if (/\.(mp4|webm)$/i.test(src)) {
+        const poster = src.replace(/\.(mp4|webm)$/i, '.jpg');
+        return '<figure><video controls playsinline preload="metadata" poster="' + poster +
+               '"><source src="' + src + '" type="video/' + (/\.webm$/i.test(src) ? 'webm' : 'mp4') +
+               '">' + alt + '</video>' + cap + '</figure>';
+      }
+      return '<figure><img src="' + src + '" alt="' + alt + '" loading="lazy">' + cap + '</figure>';
+    });
     s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, u) => {
       const ext = /^https?:\/\//.test(u) ? ' target="_blank" rel="noopener"' : '';
       return '<a href="' + u + '"' + ext + '>' + t + '</a>';

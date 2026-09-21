@@ -33,7 +33,10 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
    images ![caption](./posts/images/pic.png), `inline code`, fenced code blocks,
    > quotes, and - lists all work. Reading time is computed automatically.
 
-2. Put images in posts/images/.
+2. Put images in posts/images/. Video goes in posts/videos/ as
+   <name>.mp4 with a <name>.jpg poster beside it — the renderer derives the
+   poster path from the video path, so both must share a basename. Reference
+   it exactly like an image: ![alt](/posts/videos/name.mp4 "caption").
 3. Add "my-post" to the list in posts/index.js, in date order (newest first).
 4. Run `node tools/build-blog-meta.js` to refresh feed.xml and sitemap.xml.
 5. Push. It appears on blog.html and at /blog/my-post/.

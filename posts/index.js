@@ -2,6 +2,7 @@
 window.FA_POST_SLUGS = [
   "regression-from-trace",
   "guardrail-audit-closed",
+  "prove-the-control-was-operating",
   "evidence-not-attestation",
   "eval-invalid-not-green",
   "where-should-ai-actually-be",
