@@ -1,12 +1,14 @@
 // Blog manifest: list post slugs, newest first. Each slug maps to posts/<slug>.md
 window.FA_POST_SLUGS = [
-  "regression-from-trace",
-  "guardrail-audit-closed",
   "how-many-answers-has-anyone-read",
   "which-agents-would-fail-an-eu-ai-act-audit",
+  "regression-from-trace",
+  "guardrail-audit-closed",
   "prove-the-control-was-operating",
   "evidence-not-attestation",
   "eval-invalid-not-green",
+  "guardrails-at-every-checkpoint",
+  "guardrails-block-before-the-provider",
   "where-should-ai-actually-be",
   "five-people-evaluating-your-agent-platform",
   "guardrails-that-actually-block",

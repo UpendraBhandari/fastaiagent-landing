@@ -47,6 +47,17 @@ const posts = loadManifest().map(slug => {
   return { slug, meta, date, url: `${SITE}/blog/${slug}/` };
 });
 
+// The manifest drives display order on the blog index, and nothing else
+// enforces it. A post inserted in the wrong place is invisible to every other
+// check, so fail loudly here.
+for (let i = 1; i < posts.length; i++) {
+  if (posts[i].date > posts[i - 1].date) {
+    throw new Error(
+      `posts/index.js is not newest-first: "${posts[i].slug}" (${posts[i].meta.date}) ` +
+      `comes after "${posts[i - 1].slug}" (${posts[i - 1].meta.date})`);
+  }
+}
+
 // --- per-post HTML pages --------------------------------------------------
 // Every post URL served the same shell, with title and body injected by JS.
 // Crawlers that don't run JS (LinkedIn, Slack, X) saw nothing, so every share

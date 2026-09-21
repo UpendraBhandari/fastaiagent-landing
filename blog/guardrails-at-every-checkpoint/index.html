@@ -2,21 +2,56 @@
 <html>
 <head>
 <meta charset="utf-8">
+<base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script>window.FA_POST_SLUG="guardrails-at-every-checkpoint"</script>
+<title>Guardrails Aren't Just About What Goes Into Your Agent — FastAIAgent</title>
+<meta name="description" content="It's what comes in, what tools it calls, and what goes out. Three rules created on the Control Plane and blocking live — with zero guardrail code in the agent.">
+<link rel="canonical" href="https://fastaiagent.net/blog/guardrails-at-every-checkpoint/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Guardrails Aren't Just About What Goes Into Your Agent">
+<meta property="og:description" content="It's what comes in, what tools it calls, and what goes out. Three rules created on the Control Plane and blocking live — with zero guardrail code in the agent.">
+<meta property="og:url" content="https://fastaiagent.net/blog/guardrails-at-every-checkpoint/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/guardrails-checkpoints-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-08-27T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Guardrails">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Guardrails Aren't Just About What Goes Into Your Agent">
+<meta name="twitter:description" content="It's what comes in, what tools it calls, and what goes out. Three rules created on the Control Plane and blocking live — with zero guardrail code in the agent.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/guardrails-checkpoints-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
 <script>window.FA_DEFER_PAGEVIEW=1</script>
-<script src="./analytics.js"></script>
+<script src="/analytics.js"></script>
 </head>
 <body>
+<div id="prerender">
+<article>
+<h1>Guardrails Aren't Just About What Goes Into Your Agent</h1>
+<p>It's what comes in, what tools it calls, and what goes out. Three rules created on the Control Plane and blocking live — with zero guardrail code in the agent.</p>
+<p>Aug 27, 2026 · Upendra Bhandari · Guardrails</p>
+<img src="/posts/images/guardrails-checkpoints-cover.jpg" alt="">
+<p>Guardrails aren't just about what goes into your agent — it's what comes in, what tools it calls, and what goes out.</p>
+<p>Watch all three rules get created on the FastAIAgent Enterprise Control Plane and then block live: financial advice at the input, <code>delete_account</code> before it ever executes, an internal codename before the reply leaves.</p>
+<p>Zero guardrail code in the agent.</p>
+<h3>One agent, four checkpoints</h3>
+<figure><video controls playsinline preload="metadata" poster="/posts/videos/guardrails-at-every-checkpoint.jpg"><source src="/posts/videos/guardrails-at-every-checkpoint.mp4" type="video/mp4">Four guardrail checkpoints around one agent: input, tool call, tool result and output</video><figcaption>Blocking or parallel at every position — regex, schema, classifier or LLM-judge, authored locally or on the plane.</figcaption></figure>
+<p>The checkpoint that matters most is usually the tool call. An input filter stops a bad request and an output filter stops a bad answer, but only a check between the model and the tool can stop <code>delete_account</code> from actually running.</p>
+<p>The longer argument is in <a href="/blog/guardrails-that-actually-block/">Guardrails that actually block</a>; the companion demo of a local guardrail blocking PII is in <a href="/blog/guardrails-block-before-the-provider/">Guardrails that log violations are just dashboards</a>. The platform view is on the <a href="/enterprise.html">Enterprise page</a>.</p>
+</article>
+</div>
 <x-dc>
 <helmet>
-  <title>Blog — FastAIAgent</title>
-  <link rel="icon" href="./assets/logo-dark.svg">
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
-  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="./feed.xml">
-  <link rel="stylesheet" href="./theme.css">
-  <script src="./markdown.js"></script>
-  <script src="./posts/series.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
   <style>
     .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
     .post-body>*+*{margin-top:22px}
@@ -40,14 +75,14 @@
 
 <article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
   <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
-    <a href="./blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
     <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
       <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
     </sc-if>
     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><sc-if value="{{ isVideo }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 7px;border:1px solid var(--line-2);border-radius:999px;color:var(--ink-2)">▶ Video</span></sc-if><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
     <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
     <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
-    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="./assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
     <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
     <div class="post-body" style="margin-top:36px">{{ body }}</div>
     <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>

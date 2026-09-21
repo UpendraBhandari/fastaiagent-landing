@@ -2,6 +2,7 @@
 title: Which of Your AI Agents Would Fail an EU AI Act Audit Today?
 date: Sep 13, 2026
 tag: Compliance
+kind: video
 minutes: 2
 summary: Most teams answer that with a document. This answers it with production evidence — two agents failing the audit, captured automatically, every record hash-chained for the auditor.
 author: Upendra Bhandari

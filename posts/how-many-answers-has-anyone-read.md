@@ -2,6 +2,7 @@
 title: Your Agents Answered Ten Thousand Customers. How Many Has Anyone Read?
 date: Sep 16, 2026
 tag: Evaluation
+kind: video
 minutes: 2
 summary: Most teams rely on an LLM judge to grade the rest, and nobody has checked whether the judge is right. When someone asks who reviewed this, a model's score is not an answer.
 author: Upendra Bhandari

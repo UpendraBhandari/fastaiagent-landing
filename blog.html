@@ -34,7 +34,7 @@
         <a href="{{ p.href }}" style="display:flex;flex-direction:column;gap:14px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);padding:0;overflow:hidden;color:var(--ink);transition:border-color .2s,transform .2s" style-hover="border-color:var(--accent);transform:translateY(-2px)">
           <sc-if value="{{ p.hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ p.cover }}" alt="" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:1px solid var(--line)"></sc-if>
           <div style="display:flex;flex-direction:column;gap:14px;padding:28px;flex:1">
-            <div style="display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ p.tag }}</span><span>{{ p.date }}</span></div>
+            <div style="display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="display:flex;gap:8px;align-items:center"><span style="color:var(--accent)">{{ p.tag }}</span><sc-if value="{{ p.isVideo }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 7px;border:1px solid var(--line-2);border-radius:999px;color:var(--ink-2);letter-spacing:.08em">▶ Video</span></sc-if></span><span>{{ p.date }}</span></div>
             <sc-if value="{{ p.inSeries }}" hint-placeholder-val="{{ false }}"><div style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-3)">{{ p.series }} · <span style="color:var(--accent)">Part {{ p.part }} of {{ p.seriesTotal }}</span></div></sc-if>
             <h2 style="font-family:var(--display);font-size:26px;font-weight:600;letter-spacing:-.025em;line-height:1.1;margin:0;text-wrap:balance">{{ p.title }}</h2>
             <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:15px">{{ p.summary }}</p>
@@ -62,7 +62,8 @@ class Component extends DCLogic {
     const posts = this.state.posts.map(m => {
       const list = (m.series && S[m.series]) || [];
       return { ...m, href: '/blog/' + m.slug + '/', hasCover: !!m.cover,
-               inSeries: list.length > 0, seriesTotal: list.length };
+               inSeries: list.length > 0, seriesTotal: list.length,
+               isVideo: m.kind === 'video' };
     });
     return { posts, empty: this.state.loaded && posts.length === 0 };
   }

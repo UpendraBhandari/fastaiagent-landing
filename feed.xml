@@ -6,25 +6,7 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sat, 12 Sep 2026 12:00:00 GMT</lastBuildDate>
-    <item>
-      <title>Turn every production failure into a regression test</title>
-      <link>https://fastaiagent.net/blog/regression-from-trace/</link>
-      <guid isPermaLink="true">https://fastaiagent.net/blog/regression-from-trace/</guid>
-      <pubDate>Sat, 12 Sep 2026 12:00:00 GMT</pubDate>
-      <description>A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.</description>
-      <category>Replay</category>
-      <dc:creator>FastAIFoundry team</dc:creator>
-    </item>
-    <item>
-      <title>Closing the guardrail audit: three silences and three verdicts</title>
-      <link>https://fastaiagent.net/blog/guardrail-audit-closed/</link>
-      <guid isPermaLink="true">https://fastaiagent.net/blog/guardrail-audit-closed/</guid>
-      <pubDate>Thu, 10 Sep 2026 12:00:00 GMT</pubDate>
-      <description>Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.</description>
-      <category>Guardrails</category>
-      <dc:creator>FastAIFoundry team</dc:creator>
-    </item>
+    <lastBuildDate>Wed, 16 Sep 2026 12:00:00 GMT</lastBuildDate>
     <item>
       <title>Your Agents Answered Ten Thousand Customers. How Many Has Anyone Read?</title>
       <link>https://fastaiagent.net/blog/how-many-answers-has-anyone-read/</link>
@@ -42,6 +24,24 @@
       <description>Most teams answer that with a document. This answers it with production evidence — two agents failing the audit, captured automatically, every record hash-chained for the auditor.</description>
       <category>Compliance</category>
       <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>Turn every production failure into a regression test</title>
+      <link>https://fastaiagent.net/blog/regression-from-trace/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/regression-from-trace/</guid>
+      <pubDate>Sat, 12 Sep 2026 12:00:00 GMT</pubDate>
+      <description>A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.</description>
+      <category>Replay</category>
+      <dc:creator>FastAIFoundry team</dc:creator>
+    </item>
+    <item>
+      <title>Closing the guardrail audit: three silences and three verdicts</title>
+      <link>https://fastaiagent.net/blog/guardrail-audit-closed/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/guardrail-audit-closed/</guid>
+      <pubDate>Thu, 10 Sep 2026 12:00:00 GMT</pubDate>
+      <description>Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.</description>
+      <category>Guardrails</category>
+      <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
       <title>Can You Prove That Control Actually Operated?</title>
@@ -69,6 +69,24 @@
       <description>Agent CI has a failure mode most test runners do not: the thing under test can be fine while the infrastructure behind it is down. Here is how the eval gate handles it.</description>
       <category>Evaluation</category>
       <dc:creator>FastAIFoundry team</dc:creator>
+    </item>
+    <item>
+      <title>Guardrails Aren&apos;t Just About What Goes Into Your Agent</title>
+      <link>https://fastaiagent.net/blog/guardrails-at-every-checkpoint/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/guardrails-at-every-checkpoint/</guid>
+      <pubDate>Thu, 27 Aug 2026 12:00:00 GMT</pubDate>
+      <description>It&apos;s what comes in, what tools it calls, and what goes out. Three rules created on the Control Plane and blocking live — with zero guardrail code in the agent.</description>
+      <category>Guardrails</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>Guardrails That Log Violations After the Fact Are Just Dashboards</title>
+      <link>https://fastaiagent.net/blog/guardrails-block-before-the-provider/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/guardrails-block-before-the-provider/</guid>
+      <pubDate>Thu, 20 Aug 2026 12:00:00 GMT</pubDate>
+      <description>FastAIAgent guardrails block before the provider ever sees the data. Define one in code, or author it once on the Control Plane and every connected agent enforces it.</description>
+      <category>Guardrails</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
     </item>
     <item>
       <title>Where Should AI Actually Be in the System?</title>

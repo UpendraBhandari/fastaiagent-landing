@@ -2,6 +2,7 @@
 title: Can You Prove That Control Actually Operated?
 date: Sep 6, 2026
 tag: Compliance
+kind: video
 minutes: 2
 summary: The question for CISOs and Compliance Officers is no longer whether you have an AI policy. It is whether you can prove a control was operating when the agent made the decision — with a 60-second demo of evidence bound to live runtime.
 author: Upendra Bhandari

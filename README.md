@@ -25,6 +25,7 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
    summary: One or two sentences shown on the blog index.
    cover: ./posts/images/my-cover.jpg   (optional)
    author: Your Name                    (optional)
+   kind: video                            (optional; shows a Video badge)
    series: The Agent Debugging Manifesto  (optional, with part:)
    part: 5                                (optional, with series:)
    ---
@@ -51,7 +52,9 @@ unparseable date.
 A post joins a series by declaring `series:` and `part:` in its front matter.
 The build script collects them into posts/series.js, which drives the "Part N
 of M" banner and the prev/next links on post.html, and the series line on the
-blog cards. Parts must be 1..n with no gaps, and part order must match date
+blog cards. The manifest must also be newest-first overall; the build fails if it is not,
+since nothing else would catch a post inserted in the wrong place.
+Parts must be 1..n with no gaps, and part order must match date
 order — the script refuses to build otherwise, so the numbering can't silently
 drift when a post is added. A post with no `series:` renders exactly as before.
 
