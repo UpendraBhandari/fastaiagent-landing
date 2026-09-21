@@ -5,6 +5,8 @@ tag: Observability
 minutes: 9
 summary: Your choices used to be free but heavy, easy but hosted, or self-hosted for an enterprise fee. Nobody offered the fourth option — free, easy and local. One pip install, one command, one SQLite file, nothing leaving your machine.
 author: Upendra Bhandari
+series: The Agent Debugging Manifesto
+part: 4
 cover: ./posts/images/local-first-cover.jpg
 ---
 

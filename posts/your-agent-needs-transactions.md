@@ -5,6 +5,8 @@ tag: Durability
 minutes: 7
 summary: Databases solved this 40 years ago. Every framework gives agents tools to act; none give them transactions to act safely. ACID — atomicity, consistency, isolation, durability — mapped onto action-taking agents.
 author: Upendra Bhandari
+series: The Agent Debugging Manifesto
+part: 3
 cover: ./posts/images/transactions-cover.jpg
 ---
 

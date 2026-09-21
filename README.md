@@ -11,8 +11,8 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
 - assets/ — logos and console screenshots
 - posts/ — blog posts (see below)
 - analytics.js — Google Analytics loader (measurement ID lives here, once)
-- tools/build-blog-meta.js — regenerates feed.xml, sitemap.xml, robots.txt
-- feed.xml, sitemap.xml, robots.txt — generated; do not hand-edit
+- tools/build-blog-meta.js — regenerates feed.xml, sitemap.xml, robots.txt, posts/series.js
+- feed.xml, sitemap.xml, robots.txt, posts/series.js — generated; do not hand-edit
 - .nojekyll — tells GitHub Pages not to run Jekyll
 
 ## Writing a blog post
@@ -25,6 +25,8 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
    summary: One or two sentences shown on the blog index.
    cover: ./posts/images/my-cover.jpg   (optional)
    author: Your Name                    (optional)
+   series: The Agent Debugging Manifesto  (optional, with part:)
+   part: 5                                (optional, with series:)
    ---
 
    Markdown body. Headings (##), **bold**, *italic*, [links](https://…),
@@ -41,6 +43,14 @@ generated at request time, so a post added without it is invisible to feed
 readers and search engines. The script reads posts/index.js and each post's
 front matter, and fails loudly if a listed post is missing or has an
 unparseable date.
+
+## Series
+A post joins a series by declaring `series:` and `part:` in its front matter.
+The build script collects them into posts/series.js, which drives the "Part N
+of M" banner and the prev/next links on post.html, and the series line on the
+blog cards. Parts must be 1..n with no gaps, and part order must match date
+order — the script refuses to build otherwise, so the numbering can't silently
+drift when a post is added. A post with no `series:` renders exactly as before.
 
 ## Analytics
 Every page loads analytics.js from its <head>. Pageviews are sent manually

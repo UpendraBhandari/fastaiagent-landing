@@ -5,6 +5,8 @@ tag: Replay
 minutes: 8
 summary: Finding the bug is an afternoon. Keeping it dead across every future change by every future contributor is the real cost — and that only works if the failure becomes a permanent test case the moment you fix it.
 author: Upendra Bhandari
+series: The Agent Debugging Manifesto
+part: 1
 cover: ./posts/images/every-failure-a-test-cover.jpg
 ---
 

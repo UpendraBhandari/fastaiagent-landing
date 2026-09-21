@@ -5,6 +5,8 @@ tag: Prompts
 minutes: 5
 summary: Code changes have PRs, reviews, CI and tests. Prompt changes have someone eyeballing three responses before they deploy. Here is the gate that catches a bad prompt before it ships.
 author: Upendra Bhandari
+series: The Agent Debugging Manifesto
+part: 2
 cover: ./posts/images/prompt-gate-cover.jpg
 ---
 

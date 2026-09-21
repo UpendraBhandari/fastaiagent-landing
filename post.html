@@ -16,6 +16,7 @@
   <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="./feed.xml">
   <link rel="stylesheet" href="./theme.css">
   <script src="./markdown.js"></script>
+  <script src="./posts/series.js"></script>
   <style>
     .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
     .post-body>*+*{margin-top:22px}
@@ -40,6 +41,9 @@
 <article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
   <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
     <a href="./blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
     <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
     <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
@@ -47,6 +51,16 @@
     <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
     <div class="post-body" style="margin-top:36px">{{ body }}</div>
     <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
     <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
       <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
       <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
@@ -75,7 +89,20 @@ class Component extends DCLogic {
   }
   renderVals() {
     const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
-    return { meta: this.state.meta, body, hasCover: !!this.state.meta.cover, error: this.state.error };
+    const meta = this.state.meta;
+    const href = s => './post.html?slug=' + s;
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
   }
 }
 </script>
