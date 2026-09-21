@@ -79,3 +79,9 @@ its Markdown loads — an automatic pageview would report every article under th
 placeholder title. post.html sets `window.FA_DEFER_PAGEVIEW` before loading
 analytics.js and calls `FA_ANALYTICS.pageView()` once the post is rendered,
 tagging the event with post_slug and post_tag.
+
+Self-hosted video is tracked too. GA4 only instruments embedded YouTube on its
+own, so analytics.js listens in the capture phase at document level (media
+events do not bubble) and emits the standard video_start, video_progress at
+25/50/75, and video_complete events. The hidden pre-rendered copy of a page is
+excluded, and every handler is wrapped so a failure cannot affect playback.
