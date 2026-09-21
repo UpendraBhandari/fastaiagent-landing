@@ -5,7 +5,7 @@
   function inline(s) {
     s = esc(s);
     s = s.replace(/`([^`]+)`/g, (_, c) => '<code>' + c + '</code>');
-    s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, alt, src, title) =>
+    s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+(?:"|&quot;)(.*?)(?:"|&quot;))?\)/g, (_, alt, src, title) =>
       '<figure><img src="' + src + '" alt="' + alt + '" loading="lazy">' + (title || alt ? '<figcaption>' + (title || alt) + '</figcaption>' : '') + '</figure>');
     s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, u) => {
       const ext = /^https?:\/\//.test(u) ? ' target="_blank" rel="noopener"' : '';
