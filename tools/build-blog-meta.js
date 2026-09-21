@@ -102,6 +102,10 @@ ${renderMarkdown(body)}
 </div>`;
 
   let html = shell
+    // The runtime resolves components as "./nav.dc.html" (COMPONENT_DIR = "."),
+    // which from /blog/<slug>/ would look one level deep and 404. A base of /
+    // makes every relative URL resolve from the site root.
+    .replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<base href="/">')
     .replace('<script src="./support.js"></script>',
       `<script>window.FA_POST_SLUG=${JSON.stringify(p.slug)}</script>\n${head}\n<style>.js #prerender{display:none}</style>\n<script>document.documentElement.className+=' js'</script>\n<script src="/support.js"></script>`)
     .replace('<script>window.FA_DEFER_PAGEVIEW=1</script>', '<script>window.FA_DEFER_PAGEVIEW=1</script>')
