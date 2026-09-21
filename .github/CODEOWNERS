@@ -3,7 +3,10 @@
 # to prevent that. This file, plus the "Protect production branches" ruleset,
 # is what stops one being merged without an approval from a listed owner.
 #
-# Listed accounts must have write access to be requestable as reviewers;
-# adding a username here alone grants nothing.
+# Both owners are on one line, so an approval from EITHER satisfies the rule.
+#
+# NOTE: a listed account must have write access to be requestable as a
+# reviewer. @fastaifoundry is not a collaborator yet, so GitHub will flag it
+# as an unknown owner and it cannot approve until invited. Intentional for now.
 
-* @UpendraBhandari
+* @UpendraBhandari @fastaifoundry
