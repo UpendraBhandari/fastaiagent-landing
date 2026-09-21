@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>FastAIAgent Blog</title>
+    <link>https://fastaiagent.net/blog.html</link>
+    <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
+    <language>en</language>
+    <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>Sat, 12 Sep 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Turn every production failure into a regression test</title>
+      <link>https://fastaiagent.net/post.html?slug=regression-from-trace</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=regression-from-trace</guid>
+      <pubDate>Sat, 12 Sep 2026 12:00:00 GMT</pubDate>
+      <description>A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.</description>
+      <category>Replay</category>
+      <dc:creator>FastAIFoundry team</dc:creator>
+    </item>
+    <item>
+      <title>Closing the guardrail audit: three silences and three verdicts</title>
+      <link>https://fastaiagent.net/post.html?slug=guardrail-audit-closed</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=guardrail-audit-closed</guid>
+      <pubDate>Thu, 10 Sep 2026 12:00:00 GMT</pubDate>
+      <description>Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.</description>
+      <category>Guardrails</category>
+      <dc:creator>FastAIFoundry team</dc:creator>
+    </item>
+    <item>
+      <title>An outage should report INVALID, never a green build</title>
+      <link>https://fastaiagent.net/post.html?slug=eval-invalid-not-green</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=eval-invalid-not-green</guid>
+      <pubDate>Fri, 28 Aug 2026 12:00:00 GMT</pubDate>
+      <description>Agent CI has a failure mode most test runners do not: the thing under test can be fine while the infrastructure behind it is down. Here is how the eval gate handles it.</description>
+      <category>Evaluation</category>
+      <dc:creator>FastAIFoundry team</dc:creator>
+    </item>
+    <item>
+      <title>Your Agent Needs Transactions, Not Just Tools</title>
+      <link>https://fastaiagent.net/post.html?slug=your-agent-needs-transactions</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=your-agent-needs-transactions</guid>
+      <pubDate>Fri, 29 May 2026 12:00:00 GMT</pubDate>
+      <description>Databases solved this 40 years ago. Every framework gives agents tools to act; none give them transactions to act safely. ACID — atomicity, consistency, isolation, durability — mapped onto action-taking agents.</description>
+      <category>Durability</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>The Prompt Changed. The Agent Broke. Nobody Noticed for 3 Days.</title>
+      <link>https://fastaiagent.net/post.html?slug=prompt-changed-agent-broke-nobody-noticed</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=prompt-changed-agent-broke-nobody-noticed</guid>
+      <pubDate>Mon, 25 May 2026 12:00:00 GMT</pubDate>
+      <description>Code changes have PRs, reviews, CI and tests. Prompt changes have someone eyeballing three responses before they deploy. Here is the gate that catches a bad prompt before it ships.</description>
+      <category>Prompts</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>Every Production Failure Should Become a Test. One Click.</title>
+      <link>https://fastaiagent.net/post.html?slug=every-production-failure-becomes-a-test</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=every-production-failure-becomes-a-test</guid>
+      <pubDate>Thu, 21 May 2026 12:00:00 GMT</pubDate>
+      <description>Finding the bug is an afternoon. Keeping it dead across every future change by every future contributor is the real cost — and that only works if the failure becomes a permanent test case the moment you fix it.</description>
+      <category>Replay</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>I&apos;m Done Complaining. Here&apos;s What I&apos;m Shipping</title>
+      <link>https://fastaiagent.net/post.html?slug=done-complaining-heres-what-im-shipping</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=done-complaining-heres-what-im-shipping</guid>
+      <pubDate>Sun, 10 May 2026 12:00:00 GMT</pubDate>
+      <description>Five articles on what&apos;s broken in agent infrastructure. This is the one where I stop complaining and ship: FastAIAgent, open source, Apache 2.0, runs locally.</description>
+      <category>Announcement</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+  </channel>
+</rss>

@@ -10,6 +10,9 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
 - theme.css — light/dark theme, fonts (Google Fonts)
 - assets/ — logos and console screenshots
 - posts/ — blog posts (see below)
+- analytics.js — Google Analytics loader (measurement ID lives here, once)
+- tools/build-blog-meta.js — regenerates feed.xml, sitemap.xml, robots.txt
+- feed.xml, sitemap.xml, robots.txt — generated; do not hand-edit
 - .nojekyll — tells GitHub Pages not to run Jekyll
 
 ## Writing a blog post
@@ -29,5 +32,20 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
    > quotes, and - lists all work. Reading time is computed automatically.
 
 2. Put images in posts/images/.
-3. Add "my-post" to the top of the list in posts/index.js.
-4. Push. It appears on blog.html and at post.html?slug=my-post.
+3. Add "my-post" to the list in posts/index.js, in date order (newest first).
+4. Run `node tools/build-blog-meta.js` to refresh feed.xml and sitemap.xml.
+5. Push. It appears on blog.html and at post.html?slug=my-post.
+
+Step 4 is not optional — the feed and sitemap are committed files, not
+generated at request time, so a post added without it is invisible to feed
+readers and search engines. The script reads posts/index.js and each post's
+front matter, and fails loudly if a listed post is missing or has an
+unparseable date.
+
+## Analytics
+Every page loads analytics.js from its <head>. Pageviews are sent manually
+(`send_page_view: false`) because post.html only knows the article title after
+its Markdown loads — an automatic pageview would report every article under the
+placeholder title. post.html sets `window.FA_DEFER_PAGEVIEW` before loading
+analytics.js and calls `FA_ANALYTICS.pageView()` once the post is rendered,
+tagging the event with post_slug and post_tag.

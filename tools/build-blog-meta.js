@@ -1,0 +1,102 @@
+#!/usr/bin/env node
+// Regenerates feed.xml, sitemap.xml and robots.txt from the blog manifest and
+// each post's front matter. Run from the repo root after adding or editing a
+// post:  node tools/build-blog-meta.js
+'use strict';
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.resolve(__dirname, '..');
+const SITE = 'https://fastaiagent.net';
+const TITLE = 'FastAIAgent Blog';
+const DESC = 'Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.';
+
+// Static pages, with a rough priority for the sitemap.
+const PAGES = [
+  ['/', '1.0'], ['/enterprise.html', '0.9'], ['/pricing.html', '0.8'],
+  ['/docs.html', '0.8'], ['/blog.html', '0.7'], ['/about.html', '0.6'],
+];
+
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+
+function loadManifest() {
+  const src = fs.readFileSync(path.join(ROOT, 'posts/index.js'), 'utf8');
+  const m = src.match(/\[([\s\S]*?)\]/);
+  if (!m) throw new Error('could not parse posts/index.js');
+  return JSON.parse(m[0].replace(/,(\s*\])/, '$1'));
+}
+
+function frontMatter(md) {
+  const meta = {};
+  const m = md.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
+  if (m) m[1].split('\n').forEach(line => {
+    const i = line.indexOf(':');
+    if (i > 0) meta[line.slice(0, i).trim()] = line.slice(i + 1).trim().replace(/^["']|["']$/g, '');
+  });
+  return { meta, body: m ? md.slice(m[0].length) : md };
+}
+
+const posts = loadManifest().map(slug => {
+  const file = path.join(ROOT, 'posts', slug + '.md');
+  if (!fs.existsSync(file)) throw new Error('manifest lists a missing post: ' + slug);
+  const { meta } = frontMatter(fs.readFileSync(file, 'utf8'));
+  if (!meta.title) throw new Error('post has no title: ' + slug);
+  const date = new Date(meta.date + ' 12:00:00 UTC'); // midday UTC so no timezone shifts the day
+  if (isNaN(date)) throw new Error(`post has an unparseable date (${meta.date}): ` + slug);
+  return { slug, meta, date, url: `${SITE}/post.html?slug=${slug}` };
+});
+
+// --- feed.xml -------------------------------------------------------------
+const items = posts.map(p => `    <item>
+      <title>${esc(p.meta.title)}</title>
+      <link>${esc(p.url)}</link>
+      <guid isPermaLink="true">${esc(p.url)}</guid>
+      <pubDate>${p.date.toUTCString()}</pubDate>
+      <description>${esc(p.meta.summary || '')}</description>${p.meta.tag ? `
+      <category>${esc(p.meta.tag)}</category>` : ''}${p.meta.author ? `
+      <dc:creator>${esc(p.meta.author)}</dc:creator>` : ''}
+    </item>`).join('\n');
+
+fs.writeFileSync(path.join(ROOT, 'feed.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>${esc(TITLE)}</title>
+    <link>${SITE}/blog.html</link>
+    <description>${esc(DESC)}</description>
+    <language>en</language>
+    <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>${(posts[0] ? posts[0].date : new Date()).toUTCString()}</lastBuildDate>
+${items}
+  </channel>
+</rss>
+`);
+
+// --- sitemap.xml ----------------------------------------------------------
+const urls = [
+  ...PAGES.map(([p, pri]) => `  <url>
+    <loc>${SITE}${p}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>${pri}</priority>
+  </url>`),
+  ...posts.map(p => `  <url>
+    <loc>${esc(p.url)}</loc>
+    <lastmod>${p.date.toISOString().slice(0, 10)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`),
+].join('\n');
+
+fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`);
+
+// --- robots.txt -----------------------------------------------------------
+fs.writeFileSync(path.join(ROOT, 'robots.txt'),
+  `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
+
+console.log(`feed.xml     ${posts.length} posts`);
+console.log(`sitemap.xml  ${PAGES.length + posts.length} urls`);
+console.log('robots.txt   written');

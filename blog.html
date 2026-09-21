@@ -13,6 +13,7 @@
   <meta name="description" content="Notes from building the open agent harness: replay, guardrails, evaluation, and operating agents in production.">
   <link rel="icon" href="./assets/logo-dark.svg">
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="./feed.xml">
   <link rel="stylesheet" href="./theme.css">
   <script src="./markdown.js"></script>
   <script src="./posts/index.js"></script>
@@ -25,6 +26,7 @@
       <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Blog</div>
       <h1 style="font-family:var(--display);font-size:clamp(42px,6vw,80px);font-weight:700;letter-spacing:-.04em;line-height:.96;margin:18px 0 0;max-width:18ch;text-wrap:balance">Notes from the harness.</h1>
       <p style="font-size:17px;line-height:1.55;color:var(--ink-2);max-width:54ch;margin:22px 0 0">Replay, guardrails, evaluation, and what it takes to operate agents in production.</p>
+      <a href="./feed.xml" style="display:inline-flex;align-items:center;gap:7px;margin-top:18px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)" style-hover="color:var(--accent)">RSS feed →</a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:20px;margin-top:56px">
       <sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
