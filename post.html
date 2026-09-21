@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
 <script src="./analytics.js"></script>
 </head>
 <body>
@@ -12,6 +13,7 @@
   <title>Blog — FastAIAgent</title>
   <link rel="icon" href="./assets/logo-dark.svg">
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="./feed.xml">
   <link rel="stylesheet" href="./theme.css">
   <script src="./markdown.js"></script>
   <style>
@@ -65,7 +67,11 @@ class Component extends DCLogic {
       meta.author = meta.author || 'FastAIFoundry team';
       document.title = meta.title + ' — FastAIAgent';
       this.setState({ meta, html });
-    } catch (e) { this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } }); }
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
   }
   renderVals() {
     const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });

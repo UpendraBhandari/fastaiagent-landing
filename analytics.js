@@ -8,10 +8,25 @@
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { dataLayer.push(arguments); };
   gtag('js', new Date());
-  gtag('config', ID);
+
+  // Pageviews are sent manually rather than automatically. post.html sets its
+  // title only after the markdown loads, so an automatic pageview would report
+  // every article as the placeholder title that was in the HTML at load time.
+  gtag('config', ID, { send_page_view: false });
+
+  function pageView(params) {
+    var p = { page_title: document.title, page_location: location.href };
+    if (params) for (var k in params) if (params[k] != null) p[k] = params[k];
+    gtag('event', 'page_view', p);
+  }
+  window.FA_ANALYTICS = { pageView: pageView };
 
   var s = document.createElement('script');
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ID;
   document.head.appendChild(s);
+
+  // Pages that resolve their own title asynchronously set FA_DEFER_PAGEVIEW
+  // before this script and call FA_ANALYTICS.pageView() when they are ready.
+  if (!window.FA_DEFER_PAGEVIEW) pageView();
 })();
