@@ -26,6 +26,15 @@
       <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
+      <title>Which of Your AI Agents Would Fail an EU AI Act Audit Today?</title>
+      <link>https://fastaiagent.net/blog/which-agents-would-fail-an-eu-ai-act-audit/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/which-agents-would-fail-an-eu-ai-act-audit/</guid>
+      <pubDate>Sun, 13 Sep 2026 12:00:00 GMT</pubDate>
+      <description>Most teams answer that with a document. This answers it with production evidence — two agents failing the audit, captured automatically, every record hash-chained for the auditor.</description>
+      <category>Compliance</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
       <title>Can You Prove That Control Actually Operated?</title>
       <link>https://fastaiagent.net/blog/prove-the-control-was-operating/</link>
       <guid isPermaLink="true">https://fastaiagent.net/blog/prove-the-control-was-operating/</guid>
