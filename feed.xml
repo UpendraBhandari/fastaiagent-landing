@@ -35,6 +35,15 @@
       <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
+      <title>The Agent Was Right. The Data Was Wrong.</title>
+      <link>https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</guid>
+      <pubDate>Thu, 11 Jun 2026 12:00:00 GMT</pubDate>
+      <description>Perfect reasoning over the wrong document is the most dangerous kind of agent bug — no hallucination, no error, green across every dashboard. To find it you have to look at what the agent actually retrieved.</description>
+      <category>Knowledge Base</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
       <title>I See Everything My Agent Does. In My Own Environment. No Cloud Account.</title>
       <link>https://fastaiagent.net/post.html?slug=see-everything-your-agent-does</link>
       <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=see-everything-your-agent-does</guid>

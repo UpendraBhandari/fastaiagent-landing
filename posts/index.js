@@ -3,6 +3,7 @@ window.FA_POST_SLUGS = [
   "regression-from-trace",
   "guardrail-audit-closed",
   "eval-invalid-not-green",
+  "agent-was-right-data-was-wrong",
   "see-everything-your-agent-does",
   "your-agent-needs-transactions",
   "prompt-changed-agent-broke-nobody-noticed",

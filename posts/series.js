@@ -20,6 +20,11 @@ window.FA_SERIES = {
       "slug": "see-everything-your-agent-does",
       "title": "I See Everything My Agent Does. In My Own Environment. No Cloud Account.",
       "part": 4
+    },
+    {
+      "slug": "agent-was-right-data-was-wrong",
+      "title": "The Agent Was Right. The Data Was Wrong.",
+      "part": 5
     }
   ]
 };
