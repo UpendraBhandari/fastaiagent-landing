@@ -1,0 +1,9 @@
+# Only these accounts can approve changes to the site.
+# The repo is public, so anyone may OPEN a pull request — GitHub offers no way
+# to prevent that. This file, plus the "Protect production branches" ruleset,
+# is what stops one being merged without an approval from a listed owner.
+#
+# Listed accounts must have write access to be requestable as reviewers;
+# adding a username here alone grants nothing.
+
+* @UpendraBhandari
