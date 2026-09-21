@@ -35,6 +35,15 @@
       <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
+      <title>I See Everything My Agent Does. In My Own Environment. No Cloud Account.</title>
+      <link>https://fastaiagent.net/post.html?slug=see-everything-your-agent-does</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=see-everything-your-agent-does</guid>
+      <pubDate>Thu, 04 Jun 2026 12:00:00 GMT</pubDate>
+      <description>Your choices used to be free but heavy, easy but hosted, or self-hosted for an enterprise fee. Nobody offered the fourth option — free, easy and local. One pip install, one command, one SQLite file, nothing leaving your machine.</description>
+      <category>Observability</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
       <title>Your Agent Needs Transactions, Not Just Tools</title>
       <link>https://fastaiagent.net/post.html?slug=your-agent-needs-transactions</link>
       <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=your-agent-needs-transactions</guid>
