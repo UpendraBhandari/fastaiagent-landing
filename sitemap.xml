@@ -49,6 +49,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://fastaiagent.net/post.html?slug=your-agent-shouldnt-decide-alone</loc>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>

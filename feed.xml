@@ -35,6 +35,15 @@
       <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
+      <title>Your Agent Shouldn&apos;t Decide Alone. Here&apos;s How to Keep a Human in Command.</title>
+      <link>https://fastaiagent.net/post.html?slug=your-agent-shouldnt-decide-alone</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=your-agent-shouldnt-decide-alone</guid>
+      <pubDate>Thu, 18 Jun 2026 12:00:00 GMT</pubDate>
+      <description>The hard part of human-in-the-loop isn&apos;t letting a human approve. It&apos;s letting them approve later — hours or days later, on a different machine — without holding a live process hostage the whole time.</description>
+      <category>HITL</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
       <title>The Agent Was Right. The Data Was Wrong.</title>
       <link>https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</link>
       <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</guid>

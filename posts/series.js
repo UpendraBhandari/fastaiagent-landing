@@ -25,6 +25,11 @@ window.FA_SERIES = {
       "slug": "agent-was-right-data-was-wrong",
       "title": "The Agent Was Right. The Data Was Wrong.",
       "part": 5
+    },
+    {
+      "slug": "your-agent-shouldnt-decide-alone",
+      "title": "Your Agent Shouldn't Decide Alone. Here's How to Keep a Human in Command.",
+      "part": 6
     }
   ]
 };
