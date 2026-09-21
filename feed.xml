@@ -26,6 +26,15 @@
       <dc:creator>FastAIFoundry team</dc:creator>
     </item>
     <item>
+      <title>Evidence, not attestation</title>
+      <link>https://fastaiagent.net/post.html?slug=evidence-not-attestation</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=evidence-not-attestation</guid>
+      <pubDate>Sun, 06 Sep 2026 12:00:00 GMT</pubDate>
+      <description>An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.</description>
+      <category>Compliance</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
       <title>An outage should report INVALID, never a green build</title>
       <link>https://fastaiagent.net/post.html?slug=eval-invalid-not-green</link>
       <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=eval-invalid-not-green</guid>
@@ -33,6 +42,69 @@
       <description>Agent CI has a failure mode most test runners do not: the thing under test can be fine while the infrastructure behind it is down. Here is how the eval gate handles it.</description>
       <category>Evaluation</category>
       <dc:creator>FastAIFoundry team</dc:creator>
+    </item>
+    <item>
+      <title>Where Should AI Actually Be in the System?</title>
+      <link>https://fastaiagent.net/post.html?slug=where-should-ai-actually-be</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=where-should-ai-actually-be</guid>
+      <pubDate>Sat, 15 Aug 2026 12:00:00 GMT</pubDate>
+      <description>Use the simplest thing that reliably does the job, and only let the model decide what happens next when you genuinely cannot know the next step until you have seen the last one.</description>
+      <category>Architecture</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>Five People Are Evaluating Your Agent Platform. One of Them Is You.</title>
+      <link>https://fastaiagent.net/post.html?slug=five-people-evaluating-your-agent-platform</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=five-people-evaluating-your-agent-platform</guid>
+      <pubDate>Mon, 10 Aug 2026 12:00:00 GMT</pubDate>
+      <description>The developer, the operator, the CTO, compliance and finance each judge an agent platform by a different test. Ship for one and you lose the other four.</description>
+      <category>Platform</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>Guardrails That Actually Block</title>
+      <link>https://fastaiagent.net/post.html?slug=guardrails-that-actually-block</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=guardrails-that-actually-block</guid>
+      <pubDate>Sun, 26 Jul 2026 12:00:00 GMT</pubDate>
+      <description>Most guardrails observe and report. A guardrail that cannot stop the action is a log line with good intentions. Policy checked before the agent acts.</description>
+      <category>Guardrails</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>An Agent Framework Is Not an Agent Harness</title>
+      <link>https://fastaiagent.net/post.html?slug=agent-framework-is-not-a-harness</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=agent-framework-is-not-a-harness</guid>
+      <pubDate>Thu, 16 Jul 2026 12:00:00 GMT</pubDate>
+      <description>A framework helps you build an agent. A harness runs it in production — and the difference is everything you need after the demo works.</description>
+      <category>Harness</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>Your Strong Model Still Reads a Balance Sheet Wrong</title>
+      <link>https://fastaiagent.net/post.html?slug=strong-model-reads-balance-sheet-wrong</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=strong-model-reads-balance-sheet-wrong</guid>
+      <pubDate>Fri, 10 Jul 2026 12:00:00 GMT</pubDate>
+      <description>A capable model still misreads a financial table. The fix is not a bigger model — it is an eval that finds the failure and a prompt change you can prove worked.</description>
+      <category>Evaluation</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>Give Your Agent Memory It Won&apos;t Lie to You</title>
+      <link>https://fastaiagent.net/post.html?slug=give-your-agent-memory</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=give-your-agent-memory</guid>
+      <pubDate>Thu, 02 Jul 2026 12:00:00 GMT</pubDate>
+      <description>Your agent references a customer trip that never happened. It came from memory — a fact recalled from someone else&apos;s conversation. Memory as one object, with scopes you can see.</description>
+      <category>Memory</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
+    <item>
+      <title>You Wouldn&apos;t Ship Code Without Tests. Why Ship an Agent Without Evals?</title>
+      <link>https://fastaiagent.net/post.html?slug=ship-an-agent-without-evals</link>
+      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=ship-an-agent-without-evals</guid>
+      <pubDate>Wed, 24 Jun 2026 12:00:00 GMT</pubDate>
+      <description>Nobody ships a payment service on three manual clicks, yet that is exactly how most agents reach production. Datasets, scorers and a gate that actually blocks.</description>
+      <category>Evaluation</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
     </item>
     <item>
       <title>Your Agent Shouldn&apos;t Decide Alone. Here&apos;s How to Keep a Human in Command.</title>

@@ -43,8 +43,56 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://fastaiagent.net/post.html?slug=evidence-not-attestation</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://fastaiagent.net/post.html?slug=eval-invalid-not-green</loc>
     <lastmod>2026-08-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fastaiagent.net/post.html?slug=where-should-ai-actually-be</loc>
+    <lastmod>2026-08-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fastaiagent.net/post.html?slug=five-people-evaluating-your-agent-platform</loc>
+    <lastmod>2026-08-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fastaiagent.net/post.html?slug=guardrails-that-actually-block</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fastaiagent.net/post.html?slug=agent-framework-is-not-a-harness</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fastaiagent.net/post.html?slug=strong-model-reads-balance-sheet-wrong</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fastaiagent.net/post.html?slug=give-your-agent-memory</loc>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://fastaiagent.net/post.html?slug=ship-an-agent-without-evals</loc>
+    <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -30,6 +30,31 @@ window.FA_SERIES = {
       "slug": "your-agent-shouldnt-decide-alone",
       "title": "Your Agent Shouldn't Decide Alone. Here's How to Keep a Human in Command.",
       "part": 6
+    },
+    {
+      "slug": "ship-an-agent-without-evals",
+      "title": "You Wouldn't Ship Code Without Tests. Why Ship an Agent Without Evals?",
+      "part": 7
+    },
+    {
+      "slug": "give-your-agent-memory",
+      "title": "Give Your Agent Memory It Won't Lie to You",
+      "part": 8
+    },
+    {
+      "slug": "strong-model-reads-balance-sheet-wrong",
+      "title": "Your Strong Model Still Reads a Balance Sheet Wrong",
+      "part": 9
+    },
+    {
+      "slug": "agent-framework-is-not-a-harness",
+      "title": "An Agent Framework Is Not an Agent Harness",
+      "part": 10
+    },
+    {
+      "slug": "guardrails-that-actually-block",
+      "title": "Guardrails That Actually Block",
+      "part": 11
     }
   ]
 };
