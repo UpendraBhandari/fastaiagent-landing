@@ -7,7 +7,7 @@ summary: Code changes have PRs, reviews, CI and tests. Prompt changes have someo
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 2
-cover: ./posts/images/prompt-gate-cover.jpg
+cover: /posts/images/prompt-gate-cover.jpg
 ---
 
 Your senior engineer adds one line to the support agent's prompt — "Be warm and empathetic with frustrated customers." She tests three queries. Responses are warmer. She deploys.
@@ -120,31 +120,31 @@ Confirmed: the prompt change caused the regression. Save the failing case as a r
 
 **1. Prompts page** — see v1, v2 and v3 side by side with the diff.
 
-![Prompt detail page in the Local UI](./posts/images/prompt-gate-1-prompts.png "Prompt detail: immutable versions on the left, the template being edited on the right.")
+![Prompt detail page in the Local UI](/posts/images/prompt-gate-1-prompts.png "Prompt detail: immutable versions on the left, the template being edited on the right.")
 
 **2. Lineage panel** — see which traces used v2, click any failing trace.
 
-![Lineage panel listing traces per prompt version](./posts/images/prompt-gate-2-lineage.png "Lineage: every trace that ran this prompt version, and every eval run that tested it.")
+![Lineage panel listing traces per prompt version](/posts/images/prompt-gate-2-lineage.png "Lineage: every trace that ran this prompt version, and every eval run that tested it.")
 
 **3. Replay** — fork, swap the prompt back to v1, rerun, compare side by side.
 
-![Replay comparison across prompt versions](./posts/images/prompt-gate-3-replay-compare.png "Replay across versions: the same input under v2 and v1, with the divergence point marked.")
+![Replay comparison across prompt versions](/posts/images/prompt-gate-3-replay-compare.png "Replay across versions: the same input under v2 and v1, with the divergence point marked.")
 
 **4. Save as regression test** — one click.
 
-![Save as regression test](./posts/images/prompt-gate-4-save-test.png "The confirmed regression becomes a permanent case in the suite.")
+![Save as regression test](/posts/images/prompt-gate-4-save-test.png "The confirmed regression becomes a permanent case in the suite.")
 
 **5. Playground** — draft v3 and test it interactively.
 
-![Prompt Playground](./posts/images/prompt-gate-5-playground.png "Playground: fill the variables, stream the response, iterate on a draft version.")
+![Prompt Playground](/posts/images/prompt-gate-5-playground.png "Playground: fill the variables, stream the response, iterate on a draft version.")
 
 **6. Eval Runs** — run the regression suite against v3, all pass, deploy.
 
-![Eval runs showing the v3 regression suite](./posts/images/prompt-gate-6-eval-runs.png "Eval Runs: v3 against the regression suite, with the quality trend across runs.")
+![Eval runs showing the v3 regression suite](/posts/images/prompt-gate-6-eval-runs.png "Eval Runs: v3 against the regression suite, with the quality trend across runs.")
 
 ## Where this fits in the loop
 
-The closed loop from [Every Production Failure Should Become a Test](./post.html?slug=every-production-failure-becomes-a-test) is: develop → trace → replay → fix → regression test → eval. That loop catches failures after they happen.
+The closed loop from [Every Production Failure Should Become a Test](/blog/every-production-failure-becomes-a-test/) is: develop → trace → replay → fix → regression test → eval. That loop catches failures after they happen.
 
 This article adds the gate that catches failures before they happen: prompt change → eval → pass/fail → deploy or fix. The eval suite — built from real production failures — becomes the gate that blocks bad prompt changes from reaching production.
 

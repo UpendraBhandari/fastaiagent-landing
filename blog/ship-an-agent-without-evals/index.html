@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="ship-an-agent-without-evals"</script>
+<title>You Wouldn't Ship Code Without Tests. Why Ship an Agent Without Evals? — FastAIAgent</title>
+<meta name="description" content="Nobody ships a payment service on three manual clicks, yet that is exactly how most agents reach production. Datasets, scorers and a gate that actually blocks.">
+<link rel="canonical" href="https://fastaiagent.net/blog/ship-an-agent-without-evals/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="You Wouldn't Ship Code Without Tests. Why Ship an Agent Without Evals?">
+<meta property="og:description" content="Nobody ships a payment service on three manual clicks, yet that is exactly how most agents reach production. Datasets, scorers and a gate that actually blocks.">
+<meta property="og:url" content="https://fastaiagent.net/blog/ship-an-agent-without-evals/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/evals-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-06-24T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Evaluation">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="You Wouldn't Ship Code Without Tests. Why Ship an Agent Without Evals?">
+<meta name="twitter:description" content="Nobody ships a payment service on three manual clicks, yet that is exactly how most agents reach production. Datasets, scorers and a gate that actually blocks.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/evals-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>You Wouldn't Ship Code Without Tests. Why Ship an Agent Without Evals?</h1>
+<p>Nobody ships a payment service on three manual clicks, yet that is exactly how most agents reach production. Datasets, scorers and a gate that actually blocks.</p>
+<p>Jun 24, 2026 · Upendra Bhandari · Evaluation</p>
+<img src="/posts/images/evals-cover.jpg" alt="">
+<p>Picture the last change you made that actually mattered — a payment path, an auth check, a schema migration. You didn't eyeball it and push. You wrote a test, watched CI go green, and merged with a clear conscience. That green check is what lets you change a system you don't fully hold in your head and still sleep at night.</p>
+<p>Now picture how you shipped your last agent change. You tweaked the prompt, ran it three or four times, the answers looked fine, and you pushed. No test. No gate. No green check. Just vibes.</p>
+<p>Same engineer. Two completely different standards. Why?</p>
+<p>Because the tools we trust for code don't fit agents. assertEqual(output, &quot;Refund approved.&quot;) is useless when the model says &quot;Sure — your refund's been approved!&quot; on the next run. The output is fuzzy and non-deterministic, the assertion breaks, so we quietly gave up and reverted to a 2005 workflow: run it, read it, ship it. We dropped twenty years of testing discipline the moment the output stopped being a fixed string.</p>
+<p>Evals are how you get that discipline back. An eval is just a test for a system that doesn't return the same string twice. FastAIAgent ships a full one — scorers, datasets, a CI gate, and a local UI — so &quot;it works&quot; can go back to being something you prove instead of something you feel. Here's the overview.</p>
+<h3>An eval, in one shape</h3>
+<p>Three things: an agent function, a dataset, and the scorers that grade it.</p>
+<pre><code class="lang-python">from fastaiagent.eval import evaluate
+
+results = evaluate(
+    agent_fn=my_agent.run,
+    dataset=&quot;support_cases.jsonl&quot;,        # {&quot;input&quot;: ..., &quot;expected_output&quot;: ...} per line
+    scorers=[&quot;semantic_similarity&quot;, &quot;contains&quot;],
+)
+print(results.summary())</code></pre>
+<p>Arrange, act, assert — the rhythm you already know. The only new idea is the assertion: a scorer, which returns a score, a pass/fail, and a reason, and is allowed to be fuzzy.</p>
+<h3>What you can assert: the scorer catalog</h3>
+<p>This is where agent eval earns its keep. FastAIAgent ships scorers in four families, so you can match the check to the question instead of forcing everything through string equality.</p>
+<p>Deterministic — free, instant, no LLM call. exact_match, contains, json_valid, regex_match, length_between, latency, cost_under. The mechanical guarantees: valid JSON, under budget, under a latency bar. This is your old assertEqual, still perfect where the answer really is exact.</p>
+<p>Similarity — semantic_similarity, bleu, rouge, levenshtein. For &quot;doesn't have to match word-for-word, but should mean the same thing.&quot; The fuzzy assertion that used to break, made to work.</p>
+<p>LLM-as-judge — for the qualities only a model can read. A RAG set (faithfulness, answer_relevancy, context_precision, context_recall), a safety set (toxicity, bias, pii_leakage, prompt_injection, moderation), and agent-quality metrics (task_completion, hallucination, reflection_quality).</p>
+<p>Your own rubric — when you want to grade your definition of good. GEval reasons step-by-step over a rubric you write, then returns a normalized, thresholded score:</p>
+<pre><code class="lang-python">from fastaiagent.eval import GEval
+
+GEval(name=&quot;tone&quot;,
+      criteria=&quot;Professional and empathetic, never dismissive.&quot;,
+      threshold=0.7)</code></pre>
+<p>And when none of those fit, a scorer is just a function — anything you can express in Python becomes one with @Scorer.code:</p>
+<pre><code class="lang-python">from fastaiagent.eval import Scorer, ScorerResult
+
+@Scorer.code(name=&quot;cites_policy&quot;)
+def cites_policy(input, output, expected=None, **kwargs):
+    ok = &quot;Policy&quot; in output
+    return ScorerResult(score=1.0 if ok else 0.0, passed=ok)</code></pre>
+<p>Deterministic and similarity scorers go in by name; configured judges like GEval(...) and your custom functions go in as objects. Mix them freely in one run.</p>
+<h3>Grading the path, not just the answer</h3>
+<p>Here's the part with no equivalent in ordinary testing — and the reason evaluating an agent is different from evaluating a model.</p>
+<p>A function has one thing to check: its return value. An agent has a path — which tools it called, in what order, with what arguments, how many loops it took to get there. And the path can be wrong even when the answer is right: the agent that booked the correct flight but called the payment API twice on the way gave you the right answer over a broken process. Grade only the output and you'd never see it.</p>
+<p>FastAIAgent ships scorers for the path itself — ToolUsageAccuracy (the right tools?), ToolCallCorrectness (with the right arguments?), PathCorrectness (in the right order?), and StepEfficiency / CycleEfficiency (without spinning in loops?). One honest note: these are a standalone API — you pull the tool calls off a run and score them, rather than evaluate() inferring the trajectory for you.</p>
+<h3>Where the cases come from</h3>
+<p>A test suite is only as good as its cases, and the worst eval is fifty examples someone imagined before launch and never touched again. Two ways to keep yours honest:</p>
+<ul><li>Curate from production. Every run is traced; turn the interesting and failing ones into a dataset with fastaiagent eval curate. Your cases become a record of what the agent actually met, not what you guessed it might.</li><li>Promote every fixed bug. When a failure is debugged in Replay, save the corrected run as a regression case. The bug that reached production becomes a permanent test — it can't slip back in quietly.</li></ul>
+<p>The set grows from reality, exactly the way a good test suite grows from every postmortem.</p>
+<h3>How it runs: the CI you already have</h3>
+<p>Discipline that doesn't fire automatically decays back to vibes. Two honest paths, no new infrastructure:</p>
+<pre><code class="lang-python"># pytest — a failing scorer fails the test, so CI goes red like any other test
+from fastaiagent import Agent, LLMClient
+from fastaiagent.eval import case
+
+@case(input=&quot;What's your refund policy for digital goods?&quot;,
+      expected=&quot;Digital purchases are final sale and not eligible for refund.&quot;)
+def test_refund_policy(evaluate_one):
+    agent = Agent(name=&quot;support&quot;, llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4.1&quot;))
+    evaluate_one(agent.run, scorers=[&quot;semantic_similarity&quot;])</code></pre>
+<p>Or gate a script explicitly — run evaluate(), check Scorecard.from_eval_results(results).overall_pass_rate, and sys.exit(1) below your bar. Either way a regression turns the build red and the bad change doesn't merge. The green check, restored.</p>
+<h3>You can see all of it</h3>
+<p>Every run persists to a local SQLite DB, and the bundled UI reads straight from it (fastaiagent ui start) — no cloud account, nothing to configure.</p>
+<figure><img src="/posts/images/evals-1.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<p>Every run shows up — quality as a line over time, not a launch-day screenshot.</p>
+<figure><img src="/posts/images/evals-2.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<p>Click into a run: every case, its expected vs. actual output, and a pass/fail from each scorer</p>
+<figure><img src="/posts/images/evals-3.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<p>Compare two runs and the regression surfaces by itself — the exact input and the exact scorer that broke. And it isn't only a viewer — it's where you build the suite too:</p>
+<figure><img src="/posts/images/evals-4.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<p>Your datasets, created here or dropped in by eval curate.</p>
+<figure><img src="/posts/images/evals-5.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<p>Fill in a curated case's expected answer and hit Run eval — no script-edit-rerun loop. (Two cases here are still waiting for a gold answer.)</p>
+<h3>Honest scope</h3>
+<ul><li>Offline. Eval runs against a dataset — there's no scoring of live traffic in the SDK. Continuous, online eval is a Platform layer.</li><li>No turnkey CI gate. No shipped GitHub Action; you wire eval in via pytest or the exit-code script above.</li><li>Trajectory scoring is standalone — applied to a run's tool calls, not auto-wired into evaluate().</li></ul>
+<h3>The point</h3>
+<p>None of this is a new discipline. It's the one you already trust for code — tests, a regression suite, a green check before merge — finally fitted to systems whose output is fuzzy and whose behavior is a path, not a value.</p>
+<p>The agent that shipped on vibes can't tell you whether it still works. The one with an eval that grows from every failure and runs on every change can. That's the difference between a demo and software.</p>
+<p>Every capability above has a runnable example:</p>
+<ul><li>Core scorers - exact/contains/json/latency/cost =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/75_core_scorers.py" target="_blank" rel="noopener">75_core_scorers.py</a></li><li>Multiple scorers, end to end =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/07_eval_pipeline.py" target="_blank" rel="noopener">07_eval_pipeline.py</a></li><li>Similarity &amp; NLP - semantic, BLEU, ROUGE, Levenshtein =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/26_similarity_eval.py" target="_blank" rel="noopener">26_similarity_eval.py</a></li><li>LLM-as-judge + rubric (G-Eval) =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/81_g_eval.py" target="_blank" rel="noopener">81_g_eval.py</a></li><li>RAG - faithfulness, relevancy, context precision/recall =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/24_rag_eval.py" target="_blank" rel="noopener">24_rag_eval.py</a></li><li>Safety - PII, injection, toxicity, bias, moderation =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/25_safety_eval.py" target="_blank" rel="noopener">25_safety_eval.py</a></li><li>Trajectory - tool path, order, arguments <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/76_trajectory_eval.py" target="_blank" rel="noopener">76_trajectory_eval.py</a></li><li>Multi-turn / session quality =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/77_session_eval.py" target="_blank" rel="noopener">77_session_eval.py</a></li><li>Multimodal (vision) =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/78_multimodal_eval.py" target="_blank" rel="noopener">78_multimodal_eval.py</a></li><li>pytest integration =&gt;  <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/61_eval_pytest.py" target="_blank" rel="noopener">61_eval_pytest.py</a></li><li>Compare before / after =&gt;  <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/40_evals_compare.py" target="_blank" rel="noopener">40_evals_compare.py</a></li><li>Curate a dataset from traces =&gt;  <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/80_curate_from_traces.py" target="_blank" rel="noopener">80_curate_from_traces.py</a></li><li>Failure → regression test =&gt; <a href="https://github.com/fastaifoundry/fastaiagent-sdk/blob/main/examples/62_replay_to_regression.py" target="_blank" rel="noopener">62_replay_to_regression.py</a></li></ul>
+<p>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. pip install fastaiagent → <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">github.com/fastaifoundry/fastaiagent-sdk</a></p>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

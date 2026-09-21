@@ -7,7 +7,7 @@ summary: The hard part of human-in-the-loop isn't letting a human approve. It's 
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 6
-cover: ./posts/images/hitl-cover.jpg
+cover: /posts/images/hitl-cover.jpg
 ---
 
 A refund agent approves a $40,000 credit at 2am. No human saw it. By the time anyone noticed, the money was gone.
@@ -30,7 +30,7 @@ Most frameworks give you only the first. FastAIAgent gives you both.
 
 ## Approach 1: blocking HITL, for fast approvals
 
-![Blocking approval flow](./posts/images/hitl-1-blocking.png "Blocking approval: fine for seconds, painful for long waits. The process stays live — session open, threads occupied, cost accruing — while the approver is in another timezone.")
+![Blocking approval flow](/posts/images/hitl-1-blocking.png "Blocking approval: fine for seconds, painful for long waits. The process stays live — session open, threads occupied, cost accruing — while the approver is in another timezone.")
 
 When a human is in the loop in real time, you attach an approval gate as a node and hand the executor a handler. The handler runs in-process and blocks until it returns a decision.
 
@@ -58,7 +58,7 @@ But a blocking handler cannot wait three days. For that, you suspend.
 
 ## Approach 2: suspending interrupt, for long waits
 
-![Suspend and resume flow](./posts/images/hitl-2-suspend-resume.png "Suspend and resume: the workflow checkpoints, the process exits, and hours or days later it picks up exactly where it left off.")
+![Suspend and resume flow](/posts/images/hitl-2-suspend-resume.png "Suspend and resume: the workflow checkpoints, the process exits, and hours or days later it picks up exactly where it left off.")
 
 `interrupt()` doesn't block. It suspends the entire workflow, writes a checkpoint, records a pending interrupt, and lets the process exit cleanly. The agent is frozen, on disk, costing nothing. A separate signal — hours or days later — resumes it.
 
@@ -106,7 +106,7 @@ On resume, the workflow re-enters the same node. This time `interrupt()` doesn't
 
 A suspended execution can be resumed through whichever channel fits your system.
 
-![The three resume channels](./posts/images/hitl-3-resume-channels.png "One suspended execution, three ways to resume it: Python for code-driven flows, HTTP for a web app or approval service, CLI for an operator at a terminal.")
+![The three resume channels](/posts/images/hitl-3-resume-channels.png "One suspended execution, three ways to resume it: Python for code-driven flows, HTTP for a web app or approval service, CLI for an operator at a terminal.")
 
 Python, for code-driven flows:
 
@@ -127,7 +127,7 @@ CLI, for an operator at a terminal:
 fastaiagent resume refund-abc --runner refund_flow:chain --value '{"approved": true}'
 ```
 
-And there's a built-in `/approvals` page in the [local UI](./post.html?slug=see-everything-your-agent-does) — start it with `fastaiagent ui` — where a human can see every pending interrupt and drive the resume from a browser, no code required.
+And there's a built-in `/approvals` page in the [local UI](/blog/see-everything-your-agent-does/) — start it with `fastaiagent ui` — where a human can see every pending interrupt and drive the resume from a browser, no code required.
 
 ## It works across every orchestration pattern
 
@@ -137,11 +137,11 @@ That matters in production, where a single request can fan out across several ag
 
 ## The production details that actually bite
 
-![Built for production: atomic claim, durable state, no double approval](./posts/images/hitl-4-production.png "Two approval attempts, one atomic claim, exactly one winner — and durable state that survives a restart.")
+![Built for production: atomic claim, durable state, no double approval](/posts/images/hitl-4-production.png "Two approval attempts, one atomic claim, exactly one winner — and durable state that survives a restart.")
 
 Three things separate a demo from something you'd run for real.
 
-**Two people can't double-approve.** If a manager clicks approve in the UI at the same moment an automated service calls the resume endpoint, you cannot run the workflow twice. When a resume fires, the first operation is an [atomic claim](./post.html?slug=your-agent-needs-transactions) of the pending interrupt — `DELETE ... RETURNING` on Postgres, a guarded transaction on SQLite. Exactly one caller wins. The loser gets an `AlreadyResumed` error, and the HTTP route returns a 409. No double refund from a resume race.
+**Two people can't double-approve.** If a manager clicks approve in the UI at the same moment an automated service calls the resume endpoint, you cannot run the workflow twice. When a resume fires, the first operation is an [atomic claim](/blog/your-agent-needs-transactions/) of the pending interrupt — `DELETE ... RETURNING` on Postgres, a guarded transaction on SQLite. Exactly one caller wins. The loser gets an `AlreadyResumed` error, and the HTTP route returns a 409. No double refund from a resume race.
 
 **It survives restarts.** Because the suspended state is a checkpoint on disk, not memory, the resume can happen on a different process than the one that paused. Pause on one pod, approve through the UI, resume on whatever pod picks it up. The store doesn't care which.
 

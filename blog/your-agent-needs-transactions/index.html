@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="your-agent-needs-transactions"</script>
+<title>Your Agent Needs Transactions, Not Just Tools — FastAIAgent</title>
+<meta name="description" content="Databases solved this 40 years ago. Every framework gives agents tools to act; none give them transactions to act safely. ACID — atomicity, consistency, isolation, durability — mapped onto action-taking agents.">
+<link rel="canonical" href="https://fastaiagent.net/blog/your-agent-needs-transactions/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Your Agent Needs Transactions, Not Just Tools">
+<meta property="og:description" content="Databases solved this 40 years ago. Every framework gives agents tools to act; none give them transactions to act safely. ACID — atomicity, consistency, isolation, durability — mapped onto action-taking agents.">
+<meta property="og:url" content="https://fastaiagent.net/blog/your-agent-needs-transactions/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/transactions-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-05-29T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Durability">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Your Agent Needs Transactions, Not Just Tools">
+<meta name="twitter:description" content="Databases solved this 40 years ago. Every framework gives agents tools to act; none give them transactions to act safely. ACID — atomicity, consistency, isolation, durability — mapped onto action-taking agents.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/transactions-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>Your Agent Needs Transactions, Not Just Tools</h1>
+<p>Databases solved this 40 years ago. Every framework gives agents tools to act; none give them transactions to act safely. ACID — atomicity, consistency, isolation, durability — mapped onto action-taking agents.</p>
+<p>May 29, 2026 · Upendra Bhandari · Durability</p>
+<img src="/posts/images/transactions-cover.jpg" alt="">
+<p>Databases solved this 40 years ago. If a bank transfer debits one account and the system crashes before crediting the other, the transaction rolls back. No money vanishes. No state is half-done. ACID guarantees — Atomicity, Consistency, Isolation, Durability — are why you trust your database.</p>
+<p>Your AI agent has the same problem. It takes multi-step actions against external systems — charges cards, sends emails, provisions resources, updates records. But it has none of the guarantees.</p>
+<p>Every framework gives agents tools to act. None of them give agents transactions to act safely.</p>
+<p>This isn't hypothetical. Anyone building action-taking agents in production has hit this, or will. The gap between &quot;my agent can call APIs&quot; and &quot;my agent can call APIs without causing damage on failure&quot; is where the real engineering lives.</p>
+<h3>ACID for agents — the mapping</h3>
+<p><strong>Atomicity.</strong> A workflow completes fully or not at all. No half-done states.</p>
+<p><em>Violation:</em> your agent calls Stripe, the charge succeeds, the process crashes before the confirmation email. The customer is charged but never notified. The database has no record of the charge. The system is in a state that shouldn't exist.</p>
+<p><strong>Consistency.</strong> The agent's actions leave the world in a valid state.</p>
+<p><em>Violation:</em> your agent provisions an EC2 instance, crashes before creating the DNS record. An orphaned instance is running, billing, and unreachable. No record in your system tracks it.</p>
+<p><strong>Isolation.</strong> Concurrent agent executions don't interfere.</p>
+<p><em>Violation:</em> two pods both try to resume the same paused workflow. Both re-execute the payment step. The customer is charged twice — not because of a crash, but because of a race.</p>
+<p><strong>Durability.</strong> Completed work survives crashes.</p>
+<p><em>Violation:</em> a five-step workflow completes three steps. The pod is evicted. The new pod restarts from step 1. Three steps of compute wasted, the customer notices the delay, and any side effects from steps 1-3 might fire again.</p>
+<p>Every one of these happens in production. Every one is preventable.</p>
+<h3>How frameworks fail each property</h3>
+<h4>Atomicity failure: the double-charge</h4>
+<pre><code>Agent starts → calls Stripe → charge succeeds → process crashes →
+agent resumes → calls Stripe again → customer charged twice</code></pre>
+<p>The charge went through. The process died. The recovery mechanism re-executes the node from the top, including the Stripe call that already succeeded. One action, two charges. Your code is correct — the infrastructure betrayed it.</p>
+<p>The fix is <code>@idempotent</code>:</p>
+<pre><code class="lang-python">from fastaiagent import (
+    Chain, FunctionTool, Resume, SQLiteCheckpointer, idempotent, interrupt,
+)
+from fastaiagent.chain.node import NodeType
+
+@idempotent
+def charge_customer(amount: int, customer_id: str) -&gt; dict:
+    &quot;&quot;&quot;Charge via Stripe. Safe to retry — cached per execution.&quot;&quot;&quot;
+    return stripe.charges.create(amount=amount, currency=&quot;usd&quot;, customer=customer_id)
+
+def payment_step(amount: int, customer_id: str) -&gt; dict:
+    receipt = charge_customer(int(amount), customer_id)
+    # Suspend until the confirmation pipeline picks it up. Any subsequent
+    # re-entry of this node (resume, retry, crash recovery) re-runs
+    # payment_step from the top — but charge_customer() returns its
+    # cached receipt, so the customer is only charged once.
+    interrupt(reason=&quot;confirm_charge&quot;, context={&quot;charge_id&quot;: receipt[&quot;id&quot;]})
+    return {&quot;charge_id&quot;: receipt[&quot;id&quot;]}
+
+chain = Chain(&quot;payment-flow&quot;, checkpointer=SQLiteCheckpointer())
+chain.add_node(
+    &quot;charge&quot;,
+    tool=FunctionTool(name=&quot;payment_step&quot;, fn=payment_step),
+    type=NodeType.tool,
+    input_mapping={
+        &quot;amount&quot;: &quot;{{state.amount}}&quot;,
+        &quot;customer_id&quot;: &quot;{{state.customer_id}}&quot;,
+    },
+)
+
+result = chain.execute(
+    {&quot;amount&quot;: 5000, &quot;customer_id&quot;: &quot;cust_abc&quot;},
+    execution_id=&quot;order-789&quot;,
+)  # → status=&quot;paused&quot;</code></pre>
+<p>Process crashes after the charge. On resume:</p>
+<pre><code class="lang-python">result = await chain.aresume(&quot;order-789&quot;, resume_value=Resume(approved=True))
+# → payment_step re-enters from the top
+# → charge_customer() returns its cached receipt — no second Stripe call
+# → one charge, one resume, no double-billing</code></pre>
+<p>The <code>@idempotent</code> decorator caches the function's result per <code>execution_id</code>. Same execution, same arguments, same result — without calling Stripe again. That's atomicity at the action level.</p>
+<h4>Durability failure: the pod that died</h4>
+<p>Five-step workflow. Kubernetes evicts the pod after step 3. All state was in memory. New pod restarts from step 1. Three steps wasted.</p>
+<p>The fix is checkpointing:</p>
+<pre><code class="lang-python">from fastaiagent import Chain, FunctionTool
+from fastaiagent.checkpointers import PostgresCheckpointer
+from fastaiagent.chain.node import NodeType
+
+def build_chain() -&gt; Chain:
+    chain = Chain(
+        &quot;support-flow&quot;,
+        checkpointer=PostgresCheckpointer(&quot;postgresql://user:pass@host/db&quot;),
+    )
+    chain.add_node(&quot;classify&quot;, agent=classifier)
+    chain.add_node(&quot;research&quot;, agent=researcher)
+    chain.add_node(&quot;draft&quot;,    agent=drafter)
+    chain.add_node(&quot;review&quot;,   agent=reviewer)
+    chain.add_node(
+        &quot;send&quot;,
+        tool=FunctionTool(name=&quot;send_response&quot;, fn=send_response),
+        type=NodeType.tool,
+    )
+    chain.connect(&quot;classify&quot;, &quot;research&quot;)
+    chain.connect(&quot;research&quot;, &quot;draft&quot;)
+    chain.connect(&quot;draft&quot;, &quot;review&quot;)
+    chain.connect(&quot;review&quot;, &quot;send&quot;)
+    return chain
+
+result = build_chain().execute({&quot;ticket&quot;: ticket}, execution_id=&quot;ticket-456&quot;)</code></pre>
+<p>Pod dies after step 3. New pod:</p>
+<pre><code class="lang-python"># Rebuild the chain in the new process — same checkpointer, same topology.
+chain = build_chain()
+result = await chain.aresume(&quot;ticket-456&quot;)
+# → reads checkpoint from Postgres
+# → skips classify, research, draft (already completed)
+# → resumes at review</code></pre>
+<p>Postgres doesn't care which pod reads the checkpoint. Any pod with the connection string can resume any execution. SQLite works the same way for single-machine deployments — zero setup, same semantics.</p>
+<h4>Consistency failure: the 3-day approval</h4>
+<p>A refund over $10,000 needs manager approval. The agent blocks inline, waiting for a human. The process must stay alive for hours or days. If anything restarts, the approval is lost. The refund request vanishes. The customer waits in an inconsistent state — refund initiated but never resolved.</p>
+<p>The fix is <code>interrupt()</code> plus <code>resume()</code>:</p>
+<pre><code class="lang-python">from fastaiagent import Chain, FunctionTool, Resume, SQLiteCheckpointer, interrupt
+from fastaiagent.chain.node import NodeType
+
+def refund_check(amount: int, customer_id: str) -&gt; dict:
+    if int(amount) &gt; 10000:
+        approval = interrupt(
+            reason=&quot;manager_approval&quot;,
+            context={&quot;amount&quot;: int(amount), &quot;customer_id&quot;: customer_id},
+        )
+        return {&quot;approved&quot;: approval.approved, &quot;approver&quot;: approval.metadata.get(&quot;approver&quot;)}
+    return {&quot;approved&quot;: True, &quot;auto&quot;: True}
+
+chain = Chain(&quot;refund-flow&quot;, checkpointer=SQLiteCheckpointer())
+chain.add_node(
+    &quot;check&quot;,
+    tool=FunctionTool(name=&quot;refund_check&quot;, fn=refund_check),
+    type=NodeType.tool,
+    input_mapping={
+        &quot;amount&quot;: &quot;{{state.amount}}&quot;,
+        &quot;customer_id&quot;: &quot;{{state.customer_id}}&quot;,
+    },
+)
+chain.add_node(
+    &quot;process&quot;,
+    tool=FunctionTool(name=&quot;process_refund&quot;, fn=process_refund),
+    type=NodeType.tool,
+    input_mapping={
+        &quot;approved&quot;: &quot;{{node_results.check.output.approved}}&quot;,
+        &quot;approver&quot;: &quot;{{node_results.check.output.approver}}&quot;,
+    },
+)
+chain.connect(&quot;check&quot;, &quot;process&quot;)
+
+result = chain.execute(
+    {&quot;amount&quot;: 15000, &quot;customer_id&quot;: &quot;cust_abc&quot;},
+    execution_id=&quot;refund-abc&quot;,
+)
+print(result.status)  # &quot;paused&quot;
+# → process exits cleanly, state persisted</code></pre>
+<p>Three days later, the manager approves — via the <code>/approvals</code> UI, an HTTP endpoint, or CLI:</p>
+<pre><code class="lang-python">result = await chain.aresume(&quot;refund-abc&quot;, resume_value=Resume(approved=True, metadata={&quot;approver&quot;: &quot;alice&quot;}))
+print(result.status)  # &quot;completed&quot;</code></pre>
+<p>No process blocked for three days. No state lost on restart. The customer's refund resolves cleanly.</p>
+<h4>Isolation failure: the resume race</h4>
+<p>Two pods pick up the same paused workflow simultaneously. Both read the pending interrupt. Both re-execute the payment node. Double charge — caused by concurrency, not crashes.</p>
+<p>The fix is claim-on-resume. When <code>chain.aresume()</code> is called, the first operation is an atomic <code>DELETE FROM pending_interrupts WHERE execution_id = ? RETURNING *</code>. If no rows are returned, another pod already claimed it. The second pod gets an <code>AlreadyResumed</code> exception instead of a double execution.</p>
+<p>The guarantee is automatic — no decorator, no config. You just handle the exception:</p>
+<pre><code class="lang-python">from fastaiagent import AlreadyResumed
+
+try:
+    result = await chain.aresume(execution_id, resume_value=Resume(approved=True))
+except AlreadyResumed:
+    # Another pod already won the race — fetch the canonical result from
+    # the checkpoint store instead of re-running the payment node.
+    result = await fetch_completed_execution(execution_id)</code></pre>
+<p>Postgres MVCC (and SQLite's single-writer plus <code>RETURNING</code>) guarantee exactly one of N concurrent resumers wins — verified in CI by an 8-thread race against one row. The &quot;two pods&quot; failure mode is fully resolved, not via distributed locks but via the database's existing atomicity guarantees.</p>
+<p>One nuance: on multi-pod SQLite deployments, a loser may surface <code>OperationalError: database is locked</code> instead of <code>AlreadyResumed</code>. The safety property is preserved either way, but callers should retry on busy. Postgres has no such caveat.</p>
+<h3>Why frameworks don't solve this</h3>
+<p>Every framework gives you crash recovery of some form — retries, restarts, re-runs. But re-running code that already produced real-world effects is worse than not running it at all.</p>
+<p>A re-run is a duplicate. A duplicate charge. A duplicate email. A duplicate cloud resource. The framework &quot;recovered&quot; — and made things worse.</p>
+<p>The missing piece isn't retry logic. It's the ACID properties that databases have had for four decades:</p>
+<ul><li><strong>Checkpoint state</strong> so completed work isn't re-executed (Durability)</li><li><strong>Cache side effects</strong> so actions that succeeded aren't repeated (Atomicity)</li><li><strong>Suspend cleanly</strong> so long waits don't require a live process (Consistency)</li><li><strong>Claim before resuming</strong> so concurrent recoveries don't race (Isolation)</li></ul>
+<h3>Where this fits in the loop</h3>
+<p>The <a href="/blog/every-production-failure-becomes-a-test/">closed loop</a> is: develop → trace → replay → fix → regression test → eval.</p>
+<p>ACID properties operate before the loop. A double-charge isn't a wrong answer you detect in an eval. No scorer catches it. No regression test prevents it. It's a side effect in the real world that happens because the infrastructure failed, not because the agent reasoned badly.</p>
+<p>The loop makes agents smarter. ACID makes agents safe. You need both.</p>
+<blockquote>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. <code>pip install fastaiagent</code> — the SDK is on <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">GitHub</a>.</blockquote>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

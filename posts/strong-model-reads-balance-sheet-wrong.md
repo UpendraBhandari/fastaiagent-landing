@@ -6,7 +6,7 @@ summary: A capable model still misreads a financial table. The fix is not a bigg
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 9
-cover: ./posts/images/balance-cover.jpg
+cover: /posts/images/balance-cover.jpg
 ---
 ## The problem
 
@@ -85,7 +85,7 @@ Long, sensible, professional — and quietly broken. Step 3 says "report the amo
 
 Grade the baseline first. Every candidate AutoLLM considers is a real evaluate() run, so this "before" is the same eval surface you already use:
 
-![Document evaluation in the FastAIAgent Local UI](./posts/images/balance-1.png "The strong model, scored against five real annual reports (the source URLs are right there in the INPUT column).")
+![Document evaluation in the FastAIAgent Local UI](/posts/images/balance-1.png "The strong model, scored against five real annual reports (the source URLs are right there in the INPUT column).")
 
 It reads the tables perfectly — and still fails, because it returned the balance-sheet total as 10460 when the statement is in millions and the answer is 10460000000. Same for net debt, gearing and coverage: it guessed a definition. Across the dev split it averages 0.44.
 
@@ -95,7 +95,7 @@ The failures cluster into exactly the conventions the long prompt never stated: 
 
 optimize() splits the 30 cases (seeded) into train / dev / holdout, then proposes candidate prompts from the train failures — including each one's expected value and the scorer's reason (got 3763, expected 3763000000) — scores each on dev, keeps the best, and guards the winner on the untouched holdout split.
 
-![Document evaluation in the FastAIAgent Local UI](./posts/images/balance-2.png "Baseline 0.44 → best 0.92 on dev. The accepted candidate's rationale is about unit-scaling and pinning the formulas — recovered from the failures, not from a hunch.")
+![Document evaluation in the FastAIAgent Local UI](/posts/images/balance-2.png "Baseline 0.44 → best 0.92 on dev. The accepted candidate's rationale is about unit-scaling and pinning the formulas — recovered from the failures, not from a hunch.")
 
 The prompt it wrote is larger than the one you started with — it turns the vague SOP into a precise, transferable specification:
 
@@ -141,11 +141,11 @@ That's the point: the loop didn't shrink the prompt to a clever one-liner — it
 
 ## The final eval: 44% → 92% dev, and it holds out
 
-![Document evaluation in the FastAIAgent Local UI](./posts/images/balance-3.png "Baseline 0.44 → best 0.92, improved.")
+![Document evaluation in the FastAIAgent Local UI](/posts/images/balance-3.png "Baseline 0.44 → best 0.92, improved.")
 
 On the holdout split — cases nothing in the search was allowed to see — the winner went from 0.45 to 0.79. It's not a perfect score, and that's honest: with five companies and ~25 attributes there's more surface to get exactly right, and a couple of ratios still round or resolve differently than the gold. But the direction is unambiguous and it transfers — the recovered prompt lifts held-out cases from companies the search tuned on, using rules that would apply to a sixth. Every candidate score is a real eval run, all inspectable:
 
-![Document evaluation in the FastAIAgent Local UI](./posts/images/balance-4.png "AutoLLM has no private metric — it put the evals you already trust in a loop.")
+![Document evaluation in the FastAIAgent Local UI](/posts/images/balance-4.png "AutoLLM has no private metric — it put the evals you already trust in a loop.")
 
 ## Want a higher score? Add companies, not prompt tweaks
 

@@ -3,20 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script>window.FA_POST_SLUG="guardrail-audit-closed"</script>
+<title>Closing the guardrail audit: three silences and three verdicts — FastAIAgent</title>
+<meta name="description" content="Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.">
+<link rel="canonical" href="https://fastaiagent.net/blog/guardrail-audit-closed/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Closing the guardrail audit: three silences and three verdicts">
+<meta property="og:description" content="Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.">
+<meta property="og:url" content="https://fastaiagent.net/blog/guardrail-audit-closed/">
+<meta property="og:image" content="https://fastaiagent.net/assets/social-default.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-09-10T12:00:00.000Z">
+<meta property="article:author" content="FastAIFoundry team">
+<meta property="article:tag" content="Guardrails">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Closing the guardrail audit: three silences and three verdicts">
+<meta name="twitter:description" content="Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.">
+<meta name="twitter:image" content="https://fastaiagent.net/assets/social-default.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
 <script>window.FA_DEFER_PAGEVIEW=1</script>
-<script src="./analytics.js"></script>
+<script src="/analytics.js"></script>
 </head>
 <body>
+<div id="prerender">
+<article>
+<h1>Closing the guardrail audit: three silences and three verdicts</h1>
+<p>Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.</p>
+<p>Sep 10, 2026 · FastAIFoundry team · Guardrails</p>
+
+<p>On 2026-09-10 we closed the cross-repo guardrail audit. After this release no new findings go on the shared board; anything found later is an ordinary bug in an ordinary backlog. Here is what the last six findings had in common.</p>
+<h3>A verdict that was never earned</h3>
+<p>Every builtin guardrail is a code rule, and code cannot be serialized into a checkpoint. So Replay.fork_at(...).rerun() re-ran incidents with every guardrail disarmed, and wrote green passed rows for checks that never executed. The replay looked cleaner than the original run because nothing was checking it.</p>
+<p>A second silence: a rule with an empty pattern matched at position 0 of every payload, so it failed everything, and it failed as a verdict rather than an error. on_error=&quot;allow&quot; could not rescue it because nothing had errored.</p>
+<h3>The control that stores what it inspects</h3>
+<p>Two LLM judges were recording model output into result_detail. That column is durable, tenant-visible, and aggregated by the analytics endpoint. A judge that refused in prose while quoting the payload, or one that was prompt-injected into echoing its input, wrote customer content there permanently. The PII detector already followed the right rule: record counts, never values. The judges now follow it too.</p>
+<blockquote>The control that inspects sensitive data must not become a place that stores it.</blockquote>
+<p>Both fixes were re-mirrors of the plane's own detector modules rather than redesigns. The plane fixed its copies first; the SDK adopted the wording verbatim. Direction matters when two copies drift.</p>
+</article>
+</div>
 <x-dc>
 <helmet>
-  <title>Blog — FastAIAgent</title>
-  <link rel="icon" href="./assets/logo-dark.svg">
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
-  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="./feed.xml">
-  <link rel="stylesheet" href="./theme.css">
-  <script src="./markdown.js"></script>
-  <script src="./posts/series.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
   <style>
     .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
     .post-body>*+*{margin-top:22px}
@@ -40,14 +75,14 @@
 
 <article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
   <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
-    <a href="./blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
     <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
       <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
     </sc-if>
     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
     <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
     <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
-    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="./assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
     <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
     <div class="post-body" style="margin-top:36px">{{ body }}</div>
     <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>

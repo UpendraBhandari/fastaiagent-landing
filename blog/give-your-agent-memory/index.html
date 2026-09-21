@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="give-your-agent-memory"</script>
+<title>Give Your Agent Memory It Won't Lie to You — FastAIAgent</title>
+<meta name="description" content="Your agent references a customer trip that never happened. It came from memory — a fact recalled from someone else's conversation. Memory as one object, with scopes you can see.">
+<link rel="canonical" href="https://fastaiagent.net/blog/give-your-agent-memory/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Give Your Agent Memory It Won't Lie to You">
+<meta property="og:description" content="Your agent references a customer trip that never happened. It came from memory — a fact recalled from someone else's conversation. Memory as one object, with scopes you can see.">
+<meta property="og:url" content="https://fastaiagent.net/blog/give-your-agent-memory/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/memory-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-07-02T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Memory">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Give Your Agent Memory It Won't Lie to You">
+<meta name="twitter:description" content="Your agent references a customer trip that never happened. It came from memory — a fact recalled from someone else's conversation. Memory as one object, with scopes you can see.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/memory-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>Give Your Agent Memory It Won't Lie to You</h1>
+<p>Your agent references a customer trip that never happened. It came from memory — a fact recalled from someone else's conversation. Memory as one object, with scopes you can see.</p>
+<p>Jul 2, 2026 · Upendra Bhandari · Memory</p>
+<img src="/posts/images/memory-cover.jpg" alt="">
+<p>Your agent is three messages into a customer's billing issue when it references their &quot;recent trip to Portland.&quot; There was no trip. Reasoning: sound. Knowledge-base retrieval: clean. The model did nothing wrong.</p>
+<p>It came from memory. Several conversations ago a different customer mentioned Portland, semantic recall embedded it, and this turn it surfaced with a similarity score just high enough to clear the bar. The agent faithfully used what memory handed it — and until recently, that was the one part of an agent you couldn't see. You could trace the model call, the tool call, the knowledge-base lookup. Memory just silently edited the prompt every turn and left no trace at all.</p>
+<p>This article is about building memory into your agent — and, just as importantly, finally seeing it.</p>
+<h3>One object, not a bolted-on service</h3>
+<p>In most stacks, memory is something you assemble in application code: a fact store, an extractor, per-user isolation, a retrieval system — four subsystems, each easy to get wrong. Here memory is a peer of the model and the tools, declared once on the agent:</p>
+<pre><code class="lang-python">from fastaiagent import Agent, LLMClient, Memory
+
+agent = Agent(
+    name=&quot;support-bot&quot;,
+    llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;),
+    memory=Memory(location=&quot;sqlite&quot;, user_id=lambda ctx: ctx.state.user_id),
+)</code></pre>
+<p>Every capability below is a flag on that one object. Worth saying plainly, since there's a whole category of tools that treat memory as its own product — a separate service you wire in, with its own store, API, and dashboard. This isn't trying to be a smarter memory engine than those. It's a different thing: memory that's native to the agent and visible in the same trace as your model and tool calls. For most agents, that integration matters more than raw memory horsepower.</p>
+<h3>How long, and for whom</h3>
+<p>Every fact an agent holds has a lifetime and an owner. Make that explicit and most memory confusion disappears — three tiers:</p>
+<ul><li>session — the working window of the current conversation (window=20).</li><li>user — personal to one user, isolated by id, across all their conversations.</li><li>global — true for everyone using the agent.</li></ul>
+<p>You can work the tiers directly, no LLM in the loop:</p>
+<pre><code class="lang-python">mem = Memory(location=&quot;sqlite&quot;, agent_id=&quot;support-bot&quot;)
+
+mem.persist(&quot;Support hours are 9-5 ET.&quot;,        tier=&quot;global&quot;)        # everyone
+mem.persist(&quot;Alice is on the enterprise plan.&quot;, tier=&quot;user&quot;, id=&quot;alice&quot;)
+mem.persist(&quot;Bob prefers phone contact.&quot;,       tier=&quot;user&quot;, id=&quot;bob&quot;)
+
+mem.retrieve(tier=&quot;user&quot;, id=&quot;alice&quot;)   # -&gt; ['Alice is on the enterprise plan.']
+mem.retrieve(tier=&quot;user&quot;, id=&quot;&quot;)        # -&gt; []   (no id, no leak)</code></pre>
+<p>Personal memory is private by default: an empty subject id returns nothing, and persist(tier=&quot;user&quot;, id=&quot;&quot;) raises rather than quietly writing a global fact. A single agent definition serves many users — Alice recalls Alice's, Bob recalls Bob's, neither sees the other. And the tiers aren't just an API idea; the Local UI shows each scope with its own count:</p>
+<p><figure><img src="/posts/images/memory-1.png" alt="Memory in the FastAIAgent Local UI" loading="lazy"><figcaption>The three tiers, made visible: the global bucket (agent:support-bot) next to each user's private bucket.</figcaption></figure></p>
+<h3>What memory does for you automatically</h3>
+<p>Fact extraction, retrieval-over-history, context compression — three subsystems teams usually build themselves, badly. Here they're flags:</p>
+<pre><code class="lang-python">memory=Memory(
+    learn=llm,        # extract + persist durable facts, no extraction code from you
+    recall=&quot;auto&quot;,    # past exchanges become searchable by meaning
+    summarize=llm,    # compress old turns instead of dropping them
+    dedupe=True,      # don't inject the same content twice from two sources
+)</code></pre>
+<p>And storage is pluggable — SQLite by default, or point location at Postgres or Redis and nothing else in your code changes; all three implement one contract, verified against the real databases. Facts are versioned records, not values you overwrite:</p>
+<pre><code>memory.update(&quot;Prefers phone over email&quot;, old=&quot;Prefers email over phone&quot;, tier=&quot;user&quot;, id=&quot;alice&quot;)</code></pre>
+<p>update supersedes rather than overwrites — the old fact stays in history, marked superseded.</p>
+<h3>Seeing what memory recalled</h3>
+<p>Now the payoff, and the reason this article exists. Every turn, Memory emits a memory.read span with one child per component. For semantic recall you see exactly what it pulled in, with scores, in rank order:</p>
+<figure><img src="/posts/images/memory-2.png" alt="Memory in the FastAIAgent Local UI" loading="lazy"><figcaption>Open the memory.read.vector child: the scores and the exact stale Portland snippets recall handed to the model.</figcaption></figure>
+<p>Here's the tell: the top score is 0.48, not 0.9. A billing question is barely related to a Portland anecdote — and yet all four messages got injected, because recall has no relevance threshold; it returns the top-k, whatever the scores. You don't guess why the agent hallucinated a trip — you read the score that let it in. Add a threshold, drop top_k, or weight for recency, and the phantom trip is gone. Without the span, you'd never have known memory was the culprit at all.</p>
+<p>The memory.read span sits right in the tree, a peer of the llm call:</p>
+<figure><img src="/posts/images/memory-3.png" alt="Memory in the FastAIAgent Local UI" loading="lazy"><figcaption>The memory.read span, finally visible — a peer of the llm call, not a black box behind it.</figcaption></figure>
+<p>Writes are visible the same way: memory.write shows what each part did (extracted_facts, embedded), and the direct verbs — persist, retrieve, update — emit their own spans with tier, scope, and count. When memory drifts, you watch it happen operation by operation instead of finding out three turns later.</p>
+<h3>Where a remembered fact came from</h3>
+<p>Recall visibility answers &quot;what did memory inject.&quot; Lineage answers a harder question: when the agent claims to know something about a user, where did it learn that, and can I trust it? With learn on, every extracted fact is stamped with the trace that produced it — on the Memory page each fact shows its Source, a link back to the run, plus a confidence signal and its supersession history.</p>
+<p><figure><img src="/posts/images/memory-4.png" alt="Memory in the FastAIAgent Local UI" loading="lazy"><figcaption>Every fact carries its lineage: a clickable Source back to the run that taught it, and a confidence that tells inferred (0.60) from verified (1.00).</figcaption></figure></p>
+<p>So when the agent asserts &quot;the customer is on the enterprise plan,&quot; you click the source and land on the conversation that taught it. Superseded facts stay visible, muted, pointing at what replaced them — nothing is silently lost, which matters the first time someone asks &quot;why did it think that last month?&quot;</p>
+<h3>Where this fits — honestly</h3>
+<p>The common cases this is built for are the ones nearly every real agent hits: remember me between conversations, don't confuse my customers, bring back what's relevant, correct a wrong belief, and — why did it say that? For those, the strength is that you assemble nothing: one object on the database you already run, observable in the trace you already read. That integration is the product.</p>
+<p>The honest edge, stated as plainly as the strength: if memory is your hardest problem — knowledge-graph relationships, temporal reasoning, best-in-class extraction accuracy — reach for a dedicated memory engine; those go deeper on memory itself. The difference isn't better vs. worse memory; it's native and observable vs. specialized and separate. And for that last 10%, you don't leave — location= takes Postgres/Redis or a custom store, recall= and semantic= take any VectorStore you bring, so the retrieval engine is yours while the memory.* spans, tiers, and lineage stay yours too.</p>
+<p>Give your agent memory. Just don't give it memory you can't see — because your agent remembered the wrong thing once, and now you can finally catch it.</p>
+<p>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. pip install fastaiagent → <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">github.com/fastaifoundry/fastaiagent-sdk</a></p>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

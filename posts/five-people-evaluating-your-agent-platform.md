@@ -4,7 +4,7 @@ date: Aug 10, 2026
 tag: Platform
 summary: The developer, the operator, the CTO, compliance and finance each judge an agent platform by a different test. Ship for one and you lose the other four.
 author: Upendra Bhandari
-cover: ./posts/images/five-people-cover.jpg
+cover: /posts/images/five-people-cover.jpg
 ---
 The demo worked. Everyone nodded. Six months later the agent still isn't live, and when you ask why, you get something vague about security review or governance.
 
@@ -22,7 +22,7 @@ Building is the easy part now. Fixing is where it hurts. Something went wrong in
 
 Everything you need locally comes with one install. pip install 'fastaiagent[ui]', run fastaiagent ui, and you've got a trace explorer on port 7842 backed by a single SQLite file in your project. No Docker, no server, no account. Nothing leaves your machine.
 
-![Agent platform roles](./posts/images/five-people-1.png)
+![Agent platform roles](/posts/images/five-people-1.png)
 
 Open a trace and you see the whole run: every model call, tool call, retrieval, and memory read, with timing, tokens, cost, and guardrail checks right there in the tree.
 
@@ -34,7 +34,7 @@ Then save that failure as a test, publish the fixed prompt, and every agent pick
 
 The question that matters isn't whether it passed once. It's whether CI goes red when someone breaks it next month.
 
-![Agent platform roles](./posts/images/five-people-2.png)
+![Agent platform roles](/posts/images/five-people-2.png)
 
 You get a pytest gate that needs no API keys and no infrastructure. Install the SDK and the plugin registers itself. Write your cases as tests, and a failing score fails the test:
 
@@ -59,7 +59,7 @@ This is what decides whether you have a platform or a pile of projects. It comes
 
 For prompts, scorers, datasets, knowledge bases, and guardrail policy — yes. One line of code pulls each of them:
 
-![Agent platform roles](./posts/images/five-people-3.png)
+![Agent platform roles](/posts/images/five-people-3.png)
 
 python
 
@@ -84,7 +84,7 @@ Two problems, same person: the platform, and the people using it.
 
 On what you have to run, the answer is mostly "nothing." The SDK needs no infrastructure at all. One pip install, one SQLite file, a local UI. Nothing leaves the machine unless someone calls connect(). Your teams can try it, build with it, and decide whether they like it without a procurement cycle, a security review, or a ticket to you. You stop being the bottleneck.
 
-![Agent platform roles](./posts/images/five-people-4.png)
+![Agent platform roles](/posts/images/five-people-4.png)
 
 When you do want Enterprise, it runs on your own infrastructure. There's a real air-gapped install path — a bundler that packages everything with checksums so you can carry it to a disconnected network. Self-hosted, it can point at a local model instead of a cloud provider, so the features that need an LLM don't need egress. And it plugs into the identity you already have with OIDC and SAML.
 
@@ -98,7 +98,7 @@ This is the meeting that kills agent projects, usually because someone answers a
 
 So here's the honest starting point: Enterprise cannot stop a running agent. It doesn't pretend to.
 
-![Agent platform roles](./posts/images/five-people-5.png)
+![Agent platform roles](/posts/images/five-people-5.png)
 
 The block happens locally. The SDK is what's running your agent, so the SDK is what stops it — in-process, before the action, because that's the only place a block can really happen. Policy is written in Enterprise and pushed down. Enterprise decides, the runtime enforces. The one exception is hosted tool calls, where Enterprise is the one making the call — there it blocks outright, and it fails closed: if the governance check errors or a credential can't be resolved, the call is denied.
 

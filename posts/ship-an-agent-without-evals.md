@@ -6,7 +6,7 @@ summary: Nobody ships a payment service on three manual clicks, yet that is exac
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 7
-cover: ./posts/images/evals-cover.jpg
+cover: /posts/images/evals-cover.jpg
 ---
 Picture the last change you made that actually mattered — a payment path, an auth check, a schema migration. You didn't eyeball it and push. You wrote a test, watched CI go green, and merged with a clear conscience. That green check is what lets you change a system you don't fully hold in your head and still sleep at night.
 
@@ -107,23 +107,23 @@ Or gate a script explicitly — run evaluate(), check Scorecard.from_eval_result
 
 Every run persists to a local SQLite DB, and the bundled UI reads straight from it (fastaiagent ui start) — no cloud account, nothing to configure.
 
-![Evaluation in the FastAIAgent Local UI](./posts/images/evals-1.png)
+![Evaluation in the FastAIAgent Local UI](/posts/images/evals-1.png)
 
 Every run shows up — quality as a line over time, not a launch-day screenshot.
 
-![Evaluation in the FastAIAgent Local UI](./posts/images/evals-2.png)
+![Evaluation in the FastAIAgent Local UI](/posts/images/evals-2.png)
 
 Click into a run: every case, its expected vs. actual output, and a pass/fail from each scorer
 
-![Evaluation in the FastAIAgent Local UI](./posts/images/evals-3.png)
+![Evaluation in the FastAIAgent Local UI](/posts/images/evals-3.png)
 
 Compare two runs and the regression surfaces by itself — the exact input and the exact scorer that broke. And it isn't only a viewer — it's where you build the suite too:
 
-![Evaluation in the FastAIAgent Local UI](./posts/images/evals-4.png)
+![Evaluation in the FastAIAgent Local UI](/posts/images/evals-4.png)
 
 Your datasets, created here or dropped in by eval curate.
 
-![Evaluation in the FastAIAgent Local UI](./posts/images/evals-5.png)
+![Evaluation in the FastAIAgent Local UI](/posts/images/evals-5.png)
 
 Fill in a curated case's expected answer and hit Run eval — no script-edit-rerun loop. (Two cases here are still waiting for a gold answer.)
 

@@ -70,7 +70,7 @@
   }
   function words(md) { return md.replace(/```[\s\S]*?```/g, '').split(/\s+/).filter(Boolean).length; }
   async function load(slug) {
-    const r = await fetch('./posts/' + encodeURIComponent(slug) + '.md', { cache: 'no-cache' });
+    const r = await fetch('/posts/' + encodeURIComponent(slug) + '.md', { cache: 'no-cache' });
     if (!r.ok) throw new Error('post not found: ' + slug);
     const { meta, body } = parseFrontMatter(await r.text());
     meta.slug = slug;

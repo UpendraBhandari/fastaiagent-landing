@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="prompt-changed-agent-broke-nobody-noticed"</script>
+<title>The Prompt Changed. The Agent Broke. Nobody Noticed for 3 Days. — FastAIAgent</title>
+<meta name="description" content="Code changes have PRs, reviews, CI and tests. Prompt changes have someone eyeballing three responses before they deploy. Here is the gate that catches a bad prompt before it ships.">
+<link rel="canonical" href="https://fastaiagent.net/blog/prompt-changed-agent-broke-nobody-noticed/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Prompt Changed. The Agent Broke. Nobody Noticed for 3 Days.">
+<meta property="og:description" content="Code changes have PRs, reviews, CI and tests. Prompt changes have someone eyeballing three responses before they deploy. Here is the gate that catches a bad prompt before it ships.">
+<meta property="og:url" content="https://fastaiagent.net/blog/prompt-changed-agent-broke-nobody-noticed/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/prompt-gate-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-05-25T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Prompts">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Prompt Changed. The Agent Broke. Nobody Noticed for 3 Days.">
+<meta name="twitter:description" content="Code changes have PRs, reviews, CI and tests. Prompt changes have someone eyeballing three responses before they deploy. Here is the gate that catches a bad prompt before it ships.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/prompt-gate-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>The Prompt Changed. The Agent Broke. Nobody Noticed for 3 Days.</h1>
+<p>Code changes have PRs, reviews, CI and tests. Prompt changes have someone eyeballing three responses before they deploy. Here is the gate that catches a bad prompt before it ships.</p>
+<p>May 25, 2026 · Upendra Bhandari · Prompts</p>
+<img src="/posts/images/prompt-gate-cover.jpg" alt="">
+<p>Your senior engineer adds one line to the support agent's prompt — &quot;Be warm and empathetic with frustrated customers.&quot; She tests three queries. Responses are warmer. She deploys.</p>
+<p>Three days later, support flags it. Twelve customers got wrong cancellation instructions. The empathy line shifted the model's attention away from the accuracy instruction — not on every query, just the ones with ambiguous retrieval context.</p>
+<p>One line. Four words. Three days of wrong answers. The dashboards were green the whole time.</p>
+<p>The scenario above is hypothetical, but the pattern is real. I've seen the same failure mode when swapping model versions — a GPT-4 prompt that worked perfectly breaks on GPT-4o because the model weighs instructions differently. Prompt fragility isn't a theoretical risk. It happens more often than most teams admit.</p>
+<h3>Why prompt changes are uniquely dangerous</h3>
+<p>Code changes have guardrails — PRs, reviews, CI, tests. Prompt changes have none of that. Someone edits a string, eyeballs three responses, and deploys.</p>
+<ul><li><strong>Non-local effects.</strong> One line can change behavior on completely unrelated queries.</li><li><strong>No compile step.</strong> A bad prompt doesn't fail — it silently produces worse output.</li><li><strong>Invisible regression.</strong> No crash, no exception. Just confident wrong answers until a customer complains.</li></ul>
+<h3>How FastAIAgent handles this</h3>
+<h4>Version control for prompts</h4>
+<p>Every prompt lives in the <code>PromptRegistry</code>. Versions are immutable — editing creates a new version, never overwrites.</p>
+<pre><code class="lang-python">from fastaiagent import Agent, LLMClient, PromptRegistry
+
+registry = PromptRegistry()
+
+registry.register(
+    name=&quot;support-system&quot;,
+    template=(
+        &quot;You are a support agent for {{company_name}}. &quot;
+        &quot;Help customers with their inquiries. &quot;
+        &quot;Only reference policies from our official documentation. &quot;
+        &quot;If you're unsure, say so — never guess.&quot;
+    ),
+    variables=[&quot;company_name&quot;],
+)
+# → Created support-system v1
+
+# Use in an agent — pin version for production, &quot;latest&quot; for dev
+agent = Agent(
+    name=&quot;support-bot&quot;,
+    system_prompt=registry.get(&quot;support-system&quot;, version=&quot;v1&quot;),
+    llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;),
+    tools=[search_docs, lookup_order],
+)</code></pre>
+<h4>Lineage: see what's using what</h4>
+<p>The Local UI's Prompt detail page shows every trace that used each prompt version and every eval run that tested it. Monday morning investigation: you see v2 was deployed Wednesday, used in 3,400 traces, and was never run through an eval. Process failure identified in 10 seconds.</p>
+<h4>The real gate: eval before deploy</h4>
+<p>The Prompt Playground is for exploration — test a prompt version interactively with streaming. But manual testing misses edge cases. The eval suite is the real gate.</p>
+<pre><code class="lang-python">from fastaiagent.eval import evaluate
+
+agent_v2 = Agent(
+    name=&quot;support-bot&quot;,
+    system_prompt=registry.get(&quot;support-system&quot;, version=&quot;v2&quot;),
+    llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;),
+    tools=[search_docs, lookup_order],
+)
+
+results = evaluate(
+    agent_fn=agent_v2.run,
+    dataset=&quot;regression_tests.jsonl&quot;,
+    scorers=[&quot;correctness&quot;, &quot;relevance&quot;],
+)
+print(results.summary())
+# correctness: 95% (76/80 passed, 4 failed)
+#
+# FAILED cases:
+#   [12] &quot;How do I cancel my subscription?&quot; — got: competitor's steps
+#   [34] &quot;Cancel my account&quot; — got: generic advice
+#   [51] &quot;I want to stop my plan&quot; — got: wrong product
+#   [67] &quot;Unsubscribe from premium&quot; — got: hallucinated steps</code></pre>
+<p>Four failures. All cancellation-related. The eval caught what three manual tests missed. Fix the prompt, create v3, eval passes, deploy v3, skip v2 entirely.</p>
+<h4>When the regression already happened: Replay across versions</h4>
+<p>If v2 was already deployed, Agent Replay lets you compare behavior across prompt versions on the exact traces that failed.</p>
+<pre><code class="lang-python">from fastaiagent.trace.replay import Replay
+
+replay = Replay.load(&quot;failing_trace_id&quot;)
+
+forked = (
+    replay.fork_at(step=1)
+    .modify_prompt(registry.get(&quot;support-system&quot;, version=&quot;v1&quot;))
+    .rerun()
+)
+
+comparison = replay.fork_at(step=1).compare(forked)
+print(f&quot;Diverged at step: {comparison.diverged_at}&quot;)
+# → Original (v2): hallucinated cancellation steps
+# → Rerun (v1): correct response citing official documentation</code></pre>
+<p>Confirmed: the prompt change caused the regression. Save the failing case as a regression test. Fix. Eval. Deploy.</p>
+<h3>The same flow, in the browser</h3>
+<p><strong>1. Prompts page</strong> — see v1, v2 and v3 side by side with the diff.</p>
+<figure><img src="/posts/images/prompt-gate-1-prompts.png" alt="Prompt detail page in the Local UI" loading="lazy"><figcaption>Prompt detail: immutable versions on the left, the template being edited on the right.</figcaption></figure>
+<p><strong>2. Lineage panel</strong> — see which traces used v2, click any failing trace.</p>
+<figure><img src="/posts/images/prompt-gate-2-lineage.png" alt="Lineage panel listing traces per prompt version" loading="lazy"><figcaption>Lineage: every trace that ran this prompt version, and every eval run that tested it.</figcaption></figure>
+<p><strong>3. Replay</strong> — fork, swap the prompt back to v1, rerun, compare side by side.</p>
+<figure><img src="/posts/images/prompt-gate-3-replay-compare.png" alt="Replay comparison across prompt versions" loading="lazy"><figcaption>Replay across versions: the same input under v2 and v1, with the divergence point marked.</figcaption></figure>
+<p><strong>4. Save as regression test</strong> — one click.</p>
+<figure><img src="/posts/images/prompt-gate-4-save-test.png" alt="Save as regression test" loading="lazy"><figcaption>The confirmed regression becomes a permanent case in the suite.</figcaption></figure>
+<p><strong>5. Playground</strong> — draft v3 and test it interactively.</p>
+<figure><img src="/posts/images/prompt-gate-5-playground.png" alt="Prompt Playground" loading="lazy"><figcaption>Playground: fill the variables, stream the response, iterate on a draft version.</figcaption></figure>
+<p><strong>6. Eval Runs</strong> — run the regression suite against v3, all pass, deploy.</p>
+<figure><img src="/posts/images/prompt-gate-6-eval-runs.png" alt="Eval runs showing the v3 regression suite" loading="lazy"><figcaption>Eval Runs: v3 against the regression suite, with the quality trend across runs.</figcaption></figure>
+<h3>Where this fits in the loop</h3>
+<p>The closed loop from <a href="/blog/every-production-failure-becomes-a-test/">Every Production Failure Should Become a Test</a> is: develop → trace → replay → fix → regression test → eval. That loop catches failures after they happen.</p>
+<p>This article adds the gate that catches failures before they happen: prompt change → eval → pass/fail → deploy or fix. The eval suite — built from real production failures — becomes the gate that blocks bad prompt changes from reaching production.</p>
+<blockquote>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. <code>pip install fastaiagent</code> — the SDK is on <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">GitHub</a>.</blockquote>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

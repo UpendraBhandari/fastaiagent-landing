@@ -11,8 +11,8 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
 - assets/ — logos and console screenshots
 - posts/ — blog posts (see below)
 - analytics.js — Google Analytics loader (measurement ID lives here, once)
-- tools/build-blog-meta.js — regenerates feed.xml, sitemap.xml, robots.txt, posts/series.js
-- feed.xml, sitemap.xml, robots.txt, posts/series.js — generated; do not hand-edit
+- tools/build-blog-meta.js — regenerates feed.xml, sitemap.xml, robots.txt, posts/series.js, blog/
+- feed.xml, sitemap.xml, robots.txt, posts/series.js, blog/ — generated; do not hand-edit
 - .nojekyll — tells GitHub Pages not to run Jekyll
 
 ## Writing a blog post
@@ -36,7 +36,7 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
 2. Put images in posts/images/.
 3. Add "my-post" to the list in posts/index.js, in date order (newest first).
 4. Run `node tools/build-blog-meta.js` to refresh feed.xml and sitemap.xml.
-5. Push. It appears on blog.html and at post.html?slug=my-post.
+5. Push. It appears on blog.html and at /blog/my-post/.
 
 Step 4 is not optional — the feed and sitemap are committed files, not
 generated at request time, so a post added without it is invisible to feed
@@ -51,6 +51,20 @@ of M" banner and the prev/next links on post.html, and the series line on the
 blog cards. Parts must be 1..n with no gaps, and part order must match date
 order — the script refuses to build otherwise, so the numbering can't silently
 drift when a post is added. A post with no `series:` renders exactly as before.
+
+## Post URLs and link previews
+Posts are served from generated pages at /blog/<slug>/, one HTML file each,
+written by the build script from post.html plus the post's front matter. Each
+carries its own title, description, canonical and Open Graph/Twitter tags, and
+a pre-rendered copy of the article body — crawlers that do not run JavaScript
+(LinkedIn, Slack, X) read those instead of an empty shell. The pre-rendered
+copy is hidden the moment scripting is detected, so a browser never shows it
+twice; the content is identical either way.
+
+The legacy post.html?slug=<slug> form still works for links already shared.
+Post asset paths are root-absolute (/posts/...) so a post renders the same at
+either URL. A post with no `cover:` falls back to assets/social-default.jpg —
+never an SVG, which social scrapers will not render.
 
 ## Analytics
 Every page loads analytics.js from its <head>. Pageviews are sent manually

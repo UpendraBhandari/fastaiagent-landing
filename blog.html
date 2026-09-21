@@ -61,7 +61,7 @@ class Component extends DCLogic {
     const S = window.FA_SERIES || {};
     const posts = this.state.posts.map(m => {
       const list = (m.series && S[m.series]) || [];
-      return { ...m, href: './post.html?slug=' + m.slug, hasCover: !!m.cover,
+      return { ...m, href: '/blog/' + m.slug + '/', hasCover: !!m.cover,
                inSeries: list.length > 0, seriesTotal: list.length };
     });
     return { posts, empty: this.state.loaded && posts.length === 0 };

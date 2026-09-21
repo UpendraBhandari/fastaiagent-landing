@@ -7,7 +7,7 @@ summary: Finding the bug is an afternoon. Keeping it dead across every future ch
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 1
-cover: ./posts/images/every-failure-a-test-cover.jpg
+cover: /posts/images/every-failure-a-test-cover.jpg
 ---
 
 You fixed the bug. The agent was hallucinating refund policy details because the retrieval step returned the wrong document. You found it with Agent Replay, forked at the failing step, swapped the prompt, confirmed the fix, deployed. Done.
@@ -225,27 +225,27 @@ Everything above works in the Local UI too. No code required for the debugging-t
 
 **1. Traces page** — find the failing trace, click to open.
 
-![Local UI traces list](./posts/images/replay-loop-1-traces.png "Traces page: every run with status, spans, duration, tokens and cost.")
+![Local UI traces list](/posts/images/replay-loop-1-traces.png "Traces page: every run with status, spans, duration, tokens and cost.")
 
 **2. Replay view** — click the failing span, then Fork here.
 
-![Replay view with a span selected](./posts/images/replay-loop-2-fork-span.png "Replay view: step through the span tree and fork at the step that went wrong.")
+![Replay view with a span selected](/posts/images/replay-loop-2-fork-span.png "Replay view: step through the span tree and fork at the step that went wrong.")
 
 **3. Fork dialog** — edit the prompt (or input, or tool response, or LLM params), then rerun from this step.
 
-![Fork dialog](./posts/images/replay-loop-3-fork-dialog.png "Fork dialog: change the prompt, the input, the tool response or the model params, then rerun from that step.")
+![Fork dialog](/posts/images/replay-loop-3-fork-dialog.png "Fork dialog: change the prompt, the input, the tool response or the model params, then rerun from that step.")
 
 **4. Comparison view** — original vs fixed output, side by side, with "diverged at step N".
 
-![Comparison view](./posts/images/replay-loop-4-comparison.png "Comparison view: original and fixed output side by side, with the divergence point marked.")
+![Comparison view](/posts/images/replay-loop-4-comparison.png "Comparison view: original and fixed output side by side, with the divergence point marked.")
 
 **5. Save as regression test** — one button, appended to the regression dataset.
 
-![Save as regression test](./posts/images/replay-loop-5-save-test.png "One button turns the verified fix into a permanent case in the regression dataset.")
+![Save as regression test](/posts/images/replay-loop-5-save-test.png "One button turns the verified fix into a permanent case in the regression dataset.")
 
 **6. Eval Runs page** — run the eval, see the new case.
 
-![Eval runs page](./posts/images/replay-loop-6-eval-runs.png "Eval Runs: the regression suite with its pass rate and quality trend over time.")
+![Eval runs page](/posts/images/replay-loop-6-eval-runs.png "Eval Runs: the regression suite with its pass rate and quality trend over time.")
 
 The whole flow is visual, interactive, and produces a permanent artifact. An engineer who has never written a JSONL line in their life can contribute to the regression suite.
 
@@ -261,6 +261,6 @@ The closed loop is: develop → trace → replay → fix → regression test →
 
 The result: an agent that gets measurably better over time, with proof.
 
-If you would rather drive this loop from the command line than the browser, [the five-script version](./post.html?slug=regression-from-trace) walks through the same capture, analyze, fix, save and verify cycle in code.
+If you would rather drive this loop from the command line than the browser, [the five-script version](/blog/regression-from-trace/) walks through the same capture, analyze, fix, save and verify cycle in code.
 
 > FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. `pip install fastaiagent` — the SDK is on [GitHub](https://github.com/fastaifoundry/fastaiagent-sdk).

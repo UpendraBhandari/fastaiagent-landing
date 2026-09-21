@@ -31,109 +31,109 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=regression-from-trace</loc>
+    <loc>https://fastaiagent.net/blog/regression-from-trace/</loc>
     <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=guardrail-audit-closed</loc>
+    <loc>https://fastaiagent.net/blog/guardrail-audit-closed/</loc>
     <lastmod>2026-09-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=evidence-not-attestation</loc>
+    <loc>https://fastaiagent.net/blog/evidence-not-attestation/</loc>
     <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=eval-invalid-not-green</loc>
+    <loc>https://fastaiagent.net/blog/eval-invalid-not-green/</loc>
     <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=where-should-ai-actually-be</loc>
+    <loc>https://fastaiagent.net/blog/where-should-ai-actually-be/</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=five-people-evaluating-your-agent-platform</loc>
+    <loc>https://fastaiagent.net/blog/five-people-evaluating-your-agent-platform/</loc>
     <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=guardrails-that-actually-block</loc>
+    <loc>https://fastaiagent.net/blog/guardrails-that-actually-block/</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=agent-framework-is-not-a-harness</loc>
+    <loc>https://fastaiagent.net/blog/agent-framework-is-not-a-harness/</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=strong-model-reads-balance-sheet-wrong</loc>
+    <loc>https://fastaiagent.net/blog/strong-model-reads-balance-sheet-wrong/</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=give-your-agent-memory</loc>
+    <loc>https://fastaiagent.net/blog/give-your-agent-memory/</loc>
     <lastmod>2026-07-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=ship-an-agent-without-evals</loc>
+    <loc>https://fastaiagent.net/blog/ship-an-agent-without-evals/</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=your-agent-shouldnt-decide-alone</loc>
+    <loc>https://fastaiagent.net/blog/your-agent-shouldnt-decide-alone/</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</loc>
+    <loc>https://fastaiagent.net/blog/agent-was-right-data-was-wrong/</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=see-everything-your-agent-does</loc>
+    <loc>https://fastaiagent.net/blog/see-everything-your-agent-does/</loc>
     <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=your-agent-needs-transactions</loc>
+    <loc>https://fastaiagent.net/blog/your-agent-needs-transactions/</loc>
     <lastmod>2026-05-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=prompt-changed-agent-broke-nobody-noticed</loc>
+    <loc>https://fastaiagent.net/blog/prompt-changed-agent-broke-nobody-noticed/</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=every-production-failure-becomes-a-test</loc>
+    <loc>https://fastaiagent.net/blog/every-production-failure-becomes-a-test/</loc>
     <lastmod>2026-05-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fastaiagent.net/post.html?slug=done-complaining-heres-what-im-shipping</loc>
+    <loc>https://fastaiagent.net/blog/done-complaining-heres-what-im-shipping/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

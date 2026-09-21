@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="see-everything-your-agent-does"</script>
+<title>I See Everything My Agent Does. In My Own Environment. No Cloud Account. — FastAIAgent</title>
+<meta name="description" content="Your choices used to be free but heavy, easy but hosted, or self-hosted for an enterprise fee. Nobody offered the fourth option — free, easy and local. One pip install, one command, one SQLite file, nothing leaving your machine.">
+<link rel="canonical" href="https://fastaiagent.net/blog/see-everything-your-agent-does/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="I See Everything My Agent Does. In My Own Environment. No Cloud Account.">
+<meta property="og:description" content="Your choices used to be free but heavy, easy but hosted, or self-hosted for an enterprise fee. Nobody offered the fourth option — free, easy and local. One pip install, one command, one SQLite file, nothing leaving your machine.">
+<meta property="og:url" content="https://fastaiagent.net/blog/see-everything-your-agent-does/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/local-first-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-06-04T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Observability">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="I See Everything My Agent Does. In My Own Environment. No Cloud Account.">
+<meta name="twitter:description" content="Your choices used to be free but heavy, easy but hosted, or self-hosted for an enterprise fee. Nobody offered the fourth option — free, easy and local. One pip install, one command, one SQLite file, nothing leaving your machine.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/local-first-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>I See Everything My Agent Does. In My Own Environment. No Cloud Account.</h1>
+<p>Your choices used to be free but heavy, easy but hosted, or self-hosted for an enterprise fee. Nobody offered the fourth option — free, easy and local. One pip install, one command, one SQLite file, nothing leaving your machine.</p>
+<p>Jun 4, 2026 · Upendra Bhandari · Observability</p>
+<img src="/posts/images/local-first-cover.jpg" alt="">
+<p>Here's what it takes to see your first agent trace in most observability tools.</p>
+<p>Sign up. Verify email. Create an organization. Generate an API key. Add the key to your environment. Install the SDK. Read the docs on how to configure the exporter. Run your agent. Open the dashboard. Wait for the trace to appear in their cloud. Hope your security team doesn't ask why customer data is now on a third-party server.</p>
+<p>Here's what it takes with FastAIAgent:</p>
+<pre><code class="lang-bash">pip install &quot;fastaiagent[ui]&quot;
+fastaiagent ui</code></pre>
+<p>Your browser opens to localhost:7842. Every trace, prompt, eval, and guardrail event your agent has produced is right there. No account. No API key. No data leaving your machine.</p>
+<figure><img src="/posts/images/local-ui-1-home.png" alt="The FastAIAgent Local UI home page" loading="lazy"><figcaption>The Local UI on first run — traces, eval runs, approvals and failures, with no account to create.</figcaption></figure>
+<p>That difference isn't convenience. It's a different philosophy about whose data this is.</p>
+<h3>The infrastructure tax nobody mentions</h3>
+<p>The open-source observability tools are genuinely good. Real engineering, real features, permissive licenses. &quot;Self-hostable&quot; and &quot;free&quot; right on the box.</p>
+<p>Then you read the deployment guide.</p>
+<p>The leading self-hosted options require a relational database, a columnar analytics database, a cache layer, blob storage, and a container orchestrator for production scale. That's five services to stand up before you see a single trace. The &quot;free&quot; tool costs you a DevOps afternoon, a Helm chart, and someone on your team who understands database performance and cluster scaling.</p>
+<p>The tools that don't require infrastructure solve the problem by hosting everything themselves. Which means your traces, your prompts, your agent's internal reasoning, your customers' data in those traces, all live on someone else's servers. Self-hosting those is usually an Enterprise contract conversation.</p>
+<p>So your choices are:</p>
+<ul><li><strong>Free but heavy</strong> — stand up five services and a cluster</li><li><strong>Easy but hosted</strong> — ship your data to a vendor's cloud</li><li><strong>Self-hosted and easy</strong> — pay for an Enterprise plan</li></ul>
+<p>Nobody offers the fourth option: free, easy, and local. <code>pip install</code> and a single command, with everything running in your own environment and nothing leaving it.</p>
+<p>That's the gap FastAIAgent fills.</p>
+<h3>Everything in one file</h3>
+<p>The entire Local UI reads from a single SQLite file: <code>./.fastaiagent/local.db</code> in your project folder.</p>
+<p>Traces. Spans. Prompts and their versions. Eval runs and results. Guardrail events. Saved filters. Full-text search indexes. All of it, one file. No Postgres. No ClickHouse. No Redis. No S3. No Docker. No Kubernetes.</p>
+<p>When you delete the <code>.fastaiagent</code> folder, the data is gone. There's no cloud to clean up, no account to close, no data retention policy to read. The data is a file. You own the file.</p>
+<p>This matters most where it's not optional:</p>
+<p><strong>Regulated industries</strong> — finance, healthcare, defense. Customer data in agent traces cannot go to a third-party SaaS without a compliance review that takes months. A local SQLite file sidesteps the entire question.</p>
+<p><strong>Air-gapped deployments</strong> — no internet egress allowed. Cloud observability is simply impossible. Local-first is the only option.</p>
+<p><strong>Early development</strong> — you're iterating on a prototype at 11pm. You don't want to create an account and read exporter docs. You want to see what your agent did. One command.</p>
+<p>Your traces never leave your environment. Not as a feature you enable. As the default, because there's nowhere else for them to go.</p>
+<p>And here's the part that makes this different from bolting on a separate observability tool: this isn't a separate observability tool. The traces, the prompts, the evals, the guardrail events — they're produced by the same SDK that runs your agents. You didn't integrate FastAIAgent with an observability platform. The observability is the harness watching itself. That's why <a href="/blog/every-production-failure-becomes-a-test/">Agent Replay can exist and why a failure can become a test in one click</a> — the pieces share one data model because they're one system. You're not assembling a stack. You installed one thing.</p>
+<h3>When you outgrow a file</h3>
+<p>A single SQLite file is perfect for one developer. When your team needs to share observability — when someone other than you needs to see what production agents did — you'll want a shared backend.</p>
+<p>And here's the honest part: SQLite is single-writer, single-machine. For development and moderate production, that's not a weakness — it's the whole reason there's zero setup. But it has a ceiling. Run a lot of agents at once, all writing traces, and one writer becomes a bottleneck. Spread them across machines and a local file can't be the shared truth. SQLite is right for where most projects start, and where many stay — but high-volume, multi-machine production will hit its edges. No point pretending otherwise.</p>
+<p>Which is why Postgres is coming. Same UI, pointed at a Postgres connection instead of a file — a backend built for concurrent writers and volume. And still just one connection, not the five-service stack the heavier tools want. Start with a file, grow to a connection string, never stand up a cluster.</p>
+<p>And beyond that, for organizations that need the full picture, there's an <a href="/enterprise.html">enterprise platform</a> on the way — on-prem or managed SaaS — with the things a regulated, multi-team deployment actually requires: shared team observability, access controls, audit trails, governance and compliance, and fleet-level visibility across many agents in production. The open-source harness is the foundation; the platform is what makes it deployable at the scale and under the controls an enterprise demands. More on that soon.</p>
+<p>For today, the Local UI is SQLite, single-machine, and zero-infrastructure. That's the right starting point, and for most development it's all you need. The path from here — file, to shared database, to enterprise platform — is one continuous line, not a series of tool migrations.</p>
+<h3>A few surfaces that prove it</h3>
+<p>The Local UI has fifteen-plus surfaces. Here are the three that show why this approach matters.</p>
+<h4>Traces — the thing you actually came for</h4>
+<p>Every <code>agent.run()</code> produces a trace. Open the Traces page and you see the full list: trace name, status, duration, tokens, cost, and the framework that produced it. Click one and you get the span tree — every LLM call, tool invocation, and retrieval, with full inputs and outputs.</p>
+<figure><img src="/posts/images/local-ui-2-traces.png" alt="Traces list in the Local UI" loading="lazy"><figcaption>Every run, with status, spans, duration, tokens and cost.</figcaption></figure>
+<p>Full-text search works across span inputs and outputs. Type &quot;refund policy&quot; and you find every trace where that phrase appeared in what the agent sent or received. That search runs against a local FTS index — instant, no network round-trip, no per-query cost.</p>
+<figure><img src="/posts/images/local-ui-3-trace-detail.png" alt="Trace detail with the span tree" loading="lazy"><figcaption>Trace detail: the span tree, with full inputs and outputs on every step.</figcaption></figure>
+<h4>Agent Replay — debug without redeploying</h4>
+<p>Find a trace where the agent went wrong. Click the failing span. Fork it. Change the prompt, the input, the tool response, or the LLM parameters. Rerun from that exact step. See the original and the new output side by side, with the divergence point highlighted.</p>
+<p>No other observability tool does this, cloud or local. They show you what happened. Replay lets you change what happened and see the result. (Earlier posts in this series go deep on it — it's the heart of the series.)</p>
+<figure><img src="/posts/images/local-ui-4-replay.png" alt="Agent Replay in the Local UI" loading="lazy"><figcaption>Replay: fork a failing step, change one variable, rerun from there.</figcaption></figure>
+<h4>Cost tracking — where your money goes</h4>
+<p>The Analytics page breaks down spend by model, by agent, and by node. You see that 80% of your cost is the research agent calling GPT-4o, and the summarizer on GPT-4o-mini is basically free. You optimize the expensive path and cut your bill.</p>
+<p>Computed on read, from the token counts already in your traces. No cloud aggregation, no data warehouse, no per-event pricing.</p>
+<figure><img src="/posts/images/local-ui-5-analytics.png" alt="Analytics page showing cost by model and agent" loading="lazy"><figcaption>Analytics: spend broken down by model, agent and node, computed from the tokens already in your traces.</figcaption></figure>
+<h3>One install, not eight</h3>
+<p>Step back from observability for a second and look at what you actually installed.</p>
+<p>To build a production agent today, the usual path is to assemble a stack: an orchestration framework, a separate observability platform, an eval tool, a prompt manager, a vector store for RAG, a guardrails library, and something for durability. Seven or eight tools. Seven or eight APIs to learn. Seven or eight integration points to wire together and keep working as each one ships breaking changes.</p>
+<p>What you installed with <code>pip install fastaiagent</code> is all of that, in one SDK, with one mental model. Orchestration (Chain, Swarm, Supervisor/Worker). Observability (everything in this article). Eval. Prompt registry. Knowledge bases. Guardrails. Crash-proof durability. Agent Replay. One import. One docs site. One vocabulary.</p>
+<h4>Built together, not bundled</h4>
+<p>This isn't &quot;we bundled eight tools.&quot; It's that the pieces were built together, so they share one data model. The trace feeds the replay. The replay becomes an eval case. The eval references a prompt version. The guardrail event shows up in the same UI as the trace that triggered it. None of that wiring is something you set up — it's there because it's all one system.</p>
+<p>The practical payoff is the learning curve. You don't learn how one tool's state model maps to another tool's trace model maps to a third tool's eval case model. You learn one model: an agent runs, the run produces a trace, the trace can be replayed, the replay can become a test. That's the whole vocabulary. Everything in this series — Replay, durability, prompts, eval, guardrails, multimodal — is the same SDK seen from a different angle.</p>
+<p>The Local UI is just the window into a harness that was complete before you opened it.</p>
+<h4>But what about the observability tools I already use?</h4>
+<p>There's a fair objection here: there are already excellent open-source tools that give you tracing, eval, prompt management, and a gateway locally, for free, with a huge community. If one of those covers observability, why does it matter that ours is built into the SDK?</p>
+<p>Because those tools observe agents — they don't run them. They're the watching layer wrapped around a separate framework you still have to build and run your agent in. That's a perfectly good design, and they're more mature at pure observability than we are. But it has a hard ceiling: a tool that only watches can't fork a failed step, change one variable, and rerun it. It can't resume an execution after a crash, because it never controlled the execution. It can't block a bad action mid-flight — only flag it afterward. Replay, durability, and runtime guardrails all require owning the execution loop. An observability tool that wraps someone else's framework structurally cannot reach them, no matter how good its dashboards get.</p>
+<figure><img src="/posts/images/observability-vs-harness.png" alt="Observability tool versus agent harness" loading="lazy"><figcaption>Watching an agent is not the same as running it: only the system that owns the execution loop can fork, resume or block.</figcaption></figure>
+<p>That's the difference between an observability tool and an agent harness. One shows you what happened. The other ran it — which is why it can also rewind it, recover it, and guard it. We didn't bolt observability onto a framework, and we didn't build observability that wraps a framework. The running and the watching are the same system. That's the whole point.</p>
+<h3>Why this is the right default</h3>
+<p>There's a deeper reason this matters beyond compliance and convenience.</p>
+<p>When observability requires shipping your data to a vendor, you instrument less. You sample traces to control costs. You redact sensitive fields. You think twice about what you log. The friction of &quot;this goes to the cloud&quot; makes you capture less than you should.</p>
+<p>When observability is a local file with no marginal cost and no data-egress concern, you capture everything. Every trace, full fidelity, full inputs and outputs, no sampling. The richest possible picture of what your agent actually did, because there's no reason not to.</p>
+<p>The best debugging happens when you have complete information. Local-first gives you complete information by default, because the data never has to go anywhere.</p>
+<p><code>pip install fastaiagent</code>, <code>fastaiagent ui</code>, and see everything your agent does. In your own environment. No cloud account.</p>
+<blockquote>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. <code>pip install fastaiagent</code> — the SDK is on <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">GitHub</a>.</blockquote>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

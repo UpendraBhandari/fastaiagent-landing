@@ -3,20 +3,59 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script>window.FA_POST_SLUG="regression-from-trace"</script>
+<title>Turn every production failure into a regression test — FastAIAgent</title>
+<meta name="description" content="A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.">
+<link rel="canonical" href="https://fastaiagent.net/blog/regression-from-trace/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Turn every production failure into a regression test">
+<meta property="og:description" content="A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.">
+<meta property="og:url" content="https://fastaiagent.net/blog/regression-from-trace/">
+<meta property="og:image" content="https://fastaiagent.net/assets/social-default.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-09-12T12:00:00.000Z">
+<meta property="article:author" content="FastAIFoundry team">
+<meta property="article:tag" content="Replay">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Turn every production failure into a regression test">
+<meta name="twitter:description" content="A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.">
+<meta name="twitter:image" content="https://fastaiagent.net/assets/social-default.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
 <script>window.FA_DEFER_PAGEVIEW=1</script>
-<script src="./analytics.js"></script>
+<script src="/analytics.js"></script>
 </head>
 <body>
+<div id="prerender">
+<article>
+<h1>Turn every production failure into a regression test</h1>
+<p>A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.</p>
+<p>Sep 12, 2026 · FastAIFoundry team · Replay</p>
+
+<p>When an agent misbehaves in production, most teams start from zero: re-read logs, guess at the prompt, reproduce by hand. The failing run already contains everything you need. The problem is that nothing lets you pick it up and run it again.</p>
+<h3>Capture, analyze, fix, save, verify</h3>
+<p>The regression-from-trace template ships with a deliberately broken lookup_order tool. Its failure mode is silent: it returns a fallback record stamped with the requested ID, so the agent confidently answers about an order that does not exist. This is exactly the class of bug only trace replay catches.</p>
+<pre><code class="lang-bash">cd examples/regression-from-trace
+pip install -r requirements.txt
+python capture.py &amp;&amp; python analyze.py &amp;&amp; python fix.py \
+  &amp;&amp; python save_test.py &amp;&amp; python verify.py</code></pre>
+<p>capture.py runs the agent and records the trace. analyze.py steps through it span by span and points at step 3, where the tool returned a record that never existed. fix.py forks the trace at that step, swaps in the corrected tool, and reruns from there. save_test.py appends the input and the corrected output to regression_dataset.jsonl. verify.py runs evaluate() over the dataset with an LLM judge.</p>
+<blockquote>Every production failure becomes a permanent test that future eval runs will catch.</blockquote>
+<h3>Why forking matters</h3>
+<p>Rerunning from the start would call the model again with a fresh context and might not reproduce the bug. Forking at the failing step keeps every earlier span exactly as it was, so the only variable is the thing you changed. The same mechanism powers the fork-and-rerun button in the Local UI and on the platform.</p>
+<p>The regression case stays caught forever, and the pytest plugin persists each tagged case to the /evals page so the team can see the pass rate trend over time.</p>
+</article>
+</div>
 <x-dc>
 <helmet>
-  <title>Blog — FastAIAgent</title>
-  <link rel="icon" href="./assets/logo-dark.svg">
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
-  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="./feed.xml">
-  <link rel="stylesheet" href="./theme.css">
-  <script src="./markdown.js"></script>
-  <script src="./posts/series.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
   <style>
     .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
     .post-body>*+*{margin-top:22px}
@@ -40,14 +79,14 @@
 
 <article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
   <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
-    <a href="./blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
     <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
       <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
     </sc-if>
     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
     <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
     <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
-    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="./assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
     <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
     <div class="post-body" style="margin-top:36px">{{ body }}</div>
     <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>

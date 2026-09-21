@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="agent-framework-is-not-a-harness"</script>
+<title>An Agent Framework Is Not an Agent Harness — FastAIAgent</title>
+<meta name="description" content="A framework helps you build an agent. A harness runs it in production — and the difference is everything you need after the demo works.">
+<link rel="canonical" href="https://fastaiagent.net/blog/agent-framework-is-not-a-harness/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="An Agent Framework Is Not an Agent Harness">
+<meta property="og:description" content="A framework helps you build an agent. A harness runs it in production — and the difference is everything you need after the demo works.">
+<meta property="og:url" content="https://fastaiagent.net/blog/agent-framework-is-not-a-harness/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/framework-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-07-16T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Harness">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="An Agent Framework Is Not an Agent Harness">
+<meta name="twitter:description" content="A framework helps you build an agent. A harness runs it in production — and the difference is everything you need after the demo works.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/framework-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>An Agent Framework Is Not an Agent Harness</h1>
+<p>A framework helps you build an agent. A harness runs it in production — and the difference is everything you need after the demo works.</p>
+<p>Jul 16, 2026 · Upendra Bhandari · Harness</p>
+<img src="/posts/images/framework-cover.jpg" alt="">
+<p>Building an agent is the easy part. Multi-step workflows, tool calling, multi-agent handoff — you can wire that up in an afternoon. Plenty of frameworks do it well, including this one.</p>
+<p>Then you try to run it in production, and discover that orchestration was maybe fifteen percent of the work.</p>
+<p>Because a production agent needs the whole apparatus around the orchestration. It has to find the right context. Remember the right things about the right user. Refuse to do the dangerous thing. Be watchable when it misbehaves. Survive the pod dying halfway through a payment. Pause for a human on the decisions that warrant one. Be provably correct after every change. And when it breaks, be debuggable — not &quot;here are the logs,&quot; actually debuggable.</p>
+<p>That apparatus is the harness. Frameworks give you the orchestration and stop. The harness is the thing nobody hands you — so you go build it, or buy it in pieces.</p>
+<h3>What you actually assemble</h3>
+<p>The shopping list is remarkably consistent — the framework you started with, plus seven more things: a vector store for context, something for memory (usually hand-rolled), a guardrails library, an observability platform, an eval tool, a prompt manager, and something for durability — a workflow engine, or nothing and a prayer.</p>
+<p>Eight tools. Eight APIs. Eight things that ship breaking changes on their own schedule. Eight vendors, several of whom would like your traces on their servers.</p>
+<p>The usual complaint is the assembly tax — the wiring, the drift, the cognitive load. That's real and survivable; teams do it every day. The bigger cost is quieter: the assembled stack can't build the capabilities that matter most. Not &quot;hasn't yet.&quot; Can't — because no component owns enough of the agent's loop.</p>
+<h3>The complete harness, one install</h3>
+<p>bash</p>
+<pre><code class="lang-bash">pip install fastaiagent</code></pre>
+<p>One install gives you the two things most teams buy separately: the framework that builds the agent, and the harness that runs it in production.</p>
+<p>— BUILD —</p>
+<ul><li>Orchestration : Agents with tool calling · chains with cycles, iteration limits, exit conditions · swarms with peer handoff · supervisor/worker teams</li><li>Context : Knowledge bases on bundled FAISS, or the Qdrant / Pinecone / pgvector you already run — retrieval traced down to the documents that came back.</li><li>Memory : One object, three tiers, per-user isolation, full CRUD with supersede-not-overwrite lineage — SQLite, Postgres, or Redis.</li><li>Prompts : Versioning with lineage back to the traces and eval runs that used each version.</li><li>Multimodal:  Images and PDFs as first-class input, rendered in the trace</li></ul>
+<p>— RUN IT FOR REAL —</p>
+<ul><li>Guardrails : Block at runtime, not log after the fact — PII, JSON validity, your own.</li><li>Observability : Every LLM call, tool call, retrieval, and memory read as a span — in a UI on your own machine, against one SQLite file.</li><li>Durability : Checkpointing · @idempotent · resume in a fresh process after a real SIGKILL.</li><li>Human-in-the-loop : Suspend to disk, resume days later — via Python, HTTP, CLI, or the approvals UI.</li><li>Evaluation : Deep scorer catalog, LLM-judge and G-Eval, custom scorers — and scoring of the agent's tool path, not just its answer.</li><li>Debugging : Agent Replay — fork a failed run at any step, change one thing, re-execute, diff.</li><li>Self-improvement : AutoLLM, which uses all of the above to make the agent better.</li><li>Interop :Tracing and eval over agents you've already built in other frameworks.</li></ul>
+<p>That top half is what a framework gives you. The bottom half is what nobody does — and the point is that they're the same object:</p>
+<p>python</p>
+<pre><code class="lang-python">from fastaiagent import Agent, LLMClient, Memory, LocalKB
+
+agent = Agent(
+    name=&quot;support-bot&quot;,
+    llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;),
+    tools=[lookup_order, issue_refund],
+    memory=Memory(location=&quot;sqlite&quot;, user_id=lambda ctx: ctx.state.user_id),
+    kb=LocalKB(name=&quot;policies&quot;),
+    guardrails=[no_pii()],
+)</code></pre>
+<p>You didn't build an agent and then instrument it. The agent you declared is already traced, already durable, already replayable — because the thing that runs it is the thing that watches it.</p>
+<p>One import. One mental model. One local database. One UI.</p>
+<p>That's the completeness half of the argument. It's the less interesting half.</p>
+<h3>Why it has to be one system</h3>
+<p>Bundling eight tools would be a convenience. It wouldn't be a harness. The reason this is one system is that some capabilities are impossible any other way — and the line that decides which is simple: does the tool run the agent, or watch it?</p>
+<h3>Where the orchestration-only framework stops</h3>
+<p>A framework builds the graph and hands it back. That's the contract, honestly stated. But it means the framework owns your execution and nothing else. Want to know why the agent chose that tool? Add a vendor. Want the run to survive a pod eviction? Add a workflow engine, or accept that it won't. Want to prove a prompt change didn't regress anything? Add an eval product. Want the agent to remember a user across sessions? Write it yourself.</p>
+<p>The framework has the one thing everything else needs — the execution — and exposes almost none of it. So the capabilities that require execution get built by people who don't have it.</p>
+<h3>What a watch-only tool can never do</h3>
+<p>The observability platforms are the other half of the stack, and they're well-built. But they wrap someone else's framework, which is a hard ceiling:</p>
+<p>Rewind. To fork a failed run at a step, swap the retriever, and re-execute forward, you have to be the thing executing. A watcher can show you the trace of the agent that hallucinated. It can't hand that agent a corrected document and run it forward to prove the data was the bug — it never had the agent, only the recording.</p>
+<p>Recover. Checkpointing, idempotency, suspend-and-resume all require holding the state. An observer can tell you the process died at 3am. It can't resume it.</p>
+<p>Block. A guardrail that fires after the payment API was called is a log entry with good intentions. Stopping an action mid-flight means being in the flight path — the runtime, not the audience.</p>
+<p>Explain memory. Showing which memory was recalled, and at what score, requires having done the recalling.</p>
+<p>None of that is a funding or talent problem. A team with ten times the resources hits the same wall, because the wall is architectural. To rewind an agent, you have to have run it.</p>
+<h3>The seams are where debugging dies</h3>
+<p>Here's the failure mode nobody puts on a comparison chart.</p>
+<p>Your framework has a state model. Your observability vendor has a trace model. Your eval tool has a case model. Your prompt manager has a version model. Four systems, four identity schemes, and no shared notion of &quot;this run, this prompt version, this test case, this score.&quot;</p>
+<p>So the investigation crosses a border every few minutes. The trace lives here; the prompt that produced it lives there, unlinked. You find the failing case in the eval tool with no way back to the production run it came from. You fix it, and there's no path from &quot;I understood this failure&quot; to &quot;this failure is now a test&quot; — just copy-paste. And a fifteen-minute manual conversion, forty times a week, doesn't happen.</p>
+<p>The bugs don't live inside the tools. They live in the gaps between them. And no vendor owns a gap.</p>
+<h3>&quot;We just hand-code it&quot;</h3>
+<p>Which is what most good teams do, and it works. That's not sarcasm — the dismissive version of this argument is both rude and wrong. The code isn't bad. It's often quite good.</p>
+<p>Here's what it costs anyway. It's a product nobody planned to build — you wrote retry, then idempotency, then checkpointing, then resume across processes because a pod died. Each one is &quot;just one more week,&quot; and none of it is anyone's job: unowned, untested infrastructure with a bus factor of one.</p>
+<figure><img src="/posts/images/framework-1.png" alt="Framework versus harness" loading="lazy"><figcaption>Framework versus harness</figcaption></figure>
+<p>It gets the subtle things wrong. Not the obvious things — those are easy. Does your idempotency cover the window between the side effect firing and the cache being written? Does your resume path stop two workers claiming the same job in the same millisecond? Does your memory return nothing for an empty user id, or everyone's facts? Those bugs don't appear in testing. They appear at 3am, once, unreproducibly. Getting them right usually means having been burned first — a bad way to learn them on a system that moves money.</p>
+<p>And it hits the same wall anyway. Glue can wrap a framework; it can't give the framework properties it doesn't have. You can hand-write tracing. You cannot hand-write Replay onto a framework that doesn't expose its execution loop — your glue doesn't own execution either. It's outside, looking at the same recording. Hand-coding gets you the bundling; it doesn't get you the integration, because integration isn't a code problem, it's an architecture problem.</p>
+<h3>What one system buys you</h3>
+<p>One identity for everything. The trace knows which prompt version produced it. The replay knows which trace it forked. The regression test knows which replay proved it. The eval run knows which prompt version it graded. Nobody wired that; it's a consequence of one data model.</p>
+<p>So the loop closes: a trace becomes a replay, a replay becomes a regression test, a regression test becomes an eval case, an eval case gates the next prompt change — and that version shows up in the lineage of the next trace. One click, not fifteen minutes.</p>
+<p>One mental model. An agent runs, the run produces a trace, the trace can be replayed, the replay can become a test. That's the whole vocabulary — and every capability in this series is that vocabulary from a different angle. Memory tracing was even built to mirror knowledge-base retrieval tracing, so an engineer who learned to read one reads the other on sight. That coherence is only available to a system that owns both.</p>
+<p>And everything is local. Traces, prompts, evals, memory, checkpoints — one SQLite file in your project. Not a privacy mode we bolted on; there's nowhere else for it to go.</p>
+<h3>The proof: an agent that improves itself</h3>
+<p>If integration were merely convenient, automatic optimization would be buildable on an assembled stack. It isn't.</p>
+<p>To improve an agent automatically, a system must simultaneously know what the agent did (traces), know what &quot;better&quot; means (eval datasets and scorers), be able to change the agent (the prompt registry), re-run it, and score the result — then loop. Every step reads the step before it, in the same data model, with the same identifiers.</p>
+<p>Try that across a framework, a separate observability vendor, and a third eval product. Each owns a fragment; none can see the others' primitives. You'd spend the entire project building plumbing the integrated harness has by construction.</p>
+<p>AutoLLM works because the loop is closed inside one system. That isn't a feature announcement — it's the thesis holding under load.</p>
+<h3>The honest tradeoffs</h3>
+<p>Three, plainly.</p>
+<p>Specialists go deeper. A company whose entire business is evaluation will out-ship us on eval features. If depth in one layer is all you need, and you're content sending traces to someone's cloud, buy the specialist. I'd rather say that than pretend.</p>
+<p>You have to adopt it. Tracing and eval work over agents you built elsewhere. Replay and durability don't — they need the harness's primitives. If you have a mature codebase, that's a real migration.</p>
+<p>The limits are known, and stated. SQLite is single-machine — Postgres for production, one connection string. Durability is at-least-once with a strong local idempotency guard, not exactly-once. Memory is observable but not yet forkable in Replay. Each one is spelled out in the article that covers it, because a harness whose claims you can't trust isn't a harness.</p>
+<h3>Replace the model. The harness remains.</h3>
+<p>Your model will change. It changed twice while this series was being written. A new one lands, cheaper or smarter or both, you swap it — and everything you knew about your agent's behavior is suddenly in question. Prompts tuned for one model weigh instructions differently on the next. A regression appears where nobody thought to look.</p>
+<p>The model is the part of your stack with the shortest half-life. The harness is the part that persists.</p>
+<p>python</p>
+<pre><code class="lang-python">llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;)
+llm=LLMClient(provider=&quot;anthropic&quot;, model=&quot;claude-sonnet-4-5&quot;)
+llm=LLMClient(provider=&quot;ollama&quot;, model=&quot;llama3&quot;)</code></pre>
+<p>One line changes. Everything else survives — the eval set you grew from real production failures, the regression tests from debugging sessions, the traces, the memory, the guardrails, the prompt history. And more than survives: the eval suite is exactly what tells you, before you ship, whether the new model quietly broke something the old one handled. The harness is what makes a model swap a decision instead of a gamble.</p>
+<p>That's the asset. Not the model, which you'll replace. Not the prompt, which you'll rewrite. The accumulated, tested, observable understanding of how your agent behaves.</p>
+<p>And the harness stays open — the full thing, on your own infrastructure, your data in a file you own. You're not betting on a model vendor, and you're not betting on us either. You can read it.</p>
+<h3>The bet</h3>
+<p>So why give the whole harness away?</p>
+<p>Because a harness earns its place by being run, not by being sold. A developer should be able to install it, break something on purpose, and see for themselves — no sales call, no trial key, no feature greyed out until a card clears.</p>
+<p>And nothing above is greyed out. Framework, memory, retrieval, guardrails, durability, eval, Replay, the UI, AutoLLM — all of it, open, local, yours. The actual thing, not a crippled tier.</p>
+<p>What sits above it is FastAIAgent Enterprise, and it begins where one developer stops being the whole story. The open harness assumes a single team on its own infrastructure. That holds until an agent walks into a regulated business — and then what breaks isn't capability. The agent is exactly as smart on Monday as it was Friday. What breaks is governance: not can the agent do this, but who approved it, who saw it, and can you prove that to an auditor next quarter.</p>
+<figure><img src="/posts/images/framework-2.png" alt="Framework versus harness" loading="lazy"><figcaption>Framework versus harness</figcaption></figure>
+<p>That's all Enterprise adds. None of it makes the agent smarter — all of it makes the agent accountable:</p>
+<p>Approval workflows — The SDK gives you the pause; one human says yes or no. Enterprise makes it policy: rules that fire on a threshold (a $50,000 refund stops for a human, a $500 one doesn't), reviewers who can edit the arguments before releasing, and an append-only audit log of every decision and who made it. Online evaluation — Local eval grades a fixed dataset offline. Enterprise scores live production traffic as it arrives, on a schedule, with an LLM judge plus safety, similarity, and retrieval scorers — and the scoring policy itself doesn't go live until it's approved. Curated central memory — Instead of every agent trusting whatever it inferred, a background loop proposes facts from real traces into a human review queue. Nothing reaches an agent until a person approves it; approved facts are served back read-only, and a forgotten one is redacted from both the vector store and the database. Managed replication — The SDK replicates each checkpoint off the box; the plane keeps the durable copy so nobody runs their own Postgres to stay safe. Lose the machine and the plane serves the snapshot back — the SDK resumes locally, the plane never runs the agent — with retention and legal-hold on top. Team observability — Shared sight across many agents and many engineers: a read-only trace explorer, counterfactual Replay that never re-fires a side-effecting tool, and the answer a local view can't give — which registered agents have gone dark. EU AI Act compliance — Register each agent as an AI system and a rule-based Article 6 classifier sorts it — prohibited, high-risk, limited, or minimal (a reviewable suggestion, not a verdict). Enterprise then auto-assigns the applicable controls (up to 58 of a 65-control catalog for a high-risk provider) and seeds an Article 9 risk register from Annex III templates; you fill in Annex IV documentation, human oversight, and GPAI robustness against a live scorecard — every step written to a tamper-evident, hash-chained ledger you can verify end to end.</p>
+<p>Notice the shape. None of it makes the agent more capable; all of it makes the agent more answerable — a different product for a different buyer.</p>
+<p>And that's the bet, stated once. A developer building an agent needs none of this and should never be billed for it. A bank deploying one legally cannot go without it — sometimes because it's prudent, and increasingly because a regulation with real fines says so. The free harness earns the developers; the enterprises compelled to govern their agents are the business. One SDK, one mental model, from a laptop to a regulated bank.</p>
+<h3>The invitation</h3>
+<p>An agent framework gives you orchestration and leaves you to assemble the rest. An observability tool watches from outside and can never rewind, recover, block, or improve. A harness gives you the orchestration and the rest — and because it's one system that runs your agent, the capabilities that decide whether it survives production stop being separate features and start being one thing seen from different angles.</p>
+<p>That's the case. Test it the only way that counts:</p>
+<p>bash</p>
+<pre><code class="lang-bash">pip install fastaiagent
+fastaiagent ui</code></pre>
+<p>Break something on purpose. Open the trace. Fork the step that failed, change one thing, run it forward. If your current stack can do that, you don't need this. If it can't — now you know why.</p>
+<p>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. pip install fastaiagent → <a href="http://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">github.com/fastaifoundry/fastaiagent-sdk</a></p>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

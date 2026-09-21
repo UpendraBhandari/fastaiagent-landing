@@ -6,7 +6,7 @@ summary: A framework helps you build an agent. A harness runs it in production �
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 10
-cover: ./posts/images/framework-cover.jpg
+cover: /posts/images/framework-cover.jpg
 ---
 Building an agent is the easy part. Multi-step workflows, tool calling, multi-agent handoff — you can wire that up in an afternoon. Plenty of frameworks do it well, including this one.
 
@@ -116,7 +116,7 @@ Which is what most good teams do, and it works. That's not sarcasm — the dismi
 
 Here's what it costs anyway. It's a product nobody planned to build — you wrote retry, then idempotency, then checkpointing, then resume across processes because a pod died. Each one is "just one more week," and none of it is anyone's job: unowned, untested infrastructure with a bus factor of one.
 
-![Framework versus harness](./posts/images/framework-1.png)
+![Framework versus harness](/posts/images/framework-1.png)
 
 It gets the subtle things wrong. Not the obvious things — those are easy. Does your idempotency cover the window between the side effect firing and the cache being written? Does your resume path stop two workers claiming the same job in the same millisecond? Does your memory return nothing for an empty user id, or everyone's facts? Those bugs don't appear in testing. They appear at 3am, once, unreproducibly. Getting them right usually means having been burned first — a bad way to learn them on a system that moves money.
 
@@ -182,7 +182,7 @@ And nothing above is greyed out. Framework, memory, retrieval, guardrails, durab
 
 What sits above it is FastAIAgent Enterprise, and it begins where one developer stops being the whole story. The open harness assumes a single team on its own infrastructure. That holds until an agent walks into a regulated business — and then what breaks isn't capability. The agent is exactly as smart on Monday as it was Friday. What breaks is governance: not can the agent do this, but who approved it, who saw it, and can you prove that to an auditor next quarter.
 
-![Framework versus harness](./posts/images/framework-2.png)
+![Framework versus harness](/posts/images/framework-2.png)
 
 That's all Enterprise adds. None of it makes the agent smarter — all of it makes the agent accountable:
 

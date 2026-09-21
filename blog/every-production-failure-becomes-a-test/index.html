@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="every-production-failure-becomes-a-test"</script>
+<title>Every Production Failure Should Become a Test. One Click. — FastAIAgent</title>
+<meta name="description" content="Finding the bug is an afternoon. Keeping it dead across every future change by every future contributor is the real cost — and that only works if the failure becomes a permanent test case the moment you fix it.">
+<link rel="canonical" href="https://fastaiagent.net/blog/every-production-failure-becomes-a-test/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Every Production Failure Should Become a Test. One Click.">
+<meta property="og:description" content="Finding the bug is an afternoon. Keeping it dead across every future change by every future contributor is the real cost — and that only works if the failure becomes a permanent test case the moment you fix it.">
+<meta property="og:url" content="https://fastaiagent.net/blog/every-production-failure-becomes-a-test/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/every-failure-a-test-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-05-21T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Replay">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Every Production Failure Should Become a Test. One Click.">
+<meta name="twitter:description" content="Finding the bug is an afternoon. Keeping it dead across every future change by every future contributor is the real cost — and that only works if the failure becomes a permanent test case the moment you fix it.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/every-failure-a-test-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>Every Production Failure Should Become a Test. One Click.</h1>
+<p>Finding the bug is an afternoon. Keeping it dead across every future change by every future contributor is the real cost — and that only works if the failure becomes a permanent test case the moment you fix it.</p>
+<p>May 21, 2026 · Upendra Bhandari · Replay</p>
+<img src="/posts/images/every-failure-a-test-cover.jpg" alt="">
+<p>You fixed the bug. The agent was hallucinating refund policy details because the retrieval step returned the wrong document. You found it with Agent Replay, forked at the failing step, swapped the prompt, confirmed the fix, deployed. Done.</p>
+<p>Three weeks later, a junior engineer updates the system prompt. Reasonable change — better tone, clearer instructions. They test it on five examples. Looks good. They deploy.</p>
+<p>The hallucination is back.</p>
+<p>Not the same hallucination. A cousin. The new prompt is slightly less specific about citing policy sections, and the agent drifts back to the same class of error you fixed three weeks ago. Nobody notices for four days because nobody remembers the original failure well enough to test for it.</p>
+<p>This is the real cost of agent debugging. It's not finding the bug — that's an afternoon. It's keeping the bug dead across every future change by every future contributor. And that only works if the original failure becomes a permanent test case the moment you fix it.</p>
+<h3>The manual way (what everyone does)</h3>
+<p>Most teams handle regression testing like this:</p>
+<ol><li>Agent fails in production</li><li>Engineer investigates, finds the root cause</li><li>Engineer fixes the prompt / retrieval / tool</li><li>Engineer writes a test case: copies the input, writes the expected output, formats it as JSONL, adds it to the eval dataset</li><li>Engineer runs the eval suite to confirm the fix passes</li><li>Engineer deploys</li><li>Time passes. Nobody adds more test cases because step 4 takes 15 minutes per failure and there are always more urgent things</li></ol>
+<p>The problem isn't the concept. Everyone agrees that production failures should become test cases. The problem is the friction in step 4. Copying inputs, formatting JSONL, figuring out what the expected output should be — it's just enough overhead that people skip it when they're busy. And they're always busy.</p>
+<p>So the eval dataset grows slowly (if at all), mostly from synthetic examples someone wrote during the initial build. The real production edge cases — the ones that actually matter — never make it in.</p>
+<h3>The closed loop (what should happen)</h3>
+<p>What if the debugging workflow had a built-in exit that produces a test case as a natural byproduct of fixing the bug?</p>
+<p>Here's the loop:</p>
+<ol><li>Agent fails → a trace is captured automatically</li><li>Engineer loads the trace in Replay</li><li>Engineer forks at the failing step, modifies the prompt, reruns</li><li>The original output and the fixed output appear side by side</li><li>Engineer confirms the fix works</li><li>One click: the original input + correct output is saved as a regression test</li><li>The eval suite now includes this case permanently</li><li>Every future change is tested against every past failure</li></ol>
+<p>Step 6 is the key. The test case isn't written manually — it's produced directly from the debugging session. The input is the exact production input that failed. The expected output is the output the engineer just verified is correct. No copying, no formatting, no JSONL editing. One click.</p>
+<p>Over time, the eval dataset grows organically from real failures. Not synthetic examples. Not a QA team's best guesses. Actual production edge cases, each one captured at the moment it was understood and fixed.</p>
+<h3>What this looks like in code</h3>
+<p>Let's walk through the complete loop with FastAIAgent. Every line below is runnable against the SDK.</p>
+<h4>Step 1: The agent runs in production, a trace is captured</h4>
+<pre><code class="lang-python">from fastaiagent import Agent, LLMClient
+
+agent = Agent(
+    name=&quot;support-bot&quot;,
+    system_prompt=&quot;You are a support agent. Help customers with refund inquiries.&quot;,
+    llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;),
+    tools=[search_docs, lookup_order],
+)
+
+result = agent.run(&quot;What's your refund policy for digital purchases?&quot;)
+print(result.trace_id)  # &quot;b6acf1ef2c2779bbc2fcf80802ae0534&quot;</code></pre>
+<p>Every <code>agent.run()</code> produces a trace. The trace captures every step: the LLM calls, the tool invocations, the retrieval results, the final output. The trace ID is your handle to everything that happened.</p>
+<h4>Step 2: Load the trace in Replay, find the problem</h4>
+<pre><code class="lang-python">from fastaiagent.trace.replay import Replay
+
+replay = Replay.load(&quot;b6acf1ef2c2779bbc2fcf80802ae0534&quot;)
+print(replay.summary())
+
+# Trace: b6acf1ef2c2779bbc2fcf80802ae0534
+# Name: agent.support-bot
+# Status: OK
+# Spans: 4
+#
+# Steps:
+#   [0] agent.run
+#   [1] llm.chat_completion
+#   [2] tool.search_docs        ← retrieval returned wrong document
+#   [3] llm.chat_completion     ← LLM hallucinated from wrong context</code></pre>
+<p>Step through and inspect:</p>
+<pre><code class="lang-python">step = replay.inspect(2)
+print(step.span_name)   # &quot;tool.search_docs&quot;
+print(step.output)      # {&quot;documents&quot;: [&quot;shipping-policy.md&quot;, ...]}
+# ← Should have returned refund-policy.md, got shipping-policy.md instead</code></pre>
+<p>Found it. The retrieval step returned the shipping policy instead of the refund policy. The LLM did its best with the wrong context and hallucinated.</p>
+<h4>Step 3: Fork, fix, rerun</h4>
+<pre><code class="lang-python">forked = (
+    replay.fork_at(step=3)
+    .modify_prompt(
+        &quot;You are a support agent. Help customers with refund inquiries. &quot;
+        &quot;Always cite the exact policy section number. If the retrieved documents &quot;
+        &quot;don't contain refund information, say so — never guess.&quot;
+    )
+    .rerun()
+)
+
+print(forked.new_output)
+# &quot;I don't see specific refund policy information in the documents I found.
+#  Let me search more specifically for our digital purchase refund policy...&quot;</code></pre>
+<p>The fixed prompt makes the agent honest about what it doesn't know instead of hallucinating. That's the fix. But it's worthless if it doesn't survive the next prompt change.</p>
+<h4>Step 4: Compare and confirm</h4>
+<pre><code class="lang-python">comparison = replay.fork_at(step=3).modify_prompt(&quot;...&quot;).rerun()
+comp = replay.fork_at(step=3).compare(comparison)
+
+print(f&quot;Diverged at step: {comp.diverged_at}&quot;)  # 3
+print(f&quot;Original output: {comparison.original_output}&quot;)
+print(f&quot;Fixed output: {comparison.new_output}&quot;)</code></pre>
+<p>Side by side. The original hallucinated. The fix is honest. Confirmed.</p>
+<h4>Step 5: Save as regression test — one click</h4>
+<p>In the Local UI at <code>http://127.0.0.1:7842/traces/&lt;trace_id&gt;/replay</code>, the comparison view has a &quot;Save as regression test&quot; button. Click it. The case is appended to <code>./.fastaiagent/regression_tests.jsonl</code>:</p>
+<pre><code class="lang-json">{&quot;input&quot;: &quot;What's your refund policy for digital purchases?&quot;, &quot;expected&quot;: &quot;I don't see specific refund policy information...&quot;, &quot;metadata&quot;: {&quot;source_trace&quot;: &quot;b6acf1ef2c27...&quot;, &quot;fork_step&quot;: 3, &quot;created&quot;: &quot;2026-05-10T14:30:00Z&quot;}}</code></pre>
+<p>That's it. The production failure is now a permanent test case. The input is the exact customer message. The expected output is the response the engineer verified as correct. The metadata links back to the original trace for audit.</p>
+<h4>Step 6: Run the eval suite — the failure is now guarded</h4>
+<pre><code class="lang-python">from fastaiagent.eval import evaluate
+
+results = evaluate(
+    agent_fn=agent.run,
+    dataset=&quot;regression_tests.jsonl&quot;,
+    scorers=[&quot;correctness&quot;, &quot;relevance&quot;],
+)
+print(results.summary())
+# correctness: 100% | relevance: 100%
+# Cases: 1 passed, 0 failed</code></pre>
+<p>One case today. But next week there will be three. Next month, twenty. Each one a real production failure that was understood, fixed, and preserved.</p>
+<h4>Step 7: Three weeks later, the junior engineer changes the prompt</h4>
+<pre><code class="lang-python">agent = Agent(
+    name=&quot;support-bot&quot;,
+    system_prompt=&quot;You are a friendly support agent. Be warm and helpful!&quot;,  # ← new prompt
+    llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;),
+    tools=[search_docs, lookup_order],
+)
+
+# Before deploying, run the regression suite
+results = evaluate(
+    agent_fn=agent.run,
+    dataset=&quot;regression_tests.jsonl&quot;,
+    scorers=[&quot;correctness&quot;],
+)
+print(results.summary())
+# correctness: 0% | Cases: 0 passed, 1 failed
+# FAILED: &quot;What's your refund policy for digital purchases?&quot;
+#   Expected: honest acknowledgment of missing information
+#   Actual: hallucinated refund details from shipping policy context</code></pre>
+<p>The regression test caught it. The new prompt removed the &quot;cite exact policy section&quot; instruction, and the agent drifted back to the old failure mode. The junior engineer sees the failure, reads the test case metadata, opens the original trace, understands why the test exists, and adjusts the new prompt to preserve the safety behavior.</p>
+<p>The bug stays dead.</p>
+<h3>Why this works and manual testing doesn't</h3>
+<p>Three properties make this loop different from &quot;just write tests&quot;:</p>
+<p><strong>The test case is a byproduct, not a chore.</strong> The engineer was already in the Replay view, already looking at the fix, already confirming it worked. The &quot;Save as regression test&quot; button is one click at the end of a workflow they were already doing. There's no context switch, no format conversion, no separate test-writing session.</p>
+<p><strong>The input is real, not synthetic.</strong> The test case uses the exact customer message that exposed the failure. Not a simplified version. Not a best-guess approximation. The actual input that broke the agent in production. This means the test covers the exact edge case, with the exact phrasing, that caused the problem.</p>
+<p><strong>The expected output is verified, not assumed.</strong> The engineer didn't write the expected output from scratch — they generated it by fixing the agent, running it through Replay, and confirming it's correct. The expected output has been through human review as part of the debugging process. It's not a guess at what the right answer should be.</p>
+<h3>The eval dataset as a living artifact</h3>
+<p>Think about what happens over six months of this loop:</p>
+<p><strong>Month 1: 5 test cases.</strong> All from the first week of production failures. Basic coverage.</p>
+<p><strong>Month 2: 15 test cases.</strong> The agent hit edge cases around multilingual queries and partial refunds. Each one caught in Replay, fixed, saved.</p>
+<p><strong>Month 3: 30 test cases.</strong> A model upgrade (GPT-4o to a newer version) caused three regressions. The eval suite caught all three before deployment. Three more cases added from the investigation.</p>
+<p><strong>Month 6: 80 test cases.</strong> The eval suite is now a comprehensive map of every failure mode the agent has ever encountered. New team members run the suite to understand what the agent is supposed to handle. Prompt changes are tested against 80 real edge cases before deployment. The agent is measurably more reliable than it was six months ago, and you can prove it.</p>
+<p>None of those 80 test cases were written in a planning session. None were generated synthetically. Every single one came from a production failure that a real engineer fixed and preserved. That's an eval dataset that reflects reality, not imagination.</p>
+<h3>The same loop, in the browser</h3>
+<p>Everything above works in the Local UI too. No code required for the debugging-to-test flow.</p>
+<p><strong>1. Traces page</strong> — find the failing trace, click to open.</p>
+<figure><img src="/posts/images/replay-loop-1-traces.png" alt="Local UI traces list" loading="lazy"><figcaption>Traces page: every run with status, spans, duration, tokens and cost.</figcaption></figure>
+<p><strong>2. Replay view</strong> — click the failing span, then Fork here.</p>
+<figure><img src="/posts/images/replay-loop-2-fork-span.png" alt="Replay view with a span selected" loading="lazy"><figcaption>Replay view: step through the span tree and fork at the step that went wrong.</figcaption></figure>
+<p><strong>3. Fork dialog</strong> — edit the prompt (or input, or tool response, or LLM params), then rerun from this step.</p>
+<figure><img src="/posts/images/replay-loop-3-fork-dialog.png" alt="Fork dialog" loading="lazy"><figcaption>Fork dialog: change the prompt, the input, the tool response or the model params, then rerun from that step.</figcaption></figure>
+<p><strong>4. Comparison view</strong> — original vs fixed output, side by side, with &quot;diverged at step N&quot;.</p>
+<figure><img src="/posts/images/replay-loop-4-comparison.png" alt="Comparison view" loading="lazy"><figcaption>Comparison view: original and fixed output side by side, with the divergence point marked.</figcaption></figure>
+<p><strong>5. Save as regression test</strong> — one button, appended to the regression dataset.</p>
+<figure><img src="/posts/images/replay-loop-5-save-test.png" alt="Save as regression test" loading="lazy"><figcaption>One button turns the verified fix into a permanent case in the regression dataset.</figcaption></figure>
+<p><strong>6. Eval Runs page</strong> — run the eval, see the new case.</p>
+<figure><img src="/posts/images/replay-loop-6-eval-runs.png" alt="Eval runs page" loading="lazy"><figcaption>Eval Runs: the regression suite with its pass rate and quality trend over time.</figcaption></figure>
+<p>The whole flow is visual, interactive, and produces a permanent artifact. An engineer who has never written a JSONL line in their life can contribute to the regression suite.</p>
+<h3>What this means for your team</h3>
+<p>The difference between &quot;we test our agents&quot; and &quot;our agents get better from every failure&quot; is the automation of step 4 — turning a debugging session into a test case without friction.</p>
+<p>Most teams have the first part. They test before shipping. They run evals. They have a dataset.</p>
+<p>Few teams have the second part. The feedback loop where production failures feed back into the test suite, where every fix includes a test, where the eval dataset grows from experience rather than imagination.</p>
+<p>The closed loop is: develop → trace → replay → fix → regression test → eval. Every step flows into the next. No manual conversion. No context switching. No overhead that makes people skip it when they're busy.</p>
+<p>The result: an agent that gets measurably better over time, with proof.</p>
+<p>If you would rather drive this loop from the command line than the browser, <a href="/blog/regression-from-trace/">the five-script version</a> walks through the same capture, analyze, fix, save and verify cycle in code.</p>
+<blockquote>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. <code>pip install fastaiagent</code> — the SDK is on <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">GitHub</a>.</blockquote>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="your-agent-shouldnt-decide-alone"</script>
+<title>Your Agent Shouldn't Decide Alone. Here's How to Keep a Human in Command. — FastAIAgent</title>
+<meta name="description" content="The hard part of human-in-the-loop isn't letting a human approve. It's letting them approve later — hours or days later, on a different machine — without holding a live process hostage the whole time.">
+<link rel="canonical" href="https://fastaiagent.net/blog/your-agent-shouldnt-decide-alone/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Your Agent Shouldn't Decide Alone. Here's How to Keep a Human in Command.">
+<meta property="og:description" content="The hard part of human-in-the-loop isn't letting a human approve. It's letting them approve later — hours or days later, on a different machine — without holding a live process hostage the whole time.">
+<meta property="og:url" content="https://fastaiagent.net/blog/your-agent-shouldnt-decide-alone/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/hitl-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-06-18T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="HITL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Your Agent Shouldn't Decide Alone. Here's How to Keep a Human in Command.">
+<meta name="twitter:description" content="The hard part of human-in-the-loop isn't letting a human approve. It's letting them approve later — hours or days later, on a different machine — without holding a live process hostage the whole time.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/hitl-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>Your Agent Shouldn't Decide Alone. Here's How to Keep a Human in Command.</h1>
+<p>The hard part of human-in-the-loop isn't letting a human approve. It's letting them approve later — hours or days later, on a different machine — without holding a live process hostage the whole time.</p>
+<p>Jun 18, 2026 · Upendra Bhandari · HITL</p>
+<img src="/posts/images/hitl-cover.jpg" alt="">
+<p>A refund agent approves a $40,000 credit at 2am. No human saw it. By the time anyone noticed, the money was gone.</p>
+<p>The fix everyone reaches for first is a blocking pause: the agent stops, waits for a human to approve, then continues. It works perfectly in a notebook. Then you ship it, and a manager in another timezone takes nine hours to respond — and your agent's process has been sitting there the whole time, holding a thread, burning compute, one pod-eviction away from losing the entire request.</p>
+<p>The hard part of human-in-the-loop isn't letting a human approve. It's letting a human approve later — minutes, hours, or days later, possibly on a different machine — without holding a live process hostage the whole time.</p>
+<p>FastAIAgent gives you both modes, matched to how long the human actually takes.</p>
+<h3>Two kinds of waiting</h3>
+<p>Human responses come in two speeds, and they need two different mechanisms.</p>
+<p><strong>Seconds:</strong> a reviewer is right there, watching the agent run, ready to click approve. A blocking pause is fine — the process waits a moment and continues.</p>
+<p><strong>Hours or days:</strong> the approver is in another timezone, in a meeting, asleep. No process can or should stay alive that long. You need to suspend the agent entirely — persist its state, let the process exit — and resume it later when the human responds.</p>
+<p>Most frameworks give you only the first. FastAIAgent gives you both.</p>
+<h3>Approach 1: blocking HITL, for fast approvals</h3>
+<figure><img src="/posts/images/hitl-1-blocking.png" alt="Blocking approval flow" loading="lazy"><figcaption>Blocking approval: fine for seconds, painful for long waits. The process stays live — session open, threads occupied, cost accruing — while the approver is in another timezone.</figcaption></figure>
+<p>When a human is in the loop in real time, you attach an approval gate as a node and hand the executor a handler. The handler runs in-process and blocks until it returns a decision.</p>
+<pre><code class="lang-python">from fastaiagent import Chain
+
+def approval_handler(node, context, state):
+    # Synchronous: show the human the context, get a yes/no, return it
+    print(f&quot;Approve refund of ${context['amount']}? [y/n]&quot;)
+    return input().strip().lower() == &quot;y&quot;
+
+chain = Chain(&quot;refund-flow&quot;, state_schema=RefundState)
+chain.add_hitl_node(&quot;manager_approval&quot;)
+# ... wire the rest of the chain ...
+
+result = chain.execute(
+    {&quot;amount&quot;: 500, &quot;customer_id&quot;: &quot;cust_abc&quot;},
+    hitl_handler=approval_handler,
+)</code></pre>
+<p>The handler blocks the run until the human decides. If you don't supply one, the gate auto-approves — useful for tests and local development. This is the right tool when the wait is measured in seconds and a live process is no burden.</p>
+<p>But a blocking handler cannot wait three days. For that, you suspend.</p>
+<h3>Approach 2: suspending interrupt, for long waits</h3>
+<figure><img src="/posts/images/hitl-2-suspend-resume.png" alt="Suspend and resume flow" loading="lazy"><figcaption>Suspend and resume: the workflow checkpoints, the process exits, and hours or days later it picks up exactly where it left off.</figcaption></figure>
+<p><code>interrupt()</code> doesn't block. It suspends the entire workflow, writes a checkpoint, records a pending interrupt, and lets the process exit cleanly. The agent is frozen, on disk, costing nothing. A separate signal — hours or days later — resumes it.</p>
+<pre><code class="lang-python">from fastaiagent import Chain, Resume, interrupt
+
+def refund_node(state):
+    if state[&quot;amount&quot;] &gt; 10_000:
+        approval = interrupt(
+            reason=&quot;manager_approval&quot;,
+            context={&quot;amount&quot;: state[&quot;amount&quot;], &quot;customer_id&quot;: state[&quot;customer_id&quot;]},
+        )
+        return {&quot;approved&quot;: approval.approved, &quot;approver&quot;: approval.metadata.get(&quot;approver&quot;)}
+    return {&quot;approved&quot;: True, &quot;auto&quot;: True}
+
+chain = Chain(&quot;refund-flow&quot;, state_schema=RefundState)
+chain.add_node(&quot;check&quot;, function=refund_node)
+chain.add_node(&quot;process&quot;, function=process_refund)
+chain.connect(&quot;check&quot;, &quot;process&quot;)
+
+result = chain.execute(
+    {&quot;amount&quot;: 15_000, &quot;customer_id&quot;: &quot;cust_abc&quot;},
+    execution_id=&quot;refund-abc&quot;,
+)
+print(result.status)   # &quot;paused&quot;</code></pre>
+<p>Here's the mechanism, because the details matter. The first time <code>interrupt()</code> runs, it raises an internal signal. The executor catches it, writes a checkpoint marked interrupted, inserts a row into the pending-interrupts table, and returns a paused result. The context you passed is frozen at suspend time — serialized and stored, never recomputed — so the human reviews exactly the situation as it was when the agent stopped.</p>
+<p>The process can now exit. The cluster can scale down. The pod can be evicted. Nothing is lost, because the state lives in the checkpoint store, not in memory.</p>
+<p>When the human responds — hours or days later, on a completely different process — you resume:</p>
+<pre><code class="lang-python">result = chain.aresume(
+    &quot;refund-abc&quot;,
+    resume_value=Resume(approved=True, metadata={&quot;approver&quot;: &quot;alice&quot;}),
+)
+print(result.status)   # &quot;completed&quot;</code></pre>
+<p>On resume, the workflow re-enters the same node. This time <code>interrupt()</code> doesn't raise — it returns the <code>Resume</code> you supplied. The agent continues as if the human had answered instantly, except no process waited and no compute was burned in between.</p>
+<h3>Driving the resume — three ways</h3>
+<p>A suspended execution can be resumed through whichever channel fits your system.</p>
+<figure><img src="/posts/images/hitl-3-resume-channels.png" alt="The three resume channels" loading="lazy"><figcaption>One suspended execution, three ways to resume it: Python for code-driven flows, HTTP for a web app or approval service, CLI for an operator at a terminal.</figcaption></figure>
+<p>Python, for code-driven flows:</p>
+<pre><code class="lang-python">chain.aresume(&quot;refund-abc&quot;, resume_value=Resume(approved=True, metadata={&quot;approver&quot;: &quot;alice&quot;}))</code></pre>
+<p>HTTP, for a web app or an external approval service:</p>
+<pre><code>POST /api/executions/refund-abc/resume
+{ &quot;approved&quot;: true, &quot;metadata&quot;: { &quot;approver&quot;: &quot;alice&quot; } }</code></pre>
+<p>CLI, for an operator at a terminal:</p>
+<pre><code class="lang-bash">fastaiagent resume refund-abc --runner refund_flow:chain --value '{&quot;approved&quot;: true}'</code></pre>
+<p>And there's a built-in <code>/approvals</code> page in the <a href="/blog/see-everything-your-agent-does/">local UI</a> — start it with <code>fastaiagent ui</code> — where a human can see every pending interrupt and drive the resume from a browser, no code required.</p>
+<h3>It works across every orchestration pattern</h3>
+<p>The interrupt isn't a Chain-only feature. It fires the same way inside an Agent, a Swarm, and a Supervisor team. When the agent that pauses is nested — a worker under a supervisor, calling a tool — the pending interrupt records the full path, so you know exactly which agent, in which team, is waiting on which action.</p>
+<p>That matters in production, where a single request can fan out across several agents and you need to know precisely where the human is in command.</p>
+<h3>The production details that actually bite</h3>
+<figure><img src="/posts/images/hitl-4-production.png" alt="Built for production: atomic claim, durable state, no double approval" loading="lazy"><figcaption>Two approval attempts, one atomic claim, exactly one winner — and durable state that survives a restart.</figcaption></figure>
+<p>Three things separate a demo from something you'd run for real.</p>
+<p><strong>Two people can't double-approve.</strong> If a manager clicks approve in the UI at the same moment an automated service calls the resume endpoint, you cannot run the workflow twice. When a resume fires, the first operation is an <a href="/blog/your-agent-needs-transactions/">atomic claim</a> of the pending interrupt — <code>DELETE ... RETURNING</code> on Postgres, a guarded transaction on SQLite. Exactly one caller wins. The loser gets an <code>AlreadyResumed</code> error, and the HTTP route returns a 409. No double refund from a resume race.</p>
+<p><strong>It survives restarts.</strong> Because the suspended state is a checkpoint on disk, not memory, the resume can happen on a different process than the one that paused. Pause on one pod, approve through the UI, resume on whatever pod picks it up. The store doesn't care which.</p>
+<p><strong>There's no built-in timeout — and you should know that.</strong> A pending interrupt waits indefinitely. The SDK will not auto-expire it, auto-reject it, or escalate it after some deadline. If your process needs &quot;approve within 24 hours or escalate to the director,&quot; that policy is yours to build on top — a scheduled job that checks pending-interrupt age and acts on it. The SDK gives you the durable pause and the clean resume; the expiry and escalation rules are a layer you add. Better to know that now than to assume a timeout that isn't there.</p>
+<h3>What the human can actually do</h3>
+<p>Be precise about the human's power, because it's easy to overstate.</p>
+<p>Everywhere — Python, HTTP, CLI, the UI — the human returns a decision: approved or not, plus an arbitrary metadata dictionary (who approved, a note, a reference number). That decision flows back into the node, which decides what to do with it.</p>
+<p>If you're driving a Chain from Python, you can go further and inject modified state on resume — overriding values in the workflow's state before it continues. That fuller &quot;edit the run&quot; capability is Chain-and-Python only; it isn't available over HTTP or CLI, and not on Agent, Swarm, or Supervisor. For those, the contract is approve/reject plus metadata. Build your gates around that and you won't be surprised.</p>
+<h3>Where the SDK ends and the platform begins</h3>
+<p>Everything above is in the open-source SDK: the interrupt primitive, all three resume channels, the <code>/approvals</code> UI, durable checkpointing, the atomic claim. You can run real human-in-the-loop today, for free, on your own infrastructure.</p>
+<p>What the SDK gives you is a single approval queue. What it doesn't try to be is an <a href="/enterprise.html">enterprise approval workflow</a> — multiple approvers in sequence, role-based rules for who is allowed to approve a $50,000 refund versus a $500 one, and an immutable audit trail proving who approved what and when. That governance layer is where the platform picks up. For a solo developer or a small team, the SDK's queue is enough. For a regulated enterprise that has to answer to an auditor, the workflow layer is the upgrade.</p>
+<h3>The control surface</h3>
+<p>Human-in-the-loop is, underneath, the off-ramp from autonomy. An agent that can act without asking is fast and dangerous. An agent that always asks is safe and useless. The interrupt is how you place the human at exactly the decisions that warrant one — the $40,000 refund, the irreversible action, the call that needs a name attached to it — and nowhere else.</p>
+<p>Blocking when the human is right there. Suspending when they're a day away. Durable so a crash never loses the request. Atomic so two approvers never double-act. That's human command over an autonomous system, built to survive production.</p>
+<blockquote>FastAIAgent is an open-source agent harness with Agent Replay, crash-proof durability, and a local-first UI. <code>pip install fastaiagent</code> — the SDK is on <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">GitHub</a>.</blockquote>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

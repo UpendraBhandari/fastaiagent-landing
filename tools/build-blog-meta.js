@@ -44,8 +44,78 @@ const posts = loadManifest().map(slug => {
   if (!meta.title) throw new Error('post has no title: ' + slug);
   const date = new Date(meta.date + ' 12:00:00 UTC'); // midday UTC so no timezone shifts the day
   if (isNaN(date)) throw new Error(`post has an unparseable date (${meta.date}): ` + slug);
-  return { slug, meta, date, url: `${SITE}/post.html?slug=${slug}` };
+  return { slug, meta, date, url: `${SITE}/blog/${slug}/` };
 });
+
+// --- per-post HTML pages --------------------------------------------------
+// Every post URL served the same shell, with title and body injected by JS.
+// Crawlers that don't run JS (LinkedIn, Slack, X) saw nothing, so every share
+// rendered a blank card. These pages carry real metadata and a pre-rendered
+// body; the interactive app still takes over in a browser.
+const esc2 = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function renderMarkdown(body) {
+  const win = {};
+  new Function('window', fs.readFileSync(path.join(ROOT, 'markdown.js'), 'utf8')).call(win, win);
+  return win.FA_MD.render(body);
+}
+
+const shell = fs.readFileSync(path.join(ROOT, 'post.html'), 'utf8');
+
+posts.forEach(p => {
+  const { meta } = frontMatter(fs.readFileSync(path.join(ROOT, 'posts', p.slug + '.md'), 'utf8'));
+  const { body } = frontMatter(fs.readFileSync(path.join(ROOT, 'posts', p.slug + '.md'), 'utf8'));
+  const title = `${meta.title} — FastAIAgent`;
+  const desc = (meta.summary || '').replace(/\s+/g, ' ').trim();
+  const img = meta.cover ? SITE + meta.cover.replace(/^\./, '') : `${SITE}/assets/social-default.jpg`;  // SVG is not rendered by social scrapers
+
+  const head = [
+    `<title>${esc2(title)}</title>`,
+    `<meta name="description" content="${esc2(desc)}">`,
+    `<link rel="canonical" href="${p.url}">`,
+    `<meta property="og:type" content="article">`,
+    `<meta property="og:title" content="${esc2(meta.title)}">`,
+    `<meta property="og:description" content="${esc2(desc)}">`,
+    `<meta property="og:url" content="${p.url}">`,
+    `<meta property="og:image" content="${esc2(img)}">`,
+    `<meta property="og:site_name" content="FastAIAgent">`,
+    `<meta property="article:published_time" content="${p.date.toISOString()}">`,
+    meta.author ? `<meta property="article:author" content="${esc2(meta.author)}">` : '',
+    meta.tag ? `<meta property="article:tag" content="${esc2(meta.tag)}">` : '',
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${esc2(meta.title)}">`,
+    `<meta name="twitter:description" content="${esc2(desc)}">`,
+    `<meta name="twitter:image" content="${esc2(img)}">`,
+  ].filter(Boolean).join('\n');
+
+  // Pre-rendered article, hidden as soon as we know scripting is on, so a
+  // browser never shows it twice. Identical content either way.
+  const pre = `<div id="prerender">
+<article>
+<h1>${esc2(meta.title)}</h1>
+<p>${esc2(desc)}</p>
+<p>${esc2(meta.date)} · ${esc2(meta.author || '')}${meta.tag ? ' · ' + esc2(meta.tag) : ''}</p>
+${meta.cover ? `<img src="${esc2(meta.cover.replace(/^\./, ''))}" alt="">` : ''}
+${renderMarkdown(body)}
+</article>
+</div>`;
+
+  let html = shell
+    .replace('<script src="./support.js"></script>',
+      `<script>window.FA_POST_SLUG=${JSON.stringify(p.slug)}</script>\n${head}\n<style>.js #prerender{display:none}</style>\n<script>document.documentElement.className+=' js'</script>\n<script src="/support.js"></script>`)
+    .replace('<script>window.FA_DEFER_PAGEVIEW=1</script>', '<script>window.FA_DEFER_PAGEVIEW=1</script>')
+    .replace('<body>', '<body>\n' + pre)
+    // the shell's own relative refs must resolve from /blog/<slug>/
+    .replace(/(src|href)="\.\//g, '$1="/')
+    // the shell's placeholder title would otherwise sit in the document twice
+    .replace('<title>Blog — FastAIAgent</title>', '');
+
+  const dir = path.join(ROOT, 'blog', p.slug);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'index.html'), html);
+});
+console.log(`blog/*.html  ${posts.length} per-post pages`);
 
 // --- posts/series.js ------------------------------------------------------
 // Series membership, so post.html can render "Part N of M" and prev/next

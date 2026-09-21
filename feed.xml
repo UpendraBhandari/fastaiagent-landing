@@ -9,8 +9,8 @@
     <lastBuildDate>Sat, 12 Sep 2026 12:00:00 GMT</lastBuildDate>
     <item>
       <title>Turn every production failure into a regression test</title>
-      <link>https://fastaiagent.net/post.html?slug=regression-from-trace</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=regression-from-trace</guid>
+      <link>https://fastaiagent.net/blog/regression-from-trace/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/regression-from-trace/</guid>
       <pubDate>Sat, 12 Sep 2026 12:00:00 GMT</pubDate>
       <description>A customer reports the agent did something wrong. Here is the five-script loop that captures the failing trace, fixes it, and makes sure it never comes back.</description>
       <category>Replay</category>
@@ -18,8 +18,8 @@
     </item>
     <item>
       <title>Closing the guardrail audit: three silences and three verdicts</title>
-      <link>https://fastaiagent.net/post.html?slug=guardrail-audit-closed</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=guardrail-audit-closed</guid>
+      <link>https://fastaiagent.net/blog/guardrail-audit-closed/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/guardrail-audit-closed/</guid>
       <pubDate>Thu, 10 Sep 2026 12:00:00 GMT</pubDate>
       <description>Release 1.64.0 closes the cross-repo guardrail audit. Each of the six findings was a control reporting a verdict it had not earned.</description>
       <category>Guardrails</category>
@@ -27,8 +27,8 @@
     </item>
     <item>
       <title>Evidence, not attestation</title>
-      <link>https://fastaiagent.net/post.html?slug=evidence-not-attestation</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=evidence-not-attestation</guid>
+      <link>https://fastaiagent.net/blog/evidence-not-attestation/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/evidence-not-attestation/</guid>
       <pubDate>Sun, 06 Sep 2026 12:00:00 GMT</pubDate>
       <description>An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.</description>
       <category>Compliance</category>
@@ -36,8 +36,8 @@
     </item>
     <item>
       <title>An outage should report INVALID, never a green build</title>
-      <link>https://fastaiagent.net/post.html?slug=eval-invalid-not-green</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=eval-invalid-not-green</guid>
+      <link>https://fastaiagent.net/blog/eval-invalid-not-green/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/eval-invalid-not-green/</guid>
       <pubDate>Fri, 28 Aug 2026 12:00:00 GMT</pubDate>
       <description>Agent CI has a failure mode most test runners do not: the thing under test can be fine while the infrastructure behind it is down. Here is how the eval gate handles it.</description>
       <category>Evaluation</category>
@@ -45,8 +45,8 @@
     </item>
     <item>
       <title>Where Should AI Actually Be in the System?</title>
-      <link>https://fastaiagent.net/post.html?slug=where-should-ai-actually-be</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=where-should-ai-actually-be</guid>
+      <link>https://fastaiagent.net/blog/where-should-ai-actually-be/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/where-should-ai-actually-be/</guid>
       <pubDate>Sat, 15 Aug 2026 12:00:00 GMT</pubDate>
       <description>Use the simplest thing that reliably does the job, and only let the model decide what happens next when you genuinely cannot know the next step until you have seen the last one.</description>
       <category>Architecture</category>
@@ -54,8 +54,8 @@
     </item>
     <item>
       <title>Five People Are Evaluating Your Agent Platform. One of Them Is You.</title>
-      <link>https://fastaiagent.net/post.html?slug=five-people-evaluating-your-agent-platform</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=five-people-evaluating-your-agent-platform</guid>
+      <link>https://fastaiagent.net/blog/five-people-evaluating-your-agent-platform/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/five-people-evaluating-your-agent-platform/</guid>
       <pubDate>Mon, 10 Aug 2026 12:00:00 GMT</pubDate>
       <description>The developer, the operator, the CTO, compliance and finance each judge an agent platform by a different test. Ship for one and you lose the other four.</description>
       <category>Platform</category>
@@ -63,8 +63,8 @@
     </item>
     <item>
       <title>Guardrails That Actually Block</title>
-      <link>https://fastaiagent.net/post.html?slug=guardrails-that-actually-block</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=guardrails-that-actually-block</guid>
+      <link>https://fastaiagent.net/blog/guardrails-that-actually-block/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/guardrails-that-actually-block/</guid>
       <pubDate>Sun, 26 Jul 2026 12:00:00 GMT</pubDate>
       <description>Most guardrails observe and report. A guardrail that cannot stop the action is a log line with good intentions. Policy checked before the agent acts.</description>
       <category>Guardrails</category>
@@ -72,8 +72,8 @@
     </item>
     <item>
       <title>An Agent Framework Is Not an Agent Harness</title>
-      <link>https://fastaiagent.net/post.html?slug=agent-framework-is-not-a-harness</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=agent-framework-is-not-a-harness</guid>
+      <link>https://fastaiagent.net/blog/agent-framework-is-not-a-harness/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/agent-framework-is-not-a-harness/</guid>
       <pubDate>Thu, 16 Jul 2026 12:00:00 GMT</pubDate>
       <description>A framework helps you build an agent. A harness runs it in production — and the difference is everything you need after the demo works.</description>
       <category>Harness</category>
@@ -81,8 +81,8 @@
     </item>
     <item>
       <title>Your Strong Model Still Reads a Balance Sheet Wrong</title>
-      <link>https://fastaiagent.net/post.html?slug=strong-model-reads-balance-sheet-wrong</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=strong-model-reads-balance-sheet-wrong</guid>
+      <link>https://fastaiagent.net/blog/strong-model-reads-balance-sheet-wrong/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/strong-model-reads-balance-sheet-wrong/</guid>
       <pubDate>Fri, 10 Jul 2026 12:00:00 GMT</pubDate>
       <description>A capable model still misreads a financial table. The fix is not a bigger model — it is an eval that finds the failure and a prompt change you can prove worked.</description>
       <category>Evaluation</category>
@@ -90,8 +90,8 @@
     </item>
     <item>
       <title>Give Your Agent Memory It Won&apos;t Lie to You</title>
-      <link>https://fastaiagent.net/post.html?slug=give-your-agent-memory</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=give-your-agent-memory</guid>
+      <link>https://fastaiagent.net/blog/give-your-agent-memory/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/give-your-agent-memory/</guid>
       <pubDate>Thu, 02 Jul 2026 12:00:00 GMT</pubDate>
       <description>Your agent references a customer trip that never happened. It came from memory — a fact recalled from someone else&apos;s conversation. Memory as one object, with scopes you can see.</description>
       <category>Memory</category>
@@ -99,8 +99,8 @@
     </item>
     <item>
       <title>You Wouldn&apos;t Ship Code Without Tests. Why Ship an Agent Without Evals?</title>
-      <link>https://fastaiagent.net/post.html?slug=ship-an-agent-without-evals</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=ship-an-agent-without-evals</guid>
+      <link>https://fastaiagent.net/blog/ship-an-agent-without-evals/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/ship-an-agent-without-evals/</guid>
       <pubDate>Wed, 24 Jun 2026 12:00:00 GMT</pubDate>
       <description>Nobody ships a payment service on three manual clicks, yet that is exactly how most agents reach production. Datasets, scorers and a gate that actually blocks.</description>
       <category>Evaluation</category>
@@ -108,8 +108,8 @@
     </item>
     <item>
       <title>Your Agent Shouldn&apos;t Decide Alone. Here&apos;s How to Keep a Human in Command.</title>
-      <link>https://fastaiagent.net/post.html?slug=your-agent-shouldnt-decide-alone</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=your-agent-shouldnt-decide-alone</guid>
+      <link>https://fastaiagent.net/blog/your-agent-shouldnt-decide-alone/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/your-agent-shouldnt-decide-alone/</guid>
       <pubDate>Thu, 18 Jun 2026 12:00:00 GMT</pubDate>
       <description>The hard part of human-in-the-loop isn&apos;t letting a human approve. It&apos;s letting them approve later — hours or days later, on a different machine — without holding a live process hostage the whole time.</description>
       <category>HITL</category>
@@ -117,8 +117,8 @@
     </item>
     <item>
       <title>The Agent Was Right. The Data Was Wrong.</title>
-      <link>https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=agent-was-right-data-was-wrong</guid>
+      <link>https://fastaiagent.net/blog/agent-was-right-data-was-wrong/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/agent-was-right-data-was-wrong/</guid>
       <pubDate>Thu, 11 Jun 2026 12:00:00 GMT</pubDate>
       <description>Perfect reasoning over the wrong document is the most dangerous kind of agent bug — no hallucination, no error, green across every dashboard. To find it you have to look at what the agent actually retrieved.</description>
       <category>Knowledge Base</category>
@@ -126,8 +126,8 @@
     </item>
     <item>
       <title>I See Everything My Agent Does. In My Own Environment. No Cloud Account.</title>
-      <link>https://fastaiagent.net/post.html?slug=see-everything-your-agent-does</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=see-everything-your-agent-does</guid>
+      <link>https://fastaiagent.net/blog/see-everything-your-agent-does/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/see-everything-your-agent-does/</guid>
       <pubDate>Thu, 04 Jun 2026 12:00:00 GMT</pubDate>
       <description>Your choices used to be free but heavy, easy but hosted, or self-hosted for an enterprise fee. Nobody offered the fourth option — free, easy and local. One pip install, one command, one SQLite file, nothing leaving your machine.</description>
       <category>Observability</category>
@@ -135,8 +135,8 @@
     </item>
     <item>
       <title>Your Agent Needs Transactions, Not Just Tools</title>
-      <link>https://fastaiagent.net/post.html?slug=your-agent-needs-transactions</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=your-agent-needs-transactions</guid>
+      <link>https://fastaiagent.net/blog/your-agent-needs-transactions/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/your-agent-needs-transactions/</guid>
       <pubDate>Fri, 29 May 2026 12:00:00 GMT</pubDate>
       <description>Databases solved this 40 years ago. Every framework gives agents tools to act; none give them transactions to act safely. ACID — atomicity, consistency, isolation, durability — mapped onto action-taking agents.</description>
       <category>Durability</category>
@@ -144,8 +144,8 @@
     </item>
     <item>
       <title>The Prompt Changed. The Agent Broke. Nobody Noticed for 3 Days.</title>
-      <link>https://fastaiagent.net/post.html?slug=prompt-changed-agent-broke-nobody-noticed</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=prompt-changed-agent-broke-nobody-noticed</guid>
+      <link>https://fastaiagent.net/blog/prompt-changed-agent-broke-nobody-noticed/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/prompt-changed-agent-broke-nobody-noticed/</guid>
       <pubDate>Mon, 25 May 2026 12:00:00 GMT</pubDate>
       <description>Code changes have PRs, reviews, CI and tests. Prompt changes have someone eyeballing three responses before they deploy. Here is the gate that catches a bad prompt before it ships.</description>
       <category>Prompts</category>
@@ -153,8 +153,8 @@
     </item>
     <item>
       <title>Every Production Failure Should Become a Test. One Click.</title>
-      <link>https://fastaiagent.net/post.html?slug=every-production-failure-becomes-a-test</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=every-production-failure-becomes-a-test</guid>
+      <link>https://fastaiagent.net/blog/every-production-failure-becomes-a-test/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/every-production-failure-becomes-a-test/</guid>
       <pubDate>Thu, 21 May 2026 12:00:00 GMT</pubDate>
       <description>Finding the bug is an afternoon. Keeping it dead across every future change by every future contributor is the real cost — and that only works if the failure becomes a permanent test case the moment you fix it.</description>
       <category>Replay</category>
@@ -162,8 +162,8 @@
     </item>
     <item>
       <title>I&apos;m Done Complaining. Here&apos;s What I&apos;m Shipping</title>
-      <link>https://fastaiagent.net/post.html?slug=done-complaining-heres-what-im-shipping</link>
-      <guid isPermaLink="true">https://fastaiagent.net/post.html?slug=done-complaining-heres-what-im-shipping</guid>
+      <link>https://fastaiagent.net/blog/done-complaining-heres-what-im-shipping/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/done-complaining-heres-what-im-shipping/</guid>
       <pubDate>Sun, 10 May 2026 12:00:00 GMT</pubDate>
       <description>Five articles on what&apos;s broken in agent infrastructure. This is the one where I stop complaining and ship: FastAIAgent, open source, Apache 2.0, runs locally.</description>
       <category>Announcement</category>

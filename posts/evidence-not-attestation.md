@@ -4,7 +4,7 @@ date: Sep 6, 2026
 tag: Compliance
 summary: An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.
 author: Upendra Bhandari
-cover: ./posts/images/evidence-cover.jpg
+cover: /posts/images/evidence-cover.jpg
 ---
 ## EU AI Act obligations bound to the agents actually running
 
@@ -18,25 +18,25 @@ The AI Act makes it harder still, because Articles 12, 14 and 72 do not ask for 
 
 An agent runs, and its traces, guardrail checks, evaluation runs and human approvals arrive in the plane — the same telemetry your platform team already uses for debugging. That agent belongs to a registered AI system, classified once, and the classification decides which obligations apply. A compliance lead records a verdict on each and attaches the runs behind it.
 
-![Compliance evidence in the FastAIAgent console](./posts/images/evidence-1.png)
+![Compliance evidence in the FastAIAgent console](/posts/images/evidence-1.png)
 
 ## 1 · The register is the running system
 
 Not a spreadsheet row that may no longer correspond to anything. An AI system is a named group of the agents and chains that actually run — here the whole Hiring project, so new agents added to it follow automatically. One agent belongs to exactly one system, enforced by a database constraint.
 
-![Compliance evidence in the FastAIAgent console](./posts/images/evidence-2.png "Member chips are live agents and chains; dashed chips follow via a project scope.")
+![Compliance evidence in the FastAIAgent console](/posts/images/evidence-2.png "Member chips are live agents and chains; dashed chips follow via a project scope.")
 
 ## 2 · Obligations are derived, and the derivation is on the record
 
 The classification comes from a deterministic rule engine — keyword matching plus a five-question assessment, no model, no LLM — so it re-runs to the same answer in front of a regulator. Stored with it: the tier, the confidence, and the reasoning in plain words. That classification then decides the obligation set — 58 of 65 controls for a high-risk provider, 22 for a deployer, 10 for limited-risk.
 
-![Compliance evidence in the FastAIAgent console](./posts/images/evidence-3.png "Classification, reasoning and confidence; the derived obligation count; the members it applies to.")
+![Compliance evidence in the FastAIAgent console](/posts/images/evidence-3.png "Classification, reasoning and confidence; the derived obligation count; the members it applies to.")
 
 ## 3 · Evidence is the actual run
 
 Left: every runtime record the plane ingested from this system's own members, not a global list to search. Right: what is attached, grouped by the obligation it backs — Article 14 human oversight backed by an actual human-in-the-loop approval, Article 13 by a real prompt approval. Each item says "snapshot frozen at tag time": the record is copied server-side by re-reading the source, so a browser can never assert what a run said.
 
-![Compliance evidence in the FastAIAgent console](./posts/images/evidence-4.png "The member-scoped signal feed on the left, obligations and their attached records on the right.")
+![Compliance evidence in the FastAIAgent console](/posts/images/evidence-4.png "The member-scoped signal feed on the left, obligations and their attached records on the right.")
 
 Evidence is also protected. Deleting a record that backs an obligation is refused, and the refusal names what it would break — this is the live response:
 
@@ -69,13 +69,13 @@ The trace says passed. Only errored reveals that nothing was actually checked wh
 
 Nothing on this screen was typed by a person. A sweep runs every fifteen minutes, and severity is scaled by the system's own risk tier — which is why the same class of failure is critical on the high-risk Hiring Assistant and medium on the limited-risk Support Desk. A guardrail that blocks is the control working and produces no finding; only a degraded one does.
 
-![Compliance evidence in the FastAIAgent console](./posts/images/evidence-5.png "Two findings, neither filed by a human, each naming its system, article and control.")
+![Compliance evidence in the FastAIAgent console](/posts/images/evidence-5.png "Two findings, neither filed by a human, each naming its system, article and control.")
 
 ## 5 · The record itself is verifiable
 
 Every compliance act — registration, classification, each verdict, each evidence attach or detach, each finding — is appended to a per-tenant SHA-256 hash chain, in the same database transaction as the act itself. You cannot do the thing without creating the record.
 
-![Compliance evidence in the FastAIAgent console](./posts/images/evidence-6.png "The ledger, with the integrity check re-run on load.")
+![Compliance evidence in the FastAIAgent console](/posts/images/evidence-6.png "The ledger, with the integrity check re-run on load.")
 
 The integrity check is an endpoint, not a claim in a brochure. It walks the chain and reports the first row where a hash or a link fails — catching an edit, a deletion or a reordering:
 
@@ -88,7 +88,7 @@ Stated precisely: this is tamper-evident, not tamper-proof. Nothing physically s
 
 ## What this does not do
 
-![Compliance evidence in the FastAIAgent console](./posts/images/evidence-7.png)
+![Compliance evidence in the FastAIAgent console](/posts/images/evidence-7.png)
 
 What a compliance officer can demonstrate here that a spreadsheet cannot: that the thing being assessed is the thing that runs; that the obligation set was derived rather than chosen; that the evidence is the actual record, linked and frozen; that evidence cannot vanish unnoticed; that some breaches surface without anyone looking; and that the record of all of it is verifiable.
 

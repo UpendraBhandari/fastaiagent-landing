@@ -7,7 +7,7 @@ summary: Perfect reasoning over the wrong document is the most dangerous kind of
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 5
-cover: ./posts/images/context-cover.jpg
+cover: /posts/images/context-cover.jpg
 ---
 
 A customer asks your support agent whether their purchase qualifies for a refund. The agent reads the policy, reasons through the customer's situation, and answers confidently: yes, you're within the 30-day window, here's how to start the return.
@@ -28,7 +28,7 @@ The industry spent two years driving down hallucination and improving reasoning.
 
 You cannot catch this by reading the final answer. The answer looks reasonable — it's a correct deduction from incorrect premises. To find the bug, you have to look at something most tools flatten or hide: what the agent actually retrieved.
 
-![Trace showing the agent's confident but wrong refund answer](./posts/images/context-1-agent-answer.png "The agent's answer in the trace — eligible for a refund, within 30 days, including digital products. Confident, well-reasoned, and wrong. Every model-level metric here is green.")
+![Trace showing the agent's confident but wrong refund answer](/posts/images/context-1-agent-answer.png "The agent's answer in the trace — eligible for a refund, within 30 days, including digital products. Confident, well-reasoned, and wrong. Every model-level metric here is green.")
 
 ## Seeing what the agent retrieved
 
@@ -48,11 +48,11 @@ retrieval.support-kb
 
 There it is. The agent retrieved `refund_policy_v1`. The current policy is `refund_policy_v2`. The reasoning was never the problem — the agent reasoned perfectly over a document that should have been retired six months ago. The bug is sitting in the `doc_ids`, in plain sight, in a step most observability tools never surface as its own inspectable event.
 
-![Retrieval span as its own node in the Replay span tree](./posts/images/context-2-replay-span.png "The same span in the local Replay UI. retrieval.support-kb is its own node in the tree, and its output makes the bug obvious — doc_ids of refund_policy_v1, shipping_terms and faq_general. The stale document, retrieved and handed straight to the model.")
+![Retrieval span as its own node in the Replay span tree](/posts/images/context-2-replay-span.png "The same span in the local Replay UI. retrieval.support-kb is its own node in the tree, and its output makes the bug obvious — doc_ids of refund_policy_v1, shipping_terms and faq_general. The stale document, retrieved and handed straight to the model.")
 
 This works regardless of where your vectors live. The bundled knowledge base runs on FAISS with zero setup — install and go.
 
-![Retrieval span from the bundled FAISS store](./posts/images/context-3-faiss-span.png "The retrieval span from the bundled FAISS store — backend faiss, top_k 3, search_type vector.")
+![Retrieval span from the bundled FAISS store](/posts/images/context-3-faiss-span.png "The retrieval span from the bundled FAISS store — backend faiss, top_k 3, search_type vector.")
 
 But the retrieval span is backend-agnostic. Point the same `LocalKB` interface at a store you already run, and you get the identical span — here it is wired to Qdrant:
 
@@ -70,7 +70,7 @@ kb = LocalKB(
 # kb.search(query) now emits the identical retrieval span — with backend: "qdrant"
 ```
 
-![The same retrieval span with a Qdrant backend](./posts/images/context-4-qdrant-span.png "The same documents and the same query, this time indexed in a real Qdrant. Only retrieval.backend changes to qdrant; the doc_ids underneath are identical.")
+![The same retrieval span with a Qdrant backend](/posts/images/context-4-qdrant-span.png "The same documents and the same query, this time indexed in a real Qdrant. Only retrieval.backend changes to qdrant; the doc_ids underneath are identical.")
 
 The same goes for Pinecone, pgvector, or Weaviate behind the same interface. You don't migrate your vector store to get retrieval visibility; you point the harness at what you already have.
 
@@ -100,9 +100,9 @@ print(f"Diverged at step: {comparison.diverged_at}")
 
 The answer flips from wrong to right. Same agent, same model, same reasoning — only the retrieved document changed. That's the proof: the failure was the data, not the model. Now save the case as a regression test, and a stale-document retrieval can never silently produce a wrong answer again without the eval catching it.
 
-![The rerun with a corrected retriever, giving the right answer](./posts/images/context-5-corrected-rerun.png "The rerun, with the retriever corrected to return refund_policy_v2 — digital purchases are final sale and not eligible for refund. Same agent, same model; only the document changed, and the answer flipped from wrong to right.")
+![The rerun with a corrected retriever, giving the right answer](/posts/images/context-5-corrected-rerun.png "The rerun, with the retriever corrected to return refund_policy_v2 — digital purchases are final sale and not eligible for refund. Same agent, same model; only the document changed, and the answer flipped from wrong to right.")
 
-This is [the closed loop from earlier in the series](./post.html?slug=every-production-failure-becomes-a-test), pointed at the context layer: trace → see the bad retrieval → fork with corrected data → rerun → prove the fix → regression test. The same mechanic that debugs prompts and reasoning, now debugging the data the agent was fed.
+This is [the closed loop from earlier in the series](/blog/every-production-failure-becomes-a-test/), pointed at the context layer: trace → see the bad retrieval → fork with corrected data → rerun → prove the fix → regression test. The same mechanic that debugs prompts and reasoning, now debugging the data the agent was fed.
 
 One honest note for the curious: this reruns the agent from the top with a corrected retriever — the cleanest path the open SDK gives you. The more surgical version — overriding a single retrieval result in place and resuming mid-trace — lives in the platform's Replay engine. For finding and proving a context failure, rerun-with-corrected-retriever does the job.
 

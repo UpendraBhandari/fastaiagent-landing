@@ -7,7 +7,7 @@ summary: Your choices used to be free but heavy, easy but hosted, or self-hosted
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 4
-cover: ./posts/images/local-first-cover.jpg
+cover: /posts/images/local-first-cover.jpg
 ---
 
 Here's what it takes to see your first agent trace in most observability tools.
@@ -23,7 +23,7 @@ fastaiagent ui
 
 Your browser opens to localhost:7842. Every trace, prompt, eval, and guardrail event your agent has produced is right there. No account. No API key. No data leaving your machine.
 
-![The FastAIAgent Local UI home page](./posts/images/local-ui-1-home.png "The Local UI on first run — traces, eval runs, approvals and failures, with no account to create.")
+![The FastAIAgent Local UI home page](/posts/images/local-ui-1-home.png "The Local UI on first run — traces, eval runs, approvals and failures, with no account to create.")
 
 That difference isn't convenience. It's a different philosophy about whose data this is.
 
@@ -65,7 +65,7 @@ This matters most where it's not optional:
 
 Your traces never leave your environment. Not as a feature you enable. As the default, because there's nowhere else for them to go.
 
-And here's the part that makes this different from bolting on a separate observability tool: this isn't a separate observability tool. The traces, the prompts, the evals, the guardrail events — they're produced by the same SDK that runs your agents. You didn't integrate FastAIAgent with an observability platform. The observability is the harness watching itself. That's why [Agent Replay can exist and why a failure can become a test in one click](./post.html?slug=every-production-failure-becomes-a-test) — the pieces share one data model because they're one system. You're not assembling a stack. You installed one thing.
+And here's the part that makes this different from bolting on a separate observability tool: this isn't a separate observability tool. The traces, the prompts, the evals, the guardrail events — they're produced by the same SDK that runs your agents. You didn't integrate FastAIAgent with an observability platform. The observability is the harness watching itself. That's why [Agent Replay can exist and why a failure can become a test in one click](/blog/every-production-failure-becomes-a-test/) — the pieces share one data model because they're one system. You're not assembling a stack. You installed one thing.
 
 ## When you outgrow a file
 
@@ -87,11 +87,11 @@ The Local UI has fifteen-plus surfaces. Here are the three that show why this ap
 
 Every `agent.run()` produces a trace. Open the Traces page and you see the full list: trace name, status, duration, tokens, cost, and the framework that produced it. Click one and you get the span tree — every LLM call, tool invocation, and retrieval, with full inputs and outputs.
 
-![Traces list in the Local UI](./posts/images/local-ui-2-traces.png "Every run, with status, spans, duration, tokens and cost.")
+![Traces list in the Local UI](/posts/images/local-ui-2-traces.png "Every run, with status, spans, duration, tokens and cost.")
 
 Full-text search works across span inputs and outputs. Type "refund policy" and you find every trace where that phrase appeared in what the agent sent or received. That search runs against a local FTS index — instant, no network round-trip, no per-query cost.
 
-![Trace detail with the span tree](./posts/images/local-ui-3-trace-detail.png "Trace detail: the span tree, with full inputs and outputs on every step.")
+![Trace detail with the span tree](/posts/images/local-ui-3-trace-detail.png "Trace detail: the span tree, with full inputs and outputs on every step.")
 
 ### Agent Replay — debug without redeploying
 
@@ -99,7 +99,7 @@ Find a trace where the agent went wrong. Click the failing span. Fork it. Change
 
 No other observability tool does this, cloud or local. They show you what happened. Replay lets you change what happened and see the result. (Earlier posts in this series go deep on it — it's the heart of the series.)
 
-![Agent Replay in the Local UI](./posts/images/local-ui-4-replay.png "Replay: fork a failing step, change one variable, rerun from there.")
+![Agent Replay in the Local UI](/posts/images/local-ui-4-replay.png "Replay: fork a failing step, change one variable, rerun from there.")
 
 ### Cost tracking — where your money goes
 
@@ -107,7 +107,7 @@ The Analytics page breaks down spend by model, by agent, and by node. You see th
 
 Computed on read, from the token counts already in your traces. No cloud aggregation, no data warehouse, no per-event pricing.
 
-![Analytics page showing cost by model and agent](./posts/images/local-ui-5-analytics.png "Analytics: spend broken down by model, agent and node, computed from the tokens already in your traces.")
+![Analytics page showing cost by model and agent](/posts/images/local-ui-5-analytics.png "Analytics: spend broken down by model, agent and node, computed from the tokens already in your traces.")
 
 ## One install, not eight
 
@@ -131,7 +131,7 @@ There's a fair objection here: there are already excellent open-source tools tha
 
 Because those tools observe agents — they don't run them. They're the watching layer wrapped around a separate framework you still have to build and run your agent in. That's a perfectly good design, and they're more mature at pure observability than we are. But it has a hard ceiling: a tool that only watches can't fork a failed step, change one variable, and rerun it. It can't resume an execution after a crash, because it never controlled the execution. It can't block a bad action mid-flight — only flag it afterward. Replay, durability, and runtime guardrails all require owning the execution loop. An observability tool that wraps someone else's framework structurally cannot reach them, no matter how good its dashboards get.
 
-![Observability tool versus agent harness](./posts/images/observability-vs-harness.png "Watching an agent is not the same as running it: only the system that owns the execution loop can fork, resume or block.")
+![Observability tool versus agent harness](/posts/images/observability-vs-harness.png "Watching an agent is not the same as running it: only the system that owns the execution loop can fork, resume or block.")
 
 That's the difference between an observability tool and an agent harness. One shows you what happened. The other ran it — which is why it can also rewind it, recover it, and guard it. We didn't bolt observability onto a framework, and we didn't build observability that wraps a framework. The running and the watching are the same system. That's the whole point.
 

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="done-complaining-heres-what-im-shipping"</script>
+<title>I'm Done Complaining. Here's What I'm Shipping — FastAIAgent</title>
+<meta name="description" content="Five articles on what's broken in agent infrastructure. This is the one where I stop complaining and ship: FastAIAgent, open source, Apache 2.0, runs locally.">
+<link rel="canonical" href="https://fastaiagent.net/blog/done-complaining-heres-what-im-shipping/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="I'm Done Complaining. Here's What I'm Shipping">
+<meta property="og:description" content="Five articles on what's broken in agent infrastructure. This is the one where I stop complaining and ship: FastAIAgent, open source, Apache 2.0, runs locally.">
+<meta property="og:url" content="https://fastaiagent.net/blog/done-complaining-heres-what-im-shipping/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/fastaiagent-launch-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-05-10T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Announcement">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="I'm Done Complaining. Here's What I'm Shipping">
+<meta name="twitter:description" content="Five articles on what's broken in agent infrastructure. This is the one where I stop complaining and ship: FastAIAgent, open source, Apache 2.0, runs locally.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/fastaiagent-launch-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>I'm Done Complaining. Here's What I'm Shipping</h1>
+<p>Five articles on what's broken in agent infrastructure. This is the one where I stop complaining and ship: FastAIAgent, open source, Apache 2.0, runs locally.</p>
+<p>May 10, 2026 · Upendra Bhandari · Announcement</p>
+<img src="/posts/images/fastaiagent-launch-cover.jpg" alt="">
+<p>You've read five articles about what's broken in agent infrastructure. This is the one where I stop complaining and tell you what I'm shipping.</p>
+<h3>If you missed the series</h3>
+<ol><li><a href="https://medium.com/@upendra.bhandari/my-prompts-are-held-together-with-duct-tape-326c3994bf18" target="_blank" rel="noopener">My prompts are held together with duct tape</a></li><li><a href="https://www.linkedin.com/pulse/my-agent-works-great-demo-fails-production-upendra-bhandari-ctooe/" target="_blank" rel="noopener">My agent works great in demo, fails in production</a></li><li><a href="https://www.linkedin.com/pulse/i-built-knowledge-search-our-call-center-its-still-sending-bhandari-pr0ue/" target="_blank" rel="noopener">I built knowledge search for our call center</a></li><li><a href="https://www.linkedin.com/pulse/my-agent-needs-human-loop-its-nightmare-build-upendra-bhandari-bskze/" target="_blank" rel="noopener">My agent needs a human in the loop, it's a nightmare to build</a></li><li><a href="https://www.linkedin.com/pulse/agent-harness-what-why-matters-ideal-one-looks-like-upendra-bhandari-z6xse/" target="_blank" rel="noopener">The agent harness: what it is, why it matters, what the ideal one looks like</a></li></ol>
+<h3>Why</h3>
+<p>I got tired of building the same operational stack on every project. Prompts scattered across files. Eval scripts that worked once and rotted. RAG pipelines I rewrote from scratch every time. HITL infrastructure I built from scratch in three different ways. None of that work was differentiating. None of it was AI work. All of it was rebuilt because no library shipped it as a unit.</p>
+<p>I built this for me first. Today I'm open-sourcing it because every engineer I know is solving the same problems with the same scaffolding, owning the same brittle code nobody can hand off.</p>
+<h3>What it is</h3>
+<p>It's called FastAIAgent. <code>pip install fastaiagent</code>. Apache 2.0. It runs locally — no platform required, no signup, no hosted infrastructure. The SDK is the whole product for what I'm describing here.</p>
+<p>Here's the through-line — what each article complained about, and what's in the SDK now.</p>
+<h4>Prompts</h4>
+<p>Article 1 was about prompts held together with duct tape. There's a prompt registry now — versioned, fragmentable, runtime resolution from local files. You write a prompt once, give it a version, compose it from fragments where you want reuse. Rolling back a prompt is a one-line change. Comparing two versions in production is a one-line change. The duct tape comes off.</p>
+<h4>Eval</h4>
+<p>Article 2 was about evaluation being a one-off script that rotted the moment the prompt changed. There's an inner loop now — datasets, scorers, LLM-as-judge, RAG metrics, A/B comparison, online eval policies on production traffic, CI/CD gates. Plus Agent Replay: fork any past execution at any step, modify the input, re-run. The eval pipeline isn't a side project. It's a system.</p>
+<h4>Knowledge bases</h4>
+<p>Article 3 was about three weeks rebuilding a RAG pipeline that quietly degraded after demo day. There's a managed KB layer — ingestion, multi-strategy chunking, hybrid search out of the box, continuous RAG eval. Pluggable backends if you outgrow the defaults. Re-embedding when documents update. The pipeline I kept rebuilding, built once.</p>
+<h4>HITL</h4>
+<p>Article 4 was about HITL being a state machine I rebuilt every project. There's a durable <code>interrupt()</code> now — pause any workflow for a human, resume after hours, days, or a server restart. An Approvals UI that lists every paused workflow. Idempotent side effects so replays don't double-charge or double-send. The workflow engine that was harder than the agent — already built.</p>
+<h3>Underneath: traces</h3>
+<p>All five of these ride on the same foundation. Activate the integration once per framework — and from there, every LLM call, tool invocation, KB lookup, guardrail check, HITL pause emits OpenTelemetry spans automatically. No per-call decorators. No wrapping every function. Spans follow the GenAI semantic conventions, viewable in the local UI as span trees you can step through, exportable to any OTel-compatible backend if you already have observability infrastructure.</p>
+<p>Replay reads from the trace store. A/B comparisons walk trace pairs. The prompt registry annotates traces with the version that ran. Tracing isn't a feature on the list — it's the substrate everything else stands on.</p>
+<h3>What nobody else has</h3>
+<p>Three things — and one of them is the reason the other two matter.</p>
+<p><strong>The closed loop (Article 5).</strong> Develop → Trace → Feedback → Eval → Optimize → Deploy → Pull from the registry → Trace again. Each piece exists somewhere in the ecosystem. The loop, end-to-end, in one tool, doesn't. This is what the SDK is built around. The two below exist because the loop needs them.</p>
+<p><strong>Agent Replay.</strong> Fork any execution at any step, modify the input, re-run. No other framework I've evaluated can do this end-to-end. Replay is what makes the loop iterable — failing traces become test cases, hypotheses become diffs.</p>
+<p><strong>Durable HITL.</strong> Most &quot;HITL&quot; in other tools is a callback that breaks if your server restarts. This one persists execution state to SQLite or Postgres and resumes from any process — hours, days, or a deploy later. Durable HITL is what keeps the loop running when humans take longer than processes.</p>
+<h3>The complete harness</h3>
+<p>Every working AI agent is a stack of six layers. Guardrails and constraints. Context and memory. Planning and orchestration. Tool management. Model execution. Observability and feedback — with a loop from layer six back to layer one. The harness is whatever wraps all six.</p>
+<figure><img src="/posts/images/six-layers-agent-harness.png" alt="The six layers of an agent harness" loading="lazy"><figcaption>The six layers of an agent harness, with the feedback loop running from observability back to guardrails.</figcaption></figure>
+<p>The articles in this series each pointed at one or two layers. Prompts sit in context. RAG sits in context. Evals and tracing sit in observability. HITL sits in planning and tool management. Guardrails and model execution didn't get articles yet — they will. The SDK covers all six layers, with the feedback loop closing the system. That's the shape. The rest is implementation detail.</p>
+<h3>What it doesn't do</h3>
+<p>It's Python-only on the SDK side. If your team is on Node, this isn't your tool yet. The visual chain editor is on the hosted platform side, not in the open-source SDK — the SDK ships a local UI for traces, replay, evals, prompt editing, KB browsing, and the approvals page, but the drag-and-drop canvas isn't part of it. And it's new. There are rough edges. We're shipping fixes and new primitives every week. This is just the beginning. Focused and restless, until building agents is easy and adoptable for everyone.</p>
+<h3>More coming</h3>
+<p>And there's more I haven't covered here. Composable memory blocks. Middleware that wraps every model call. Multi-agent orchestration — supervisor-worker patterns and peer-to-peer swarms. Agents that ship as MCP servers in one line. Idempotent side effects that don't double-charge on retry. Each one solves a real pain from a real project. Each will get its own article — same format as the articles that brought us here. Here's the pain. Here's the primitive. Here's why it matters.</p>
+<h3>It runs your existing agents</h3>
+<p>If you've already built on LangChain, LangGraph, CrewAI, or PydanticAI, you don't rewrite them. The operational layer wraps existing agents through thin adapters — most features (tracing, eval, prompts, guardrails, KB, analytics, dependency graphs) work through the wrappers. The deepest primitives (Replay, durable HITL, full checkpointing) need native execution. Your framework underneath stays untouched. The agent's logic stays untouched. Only the wrapping changes when you migrate frameworks.</p>
+<h3>A snippet</h3>
+<p>With <code>OPENAI_API_KEY</code> in your environment:</p>
+<pre><code class="lang-python">import fastaiagent as fa
+
+llm = fa.LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4&quot;)
+
+@fa.tool()
+def search(query: str) -&gt; str:
+    return f&quot;Results for: {query}&quot;
+
+agent = fa.Agent(llm=llm, tools=[search])
+result = agent.run(&quot;What's the weather in Tokyo?&quot;)</code></pre>
+<p>That's the API.</p>
+<h3>What I'm asking</h3>
+<p>Three things. None pushy.</p>
+<p>If anything in this resonates — <code>pip install fastaiagent</code>, run <code>fastaiagent ui</code> locally, build something small. The local UI shows you traces, replays, evals, the prompt editor, the KB browser, the approvals page. Twenty minutes will tell you whether it's worth more time. The package is on <a href="https://pypi.org/project/fastaiagent/" target="_blank" rel="noopener">PyPI</a>.</p>
+<p>If you hit a bug, a rough edge, anything that breaks — open an issue on <a href="https://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">GitHub</a>. We'll fix it fast.</p>
+<p>If it doesn't fit your problem, tell me why. The articles came from real frustration on real projects. The SDK comes from the same place. I'd rather hear what you'd want fixed first than have you nod politely and move on.</p>
+<p>That's the series. Thanks for reading it.</p>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

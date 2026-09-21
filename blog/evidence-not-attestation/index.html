@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="evidence-not-attestation"</script>
+<title>Evidence, not attestation — FastAIAgent</title>
+<meta name="description" content="An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.">
+<link rel="canonical" href="https://fastaiagent.net/blog/evidence-not-attestation/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Evidence, not attestation">
+<meta property="og:description" content="An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.">
+<meta property="og:url" content="https://fastaiagent.net/blog/evidence-not-attestation/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/evidence-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-09-06T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Compliance">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Evidence, not attestation">
+<meta name="twitter:description" content="An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/evidence-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>Evidence, not attestation</h1>
+<p>An auditor does not want a signed claim that a control exists. They want the record that it ran. Compliance evidence produced by the system rather than asserted about it.</p>
+<p>Sep 6, 2026 · Upendra Bhandari · Compliance</p>
+<img src="/posts/images/evidence-cover.jpg" alt="">
+<h3>EU AI Act obligations bound to the agents actually running</h3>
+<p>When a supervisor asks &quot;show me that this control was operating on 14 March&quot;, most AI Act compliance programme cannot answer. Not because nobody did the work — because the work lives in documents that were never connected to the systems they describe.</p>
+<p>We solved this once already. In 2013 data lineage was a Visio diagram and control attestations were a spreadsheet: complete, signed off, and connected to nothing. BCBS 239 was not fixed with better documents. It was fixed by binding them to the systems — lineage from real metadata, controls pointed at real pipelines, evidence produced by the estate rather than describing it.</p>
+<p>The AI Act makes it harder still, because Articles 12, 14 and 72 do not ask for descriptions. Record-keeping, human oversight and post-market monitoring are runtime properties. You cannot document human oversight into existence: either a run paused, a named person decided, and there is a record of it — or it did not happen.</p>
+<h3>How it works</h3>
+<p>An agent runs, and its traces, guardrail checks, evaluation runs and human approvals arrive in the plane — the same telemetry your platform team already uses for debugging. That agent belongs to a registered AI system, classified once, and the classification decides which obligations apply. A compliance lead records a verdict on each and attaches the runs behind it.</p>
+<figure><img src="/posts/images/evidence-1.png" alt="Compliance evidence in the FastAIAgent console" loading="lazy"><figcaption>Compliance evidence in the FastAIAgent console</figcaption></figure>
+<h3>1 · The register is the running system</h3>
+<p>Not a spreadsheet row that may no longer correspond to anything. An AI system is a named group of the agents and chains that actually run — here the whole Hiring project, so new agents added to it follow automatically. One agent belongs to exactly one system, enforced by a database constraint.</p>
+<figure><img src="/posts/images/evidence-2.png" alt="Compliance evidence in the FastAIAgent console" loading="lazy"><figcaption>Member chips are live agents and chains; dashed chips follow via a project scope.</figcaption></figure>
+<h3>2 · Obligations are derived, and the derivation is on the record</h3>
+<p>The classification comes from a deterministic rule engine — keyword matching plus a five-question assessment, no model, no LLM — so it re-runs to the same answer in front of a regulator. Stored with it: the tier, the confidence, and the reasoning in plain words. That classification then decides the obligation set — 58 of 65 controls for a high-risk provider, 22 for a deployer, 10 for limited-risk.</p>
+<figure><img src="/posts/images/evidence-3.png" alt="Compliance evidence in the FastAIAgent console" loading="lazy"><figcaption>Classification, reasoning and confidence; the derived obligation count; the members it applies to.</figcaption></figure>
+<h3>3 · Evidence is the actual run</h3>
+<p>Left: every runtime record the plane ingested from this system's own members, not a global list to search. Right: what is attached, grouped by the obligation it backs — Article 14 human oversight backed by an actual human-in-the-loop approval, Article 13 by a real prompt approval. Each item says &quot;snapshot frozen at tag time&quot;: the record is copied server-side by re-reading the source, so a browser can never assert what a run said.</p>
+<figure><img src="/posts/images/evidence-4.png" alt="Compliance evidence in the FastAIAgent console" loading="lazy"><figcaption>The member-scoped signal feed on the left, obligations and their attached records on the right.</figcaption></figure>
+<p>Evidence is also protected. Deleting a record that backs an obligation is refused, and the refusal names what it would break — this is the live response:</p>
+<pre><code>DELETE /api/v1/agents/{agent_id}/eval-runs/{run_id}   →  HTTP 409
+
+{ &quot;error&quot;: &quot;compliance_evidence_attached&quot;,
+  &quot;message&quot;: &quot;1 eval run attached as compliance evidence on
+              Hiring Assistant (ARTICLE15-044).&quot; }</code></pre>
+<p>Forced through anyway, or expired by retention? The sweep detects it, stamps the item, writes an evidence_source_deleted entry to the ledger and raises a critical card on the home page. The frozen snapshot survives. Evidence cannot quietly disappear.</p>
+<h3>4 · Breaches surface on their own</h3>
+<p>The SDK enforces guardrails locally — the plane never sits in the request path — then reports what happened. Here is a model-judged check set to fail open, so a judge outage cannot take hiring offline:</p>
+<pre><code>bias = Guardrail(
+    name=&quot;bias-language&quot;,
+    guardrail_type=GuardrailType.llm_judge,
+    position=&quot;output&quot;,
+    on_error=&quot;allow&quot;,          # fail open if the judge call raises
+)</code></pre>
+<p>Months later the judge call starts timing out. Nothing throws, nothing pages anyone, and the agent keeps answering. What reaches the plane is errored = True and passed = True — passed only because the policy says allow.</p>
+<p>The trace says passed. Only errored reveals that nothing was actually checked while output kept going to candidates. Any dashboard reading the verdict alone shows green. The plane joins errored to the guardrail's registered on_error policy, and that combination — degraded check, fail-open policy, traffic still flowing — becomes the finding below.</p>
+<p>Nothing on this screen was typed by a person. A sweep runs every fifteen minutes, and severity is scaled by the system's own risk tier — which is why the same class of failure is critical on the high-risk Hiring Assistant and medium on the limited-risk Support Desk. A guardrail that blocks is the control working and produces no finding; only a degraded one does.</p>
+<figure><img src="/posts/images/evidence-5.png" alt="Compliance evidence in the FastAIAgent console" loading="lazy"><figcaption>Two findings, neither filed by a human, each naming its system, article and control.</figcaption></figure>
+<h3>5 · The record itself is verifiable</h3>
+<p>Every compliance act — registration, classification, each verdict, each evidence attach or detach, each finding — is appended to a per-tenant SHA-256 hash chain, in the same database transaction as the act itself. You cannot do the thing without creating the record.</p>
+<figure><img src="/posts/images/evidence-6.png" alt="Compliance evidence in the FastAIAgent console" loading="lazy"><figcaption>The ledger, with the integrity check re-run on load.</figcaption></figure>
+<p>The integrity check is an endpoint, not a claim in a brochure. It walks the chain and reports the first row where a hash or a link fails — catching an edit, a deletion or a reordering:</p>
+<pre><code>GET /api/v1/compliance/event-log/verify
+  →  {&quot;valid&quot;: true, &quot;total&quot;: 293, &quot;broken_at&quot;: null}</code></pre>
+<p>Stated precisely: this is tamper-evident, not tamper-proof. Nothing physically stops a database administrator from editing a row — the chain is what makes it impossible to do so undetected, which is what an auditor actually needs.</p>
+<h3>What this does not do</h3>
+<figure><img src="/posts/images/evidence-7.png" alt="Compliance evidence in the FastAIAgent console" loading="lazy"><figcaption>Compliance evidence in the FastAIAgent console</figcaption></figure>
+<p>What a compliance officer can demonstrate here that a spreadsheet cannot: that the thing being assessed is the thing that runs; that the obligation set was derived rather than chosen; that the evidence is the actual record, linked and frozen; that evidence cannot vanish unnoticed; that some breaches surface without anyone looking; and that the record of all of it is verifiable.</p>
+<p>FastAIAgent Enterprise — a control plane for governing AI agents, deployable on-premises or as managed SaaS.</p>
+<p>Check out : <a href="https://fastaiagent.net/" target="_blank" rel="noopener">https://fastaiagent.net/</a></p>
+<p>If you're working through AI Act readiness, get in touch — happy to show you what the evidence layer looks like against a real agent.</p>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

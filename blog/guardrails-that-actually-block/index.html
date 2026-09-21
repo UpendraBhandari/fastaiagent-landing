@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="guardrails-that-actually-block"</script>
+<title>Guardrails That Actually Block — FastAIAgent</title>
+<meta name="description" content="Most guardrails observe and report. A guardrail that cannot stop the action is a log line with good intentions. Policy checked before the agent acts.">
+<link rel="canonical" href="https://fastaiagent.net/blog/guardrails-that-actually-block/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Guardrails That Actually Block">
+<meta property="og:description" content="Most guardrails observe and report. A guardrail that cannot stop the action is a log line with good intentions. Policy checked before the agent acts.">
+<meta property="og:url" content="https://fastaiagent.net/blog/guardrails-that-actually-block/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/guardrails-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-07-26T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Guardrails">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Guardrails That Actually Block">
+<meta name="twitter:description" content="Most guardrails observe and report. A guardrail that cannot stop the action is a log line with good intentions. Policy checked before the agent acts.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/guardrails-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>Guardrails That Actually Block</h1>
+<p>Most guardrails observe and report. A guardrail that cannot stop the action is a log line with good intentions. Policy checked before the agent acts.</p>
+<p>Jul 26, 2026 · Upendra Bhandari · Guardrails</p>
+<img src="/posts/images/guardrails-cover.jpg" alt="">
+<p>Most &quot;AI guardrails&quot; are smoke detectors wired to a notebook: they notice the fire and write it down — after the agent has already sent the reply with the customer's SSN in it. That isn't a guardrail. A guardrail stops the thing before it happens, and stopping something before it happens means standing in the execution path, at the moment of action, with the authority to halt it. A tool that watches your agent from the outside can flag a bad output after the fact; it can never block one, because it was never holding the wheel.</p>
+<p>This is about guardrails that hold the wheel.</p>
+<h3>Four moments to intervene</h3>
+<p>An agent turn has only a few points where things go wrong, and a guardrail can sit at each one:</p>
+<ul><li>input — before the model sees the message; catch a prompt injection.</li><li>output — before the reply leaves; catch PII, secrets, or toxicity.</li><li>tool_call — before a tool runs; inspect the arguments and block a URL that isn't on your allowlist.</li><li>tool_result — after a tool returns, before the agent acts on what came back.</li></ul>
+<p>You declare where each guardrail runs; the runtime calls it at exactly that moment.</p>
+<pre><code class="lang-python">from fastaiagent import Agent, LLMClient, no_pii, no_prompt_injection, json_valid
+
+agent = Agent(
+    name=&quot;support-bot&quot;,
+    llm=LLMClient(provider=&quot;openai&quot;, model=&quot;gpt-4o&quot;),
+    guardrails=[no_prompt_injection(), no_pii(), json_valid()],
+)</code></pre>
+<h3>Block, or just flag — you choose</h3>
+<p>When a guardrail runs it returns pass or fail; what a failure does is one flag. A blocking guardrail — the default — raises GuardrailBlockedError and halts the run the instant it fails: the reply is never sent, the tool never called. A non-blocking one records that it fired and lets the run continue — what you want while you're still measuring how often a check would trip before you enforce it (toxicity_check(blocking=False)).</p>
+<p>One honest detail: a block terminates the run. There's no silent retry behind your back — control returns to you to decide what happens next. A guardrail that quietly retried around itself would be one you couldn't trust.</p>
+<p>You rarely write these from scratch. FastAIAgent ships the common checks as one import — no_pii(), no_secrets(), no_prompt_injection(), json_valid(), allowed_domains(...), toxicity_check(), grounded(...), and the responsible_ai(...) bundle. The deterministic ones — PII, secrets, JSON — are pure rules (a regex, a checksum, a parse), so they can't time out or degrade. When none fit, a custom guardrail is just a callable: return falsy to block, truthy to pass.</p>
+<h3>See every guardrail fire</h3>
+<p>A guardrail you can't observe is one you can't trust. Every evaluation — pass and block — emits its own trace span, and the Local UI has a dedicated Guardrail Events view: every rule that fired, with its type, position, outcome, and agent, plus a detail that ties each event back to the span that triggered it. When someone asks whether your PII guard is actually catching anything, you look instead of guess.</p>
+<figure><img src="/posts/images/guardrails-1.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>Guardrails in the FastAIAgent Local UI</figcaption></figure>
+<figure><img src="/posts/images/guardrails-2.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>Guardrails in the FastAIAgent Local UI</figcaption></figure>
+<h3>The failure mode nobody advertises</h3>
+<p>Here's the part most guardrail libraries leave off the box: the check itself can fail. A model-judged guardrail — &quot;is this toxic?&quot;, &quot;is this grounded?&quot; — isn't a rule, it's an LLM call, and LLM calls time out, rate-limit, and throw 401s when a key rotates. When that call fails, the check didn't pass and didn't block. It errored. For years the result was silent: some checks failed open, some failed closed, none of it configurable — and a fail-open looked exactly like a clean pass in your logs. Your moderation API could be down for an hour, every reply sailing through unchecked, and your dashboard would show a wall of green.</p>
+<p>FastAIAgent 1.44 makes you answer the question on purpose:</p>
+<pre><code>toxicity_check(mode=&quot;llm&quot;, on_error=&quot;block&quot;)   # fail closed — an errored check blocks
+toxicity_check(mode=&quot;llm&quot;, on_error=&quot;allow&quot;)   # fail open  — an errored check passes through</code></pre>
+<p>Which one is correct depends on the agent: a compliance bot would rather block than guess; a high-traffic assistant would rather keep serving than let a flaky API take it offline. Only you know which. And the failure is never silent again — a check that couldn't run is flagged errored, a distinct outcome rather than a pass, with its own span signal and its own row in the Local UI. The fail-open that used to hide in the green now shows up as exactly what it is.</p>
+<figure><img src="/posts/images/guardrails-3.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>SDK UI : Provides detail information on the Guardrail.</figcaption></figure>
+<h3>Who actually blocks? The runtime does</h3>
+<p>When a guardrail blocks, what blocks it? For a connected agent, always the local runtime — in-process, in the execution path, before the action proceeds. That's the split every mature policy system uses: policy is authored centrally and enforced at the edge. A centrally-defined guardrail (its on_error mode included) is pulled once over a version-hashed endpoint and cached — never asked per request, because at enforcement time there's nothing to ask.</p>
+<figure><img src="/posts/images/guardrails-4.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>Authored centrally, enforced at the edge. Policy is pulled once and cached; the guardrail blocks in-process before the action; evidence flows back up.</figcaption></figure>
+<p>It runs in both directions. A guardrail an admin creates on the plane — with no code in your agent — is pulled on connect and enforced by that same runtime; a connected agent with no local guardrails still blocks on it. So the control plane's job is author, distribute, and detect — never a kill switch. Where it can't guarantee local enforcement happened, it doesn't pretend to have blocked — it records a violation after the fact. For an auditor, that detective control is stronger than a claimed plane-side block: it proves the control operated when it did, and flags precisely when it didn't.</p>
+<h3>From a failed check to compliance evidence</h3>
+<p>Connect to the Enterprise plane and these signals ride the wire you already have. Every run arrives as a trace, and every guardrail evaluation arrives as a span inside it — the same record that shows the LLM and tool calls shows each guardrail that fired, pass or block.</p>
+<p><figure><img src="/posts/images/guardrails-5.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>On the Enterprise plane: the guardrail spans (no_pii, toxicity, moderation) sit right beside the LLM call.</figcaption></figure></p>
+<p>From there, the plane persists and distributes each guardrail's on_error policy, surfaces errored as a queryable feed instead of raw span JSON, and turns it into regulatory evidence: an errored-and-fail-open event on a system registered as high-risk becomes a control-non-operational finding under the EU AI Act — severity scaled by the system's risk tier — written to a hash-chained, tamper-evident ledger on a Compliance → Violations page. A scheduled job derives it automatically.</p>
+<figure><img src="/posts/images/guardrails-6.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>Enterprise Plane : Violations based on EU AI Act.</figcaption></figure>
+<p>What that hands a compliance officer isn't a claim (&quot;we have guardrails&quot;) but a dated, tamper-evident record that a required safety control went non-operational for this system, at this time, at this severity — and, when it operated correctly, that too. Only agents registered as compliance AI systems, with post-market monitoring, are evaluated this way; an ordinary agent doesn't manufacture violations out of a transient error.</p>
+<figure><img src="/posts/images/guardrails-7.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>Enterprise Plane : AI Compliance Dashboard based on EU AI Act.</figcaption></figure>
+<h3>The point</h3>
+<p>A guardrail earns the name by doing three things a logger can't: it runs inside the agent at the moment of action, it stops the thing rather than noting it, and it tells you the truth about its own health — including the moment it couldn't run. Watching is easy; a dozen tools do it. Blocking requires being the runtime. Your agent is about to say something, call something, do something — and the only guardrail worth having is the one standing in the doorway, not the one writing the incident report</p>
+<figure><img src="/posts/images/guardrails-8.png" alt="Guardrails in the FastAIAgent Local UI" loading="lazy"><figcaption>Enterprise +SDK = A Complete Agent Harness.</figcaption></figure>
+<p>FastAIAgent is an open-source agent harness. pip install fastaiagent → <a href="http://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">github.com/fastaifoundry/fastaiagent-sdk</a></p>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover, error: this.state.error,
+      inSeries: i >= 0,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@ tag: Announcement
 minutes: 6
 summary: Five articles on what's broken in agent infrastructure. This is the one where I stop complaining and ship: FastAIAgent, open source, Apache 2.0, runs locally.
 author: Upendra Bhandari
-cover: ./posts/images/fastaiagent-launch-cover.jpg
+cover: /posts/images/fastaiagent-launch-cover.jpg
 ---
 
 You've read five articles about what's broken in agent infrastructure. This is the one where I stop complaining and tell you what I'm shipping.
@@ -66,7 +66,7 @@ Three things — and one of them is the reason the other two matter.
 
 Every working AI agent is a stack of six layers. Guardrails and constraints. Context and memory. Planning and orchestration. Tool management. Model execution. Observability and feedback — with a loop from layer six back to layer one. The harness is whatever wraps all six.
 
-![The six layers of an agent harness](./posts/images/six-layers-agent-harness.png "The six layers of an agent harness, with the feedback loop running from observability back to guardrails.")
+![The six layers of an agent harness](/posts/images/six-layers-agent-harness.png "The six layers of an agent harness, with the feedback loop running from observability back to guardrails.")
 
 The articles in this series each pointed at one or two layers. Prompts sit in context. RAG sits in context. Evals and tracing sit in observability. HITL sits in planning and tool management. Guardrails and model execution didn't get articles yet — they will. The SDK covers all six layers, with the feedback loop closing the system. That's the shape. The rest is implementation detail.
 

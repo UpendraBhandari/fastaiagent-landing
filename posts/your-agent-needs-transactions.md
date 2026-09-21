@@ -7,7 +7,7 @@ summary: Databases solved this 40 years ago. Every framework gives agents tools 
 author: Upendra Bhandari
 series: The Agent Debugging Manifesto
 part: 3
-cover: ./posts/images/transactions-cover.jpg
+cover: /posts/images/transactions-cover.jpg
 ---
 
 Databases solved this 40 years ago. If a bank transfer debits one account and the system crashes before crediting the other, the transaction rolls back. No money vanishes. No state is half-done. ACID guarantees — Atomicity, Consistency, Isolation, Durability — are why you trust your database.
@@ -241,7 +241,7 @@ The missing piece isn't retry logic. It's the ACID properties that databases hav
 
 ## Where this fits in the loop
 
-The [closed loop](./post.html?slug=every-production-failure-becomes-a-test) is: develop → trace → replay → fix → regression test → eval.
+The [closed loop](/blog/every-production-failure-becomes-a-test/) is: develop → trace → replay → fix → regression test → eval.
 
 ACID properties operate before the loop. A double-charge isn't a wrong answer you detect in an eval. No scorer catches it. No regression test prevents it. It's a side effect in the real world that happens because the infrastructure failed, not because the agent reasoned badly.
 
