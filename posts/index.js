@@ -2,5 +2,6 @@
 window.FA_POST_SLUGS = [
   "regression-from-trace",
   "guardrail-audit-closed",
-  "eval-invalid-not-green"
+  "eval-invalid-not-green",
+  "done-complaining-heres-what-im-shipping"
 ];
