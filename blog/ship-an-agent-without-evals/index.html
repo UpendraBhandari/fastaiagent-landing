@@ -91,15 +91,15 @@ def test_refund_policy(evaluate_one):
 <p>Or gate a script explicitly — run evaluate(), check Scorecard.from_eval_results(results).overall_pass_rate, and sys.exit(1) below your bar. Either way a regression turns the build red and the bad change doesn't merge. The green check, restored.</p>
 <h3>You can see all of it</h3>
 <p>Every run persists to a local SQLite DB, and the bundled UI reads straight from it (fastaiagent ui start) — no cloud account, nothing to configure.</p>
-<figure><img src="/posts/images/evals-1.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<figure><img src="/posts/images/evals-1.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"></figure>
 <p>Every run shows up — quality as a line over time, not a launch-day screenshot.</p>
-<figure><img src="/posts/images/evals-2.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<figure><img src="/posts/images/evals-2.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"></figure>
 <p>Click into a run: every case, its expected vs. actual output, and a pass/fail from each scorer</p>
-<figure><img src="/posts/images/evals-3.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<figure><img src="/posts/images/evals-3.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"></figure>
 <p>Compare two runs and the regression surfaces by itself — the exact input and the exact scorer that broke. And it isn't only a viewer — it's where you build the suite too:</p>
-<figure><img src="/posts/images/evals-4.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<figure><img src="/posts/images/evals-4.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"></figure>
 <p>Your datasets, created here or dropped in by eval curate.</p>
-<figure><img src="/posts/images/evals-5.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"><figcaption>Evaluation in the FastAIAgent Local UI</figcaption></figure>
+<figure><img src="/posts/images/evals-5.png" alt="Evaluation in the FastAIAgent Local UI" loading="lazy"></figure>
 <p>Fill in a curated case's expected answer and hit Run eval — no script-edit-rerun loop. (Two cases here are still waiting for a gold answer.)</p>
 <h3>Honest scope</h3>
 <ul><li>Offline. Eval runs against a dataset — there's no scoring of live traffic in the SDK. Continuous, online eval is a Platform layer.</li><li>No turnkey CI gate. No shipped GitHub Action; you wire eval in via pytest or the exit-code script above.</li><li>Trajectory scoring is standalone — applied to a run's tool calls, not auto-wired into evaluate().</li></ul>

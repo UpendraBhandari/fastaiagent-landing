@@ -34,7 +34,7 @@
 <p>Use the simplest thing that reliably does the job, and only let the model decide what happens next when you genuinely cannot know the next step until you have seen the last one.</p>
 <p>Aug 15, 2026 · Upendra Bhandari · Architecture</p>
 <img src="/posts/images/where-ai-cover.jpg" alt="">
-<figure><img src="/posts/images/where-ai-1.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-1.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <p>Two mistakes keep happening. One is dropping a language model into logic you already knew how to write. The other is forcing messy, document-heavy work into hundreds of brittle rules. Both come from picking the technology before working out what kind of problem you have.</p>
 <p>A simple rule helps: use the simplest thing that reliably does the job, and only let the model decide what happens next when you genuinely can't know the next step until you see the last one.</p>
 <h3>Use the simplest thing that does the job</h3>
@@ -44,9 +44,9 @@
 <figure><img src="/posts/images/where-ai-3.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>A single model call can solve a genuinely valuable problem. That alone doesn't make it an agent.</figcaption></figure>
 <h3>Agentic is a dial</h3>
 <p>The question isn't whether a system is agentic. It's how much of the path the model owns — which is a separate question from how much damage it can do.</p>
-<figure><img src="/posts/images/where-ai-4.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-4.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <p>This dial does not measure risk. A very agentic research assistant with read-only access is safer than a fixed workflow that can approve payments. How much path the model owns and how much authority it can reach are two separate dials.</p>
-<figure><img src="/posts/images/where-ai-5.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-5.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <h3>The most important architecture decision: the seam</h3>
 <p>Most discussions ask “rules or AI?” It's usually both. What matters is where you draw the line between what the model decides and what the system decides.</p>
 <p>A model can read, investigate and recommend. It just shouldn't be the last step before something happens that you can't take back — money moving, access being granted, a customer being approved. Put a rule, a permission check, or a person in between.</p>
@@ -56,23 +56,23 @@
 <p>Picking which document to look at next and approving a customer are both things a model could technically do. They shouldn't get the same freedom. Let an agent explore widely, and keep it on a short leash where it counts.</p>
 <h3>Worked examples: the pattern is hybrid</h3>
 <p>All four use AI, just not in the same place. The pattern that works is a mix: the model reads or investigates, fixed logic applies the policy, and a person owns the calls that matter.</p>
-<figure><img src="/posts/images/where-ai-7.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-7.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <p>KYC shows it best. The model reads the documents, written policy stays as rules, and an agent earns its place only in the exception path, where you can't know in advance what to check. AML leaves the detection layer alone and brings in AI after the alert fires. Internal policy Q&amp;A often needs nothing more than search plus one grounded answer.</p>
-<figure><img src="/posts/images/where-ai-8.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-8.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <h3>Five questions that should make you give the model less freedom</h3>
 <p>The model might be perfectly capable. The design still has to match what a mistake costs, what you can explain, and who answers for it.</p>
-<figure><img src="/posts/images/where-ai-9.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-9.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <h3>The trade that agentic systems create</h3>
 <p>Normal automation earns trust by being predictable. Known input plus known rule equals known outcome. You can read the rule, test it, and run it again.</p>
 <p>GenAI already makes the output less predictable. Agents add two more kinds: the path varies, and when tools are involved, so do the actions. The model picks what to fetch, which tool to call, whether to keep going, and when it's done. You get something a fixed workflow can't do — but you gave something up.</p>
 <figure><img src="/posts/images/where-ai-10.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Watching isn't enough. It tells you what already happened. Something also has to decide what's allowed to happen next.</figcaption></figure>
 <h3>The more freedom you give, the more the runtime has to prove</h3>
-<figure><img src="/posts/images/where-ai-11.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-11.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <p>Execution boundaries are the ones people forget: least-privilege tool access, scoped credentials, limits on how many actions one run can take, and a way to stop and roll back. Evidence tells you what went wrong. Boundaries decide how much one bad run can break.</p>
 <p>A framework helps the agent think and act. A harness makes that run controlled, inspectable, recoverable and accountable. The further down the dial you go, the more you need it: a fixed workflow needs very little, a planning system needs a lot. The controls should grow with the freedom.</p>
 <h3>Where this leaves us</h3>
 <p>The goal isn't the most autonomous system you can build. It's the simplest one that does the job well. Rules, classical ML, a single GenAI call, and plain workflows are all still enormously useful. Agents earn their place when you genuinely can't know the steps in advance.</p>
-<figure><img src="/posts/images/where-ai-12.png" alt="Where AI belongs in the system" loading="lazy"><figcaption>Where AI belongs in the system</figcaption></figure>
+<figure><img src="/posts/images/where-ai-12.png" alt="Where AI belongs in the system" loading="lazy"></figure>
 <p>This thinking is also what led us to build FastAIAgent: an open-source harness that makes runtime evidence, controls, recovery, and evaluation properties of the system rather than plumbing you rebuild on every project.</p>
 <p>FastAIAgent - Open Source Agent harness : <a href="http://github.com/fastaifoundry/fastaiagent-sdk" target="_blank" rel="noopener">github.com/fastaifoundry/fastaiagent-sdk</a></p>
 </article>

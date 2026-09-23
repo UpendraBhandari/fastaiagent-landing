@@ -42,13 +42,13 @@
 <h3>1. The AI engineer — &quot;Can I build this, and fix it when it breaks at 2am?&quot;</h3>
 <p>Building is the easy part now. Fixing is where it hurts. Something went wrong in production, you've got one log line, and you can't reproduce it.</p>
 <p>Everything you need locally comes with one install. pip install 'fastaiagent[ui]', run fastaiagent ui, and you've got a trace explorer on port 7842 backed by a single SQLite file in your project. No Docker, no server, no account. Nothing leaves your machine.</p>
-<figure><img src="/posts/images/five-people-1.png" alt="Agent platform roles" loading="lazy"><figcaption>Agent platform roles</figcaption></figure>
+<figure><img src="/posts/images/five-people-1.png" alt="Agent platform roles" loading="lazy"></figure>
 <p>Open a trace and you see the whole run: every model call, tool call, retrieval, and memory read, with timing, tokens, cost, and guardrail checks right there in the tree.</p>
 <p>When something breaks in production, you finish the job in Enterprise. Pull up the failing trace and replay it — change the prompt, run it again against the recorded run, and compare. Replay knows which tools are safe to actually call: read-only tools run for real, anything that might have side effects gets its recorded output played back instead. Your payment API doesn't get hit twice because you were debugging.</p>
 <p>Then save that failure as a test, publish the fixed prompt, and every agent picks it up on the next pull. No redeploy. Prompts have versions, branches, diffs, and rollback, and every trace records which version produced it — so &quot;which prompt said that?&quot; always has an answer.</p>
 <h3>2. The tester — &quot;How do I know it works, and stays working?&quot;</h3>
 <p>The question that matters isn't whether it passed once. It's whether CI goes red when someone breaks it next month.</p>
-<figure><img src="/posts/images/five-people-2.png" alt="Agent platform roles" loading="lazy"><figcaption>Agent platform roles</figcaption></figure>
+<figure><img src="/posts/images/five-people-2.png" alt="Agent platform roles" loading="lazy"></figure>
 <p>You get a pytest gate that needs no API keys and no infrastructure. Install the SDK and the plugin registers itself. Write your cases as tests, and a failing score fails the test:</p>
 <p>python</p>
 <pre><code class="lang-python">@case(input=&quot;What is the capital of France?&quot;, expected=&quot;Paris&quot;)
@@ -61,7 +61,7 @@ def test_capital_gate(evaluate_one):
 <h3>3. The architect — &quot;Will this scale across teams, or become five different stacks?&quot;</h3>
 <p>This is what decides whether you have a platform or a pile of projects. It comes down to one thing: can you define something once and have every team use it at runtime?</p>
 <p>For prompts, scorers, datasets, knowledge bases, and guardrail policy — yes. One line of code pulls each of them:</p>
-<figure><img src="/posts/images/five-people-3.png" alt="Agent platform roles" loading="lazy"><figcaption>Agent platform roles</figcaption></figure>
+<figure><img src="/posts/images/five-people-3.png" alt="Agent platform roles" loading="lazy"></figure>
 <p>python</p>
 <pre><code class="lang-python">prompt = PromptRegistry().get(&quot;refund-policy&quot;, version=&quot;2.1&quot;)
 scorer = Scorer.from_platform(&quot;groundedness&quot;)</code></pre>
@@ -73,14 +73,14 @@ scorer = Scorer.from_platform(&quot;groundedness&quot;)</code></pre>
 <h3>4. The head of IT and engineering — &quot;What am I running, and what are my teams doing?&quot;</h3>
 <p>Two problems, same person: the platform, and the people using it.</p>
 <p>On what you have to run, the answer is mostly &quot;nothing.&quot; The SDK needs no infrastructure at all. One pip install, one SQLite file, a local UI. Nothing leaves the machine unless someone calls connect(). Your teams can try it, build with it, and decide whether they like it without a procurement cycle, a security review, or a ticket to you. You stop being the bottleneck.</p>
-<figure><img src="/posts/images/five-people-4.png" alt="Agent platform roles" loading="lazy"><figcaption>Agent platform roles</figcaption></figure>
+<figure><img src="/posts/images/five-people-4.png" alt="Agent platform roles" loading="lazy"></figure>
 <p>When you do want Enterprise, it runs on your own infrastructure. There's a real air-gapped install path — a bundler that packages everything with checksums so you can carry it to a disconnected network. Self-hosted, it can point at a local model instead of a cloud provider, so the features that need an LLM don't need egress. And it plugs into the identity you already have with OIDC and SAML.</p>
 <p>On what your teams are doing, the useful one is knowing which agents went dark. One screen tells you which agents are registered, which are actually sending traces, which are registered but silent — and which are running and reporting but were never registered at all. That last group is the one nobody else shows you. Alongside it: which SDK version each instance is on, runner health, and usage, tokens, latency, success rate, and estimated cost rolled up by agent and project.</p>
 <p>There's one more view that sounds boring and isn't: how many runs across every project are paused right now waiting on a person. Agents that stop for approval don't crash — they just wait, quietly, sometimes for days. One board shows the whole backlog. It's the difference between &quot;the agent seems slow&quot; and &quot;eleven runs have been sitting with compliance since Thursday.&quot;</p>
 <h3>5. The CISO — &quot;What can it do without a human, and can you prove what it did?&quot;</h3>
 <p>This is the meeting that kills agent projects, usually because someone answers a security question with marketing.</p>
 <p>So here's the honest starting point: Enterprise cannot stop a running agent. It doesn't pretend to.</p>
-<figure><img src="/posts/images/five-people-5.png" alt="Agent platform roles" loading="lazy"><figcaption>Agent platform roles</figcaption></figure>
+<figure><img src="/posts/images/five-people-5.png" alt="Agent platform roles" loading="lazy"></figure>
 <p>The block happens locally. The SDK is what's running your agent, so the SDK is what stops it — in-process, before the action, because that's the only place a block can really happen. Policy is written in Enterprise and pushed down. Enterprise decides, the runtime enforces. The one exception is hosted tool calls, where Enterprise is the one making the call — there it blocks outright, and it fails closed: if the governance check errors or a credential can't be resolved, the call is denied.</p>
 <p>When Enterprise can't be sure the local block happened, it doesn't claim one. It records a violation afterward. For an auditor that's actually more useful than a claimed block, because it proves the control was working — and shows exactly when it wasn't.</p>
 <p>The compliance layer is the deepest part of the product. An EU AI Act engine with sixty-five controls, risk templates, Annex IV documentation, a guided questionnaire, and dossier export. Compliance events go into a hash-chained ledger you can verify — tamper-evident, not just append-only by convention.</p>

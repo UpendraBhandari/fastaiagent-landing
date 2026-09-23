@@ -7,7 +7,9 @@
     s = esc(s);
     s = s.replace(/`([^`]+)`/g, (_, c) => '<code>' + c + '</code>');
     s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+(?:"|&quot;)(.*?)(?:"|&quot;))?\)/g, (_, alt, src, title) => {
-      const cap = (title || alt) ? '<figcaption>' + (title || alt) + '</figcaption>' : '';
+      // Caption only from an explicit title. Alt text is for screen readers and is
+      // never shown, so it can't surface as a caption the author didn't write.
+      const cap = title ? '<figcaption>' + title + '</figcaption>' : '';
       // A video source renders as a player. Poster is the same path with a
       // .jpg extension, so a still is shown before playback and in previews.
       if (/\.(mp4|webm)$/i.test(src)) {
