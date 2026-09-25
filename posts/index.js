@@ -1,5 +1,6 @@
 // Blog manifest: list post slugs, newest first. Each slug maps to posts/<slug>.md
 window.FA_POST_SLUGS = [
+  "traces-the-flight-recorder",
   "online-evaluation-policies",
   "how-many-answers-has-anyone-read",
   "which-agents-would-fail-an-eu-ai-act-audit",

@@ -6,7 +6,16 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Mon, 21 Sep 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 25 Sep 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Every Agent Run Has a Flight Recorder</title>
+      <link>https://fastaiagent.net/blog/traces-the-flight-recorder/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/traces-the-flight-recorder/</guid>
+      <pubDate>Fri, 25 Sep 2026 12:00:00 GMT</pubDate>
+      <description>Every run the SDK pushes lands on the plane as a trace — every model call, tool call, retrieval and guardrail verdict, in order, with what it cost. Including the runs that failed, and exactly why.</description>
+      <category>Observability</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
     <item>
       <title>Your Evals Test the Dataset. Production Tests the Agent.</title>
       <link>https://fastaiagent.net/blog/online-evaluation-policies/</link>
