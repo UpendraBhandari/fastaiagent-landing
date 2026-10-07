@@ -2,21 +2,61 @@
 <html>
 <head>
 <meta charset="utf-8">
+<base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script>window.FA_POST_SLUG="evaluation-part-1-before-it-ships"</script>
+<title>A Prompt Change Is About to Ship. Should It? — FastAIAgent</title>
+<meta name="description" content="Part 1 of a three-part series on evaluation. Most agent changes ship on a hand test and an LLM judge's approval. Here is why that misses the regressions that matter, and what a real release gate looks like.">
+<link rel="canonical" href="https://fastaiagent.net/blog/evaluation-part-1-before-it-ships/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Prompt Change Is About to Ship. Should It?">
+<meta property="og:description" content="Part 1 of a three-part series on evaluation. Most agent changes ship on a hand test and an LLM judge's approval. Here is why that misses the regressions that matter, and what a real release gate looks like.">
+<meta property="og:url" content="https://fastaiagent.net/blog/evaluation-part-1-before-it-ships/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/evaluation-part1-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-10-08T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Evaluation">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A Prompt Change Is About to Ship. Should It?">
+<meta name="twitter:description" content="Part 1 of a three-part series on evaluation. Most agent changes ship on a hand test and an LLM judge's approval. Here is why that misses the regressions that matter, and what a real release gate looks like.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/evaluation-part1-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
 <script>window.FA_DEFER_PAGEVIEW=1</script>
-<script src="./analytics.js"></script>
+<script src="/analytics.js"></script>
 </head>
 <body>
+<div id="prerender">
+<article>
+<h1>A Prompt Change Is About to Ship. Should It?</h1>
+<p>Part 1 of a three-part series on evaluation. Most agent changes ship on a hand test and an LLM judge's approval. Here is why that misses the regressions that matter, and what a real release gate looks like.</p>
+<p>Oct 8, 2026 · Upendra Bhandari · Evaluation</p>
+<img src="/posts/images/evaluation-part1-cover.jpg" alt="">
+<p>Most prompt changes ship the same way: someone tries a few questions, the answers look right, and it goes out. If there is an eval at all, it is a single LLM judge asking &quot;is this answer good?&quot;</p>
+<p>This is part 1 of three: before a change ships, after it ships, and the instruments behind both.</p>
+<h3>The problem: right answers can still break things</h3>
+<p>A judge grades quality. It is blind to anything it was never asked about — and that is where most real regressions live.</p>
+<p>Rewrite a prompt to sound friendlier, and an agent that used to answer &quot;Paris&quot; now answers &quot;The capital of France is Paris.&quot; Every answer is still correct, so the judge passes all of them. But whatever consumed that answer expected one word, and now it breaks — in production, after the change has shipped.</p>
+<p>And a pass in a CI log is gone the moment someone needs to prove what was tested, or why a change was allowed through.</p>
+<h3>The solution: a gate with more than one instrument</h3>
+<p>FastAIAgent runs the eval suite where the agent runs — in your CI, against a dataset and judge governed centrally on the plane. No agent code leaves your environment; only the verdict comes back.</p>
+<p>Every case is scored by several instruments at once — a judge for quality beside deterministic checks like exact match. When they disagree, that is the finding. The candidate is compared to the last good run, and a failing gate turns the pipeline red.</p>
+<figure><video controls playsinline preload="metadata" poster="/posts/videos/evaluation-part1-before-it-ships.jpg"><source src="/posts/videos/evaluation-part1-before-it-ships.mp4" type="video/mp4">Evaluation before a change ships</video><figcaption>A candidate prompt at 67% against a baseline of 100%: the judge passed every answer, exact match failed four, and the gate stopped the change.</figcaption></figure>
+<p>In the film, the judge passes every answer, exact match fails four, and the change never ships. The plane keeps the verdict and the evidence, so &quot;why was this blocked?&quot; has an answer months later.</p>
+<p><strong>Part 2</strong> follows the change into production, where the suite can no longer see it. <strong>Part 3</strong> opens up the instruments themselves.</p>
+</article>
+</div>
 <x-dc>
 <helmet>
-  <title>Blog — FastAIAgent</title>
-  <link rel="icon" href="./assets/logo-dark.svg">
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
-  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="./feed.xml">
-  <link rel="stylesheet" href="./theme.css">
-  <script src="./markdown.js"></script>
-  <script src="./posts/series.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
   <style>
     .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
     .post-body>*+*{margin-top:22px}
@@ -40,14 +80,14 @@
 
 <article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
   <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
-    <a href="./blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
     <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
       <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
     </sc-if>
     <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><sc-if value="{{ isVideo }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 7px;border:1px solid var(--line-2);border-radius:999px;color:var(--ink-2)">▶ Video</span></sc-if><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
     <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
     <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
-    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="./assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
     <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
     <div class="post-body" style="margin-top:36px">{{ body }}</div>
     <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>

@@ -222,7 +222,7 @@ class Component extends DCLogic {
     return {
       meta, body, hasCover: !!meta.cover, error: this.state.error,
       inSeries: i >= 0, isVideo: meta.kind === 'video',
-      seriesName: meta.series, seriesPart: i + 1, seriesTotal: list.length,
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: (list[0] && list[0].of) || list.length,
       seriesFirstHref: list.length ? href(list[0].slug) : '',
       hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
       hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',

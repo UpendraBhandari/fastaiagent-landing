@@ -62,7 +62,7 @@ class Component extends DCLogic {
     const posts = this.state.posts.map(m => {
       const list = (m.series && S[m.series]) || [];
       return { ...m, href: '/blog/' + m.slug + '/', hasCover: !!m.cover,
-               inSeries: list.length > 0, seriesTotal: list.length,
+               inSeries: list.length > 0, seriesTotal: (list[0] && list[0].of) || list.length,
                isVideo: m.kind === 'video' };
     });
     return { posts, empty: this.state.loaded && posts.length === 0 };
