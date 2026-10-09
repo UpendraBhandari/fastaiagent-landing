@@ -6,6 +6,12 @@ window.FA_SERIES = {
       "title": "A Prompt Change Is About to Ship. Should It?",
       "part": 1,
       "of": 3
+    },
+    {
+      "slug": "evaluation-part-2-after-it-ships",
+      "title": "Tests Passed. Production Is Different.",
+      "part": 2,
+      "of": 3
     }
   ],
   "The Agent Debugging Manifesto": [

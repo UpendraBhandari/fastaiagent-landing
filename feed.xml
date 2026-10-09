@@ -6,7 +6,16 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Thu, 08 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 09 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Tests Passed. Production Is Different.</title>
+      <link>https://fastaiagent.net/blog/evaluation-part-2-after-it-ships/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/evaluation-part-2-after-it-ships/</guid>
+      <pubDate>Fri, 09 Oct 2026 12:00:00 GMT</pubDate>
+      <description>Part 2 of the Evaluation Series. Once a change ships, your test suite goes blind and the judge reports that all is well. Here is how a failure in production gets found, settled by a person, and turned into a test so it never ships twice.</description>
+      <category>Evaluation</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
     <item>
       <title>A Prompt Change Is About to Ship. Should It?</title>
       <link>https://fastaiagent.net/blog/evaluation-part-1-before-it-ships/</link>
