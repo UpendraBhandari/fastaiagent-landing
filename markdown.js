@@ -12,7 +12,15 @@
       const cap = title ? '<figcaption>' + title + '</figcaption>' : '';
       // A video source renders as a player. Poster is the same path with a
       // .jpg extension, so a still is shown before playback and in previews.
-      if (/\.(mp4|webm)$/i.test(src)) {
+      if (/\.(mp4|webm)(#portrait)?$/i.test(src)) {
+        // `#portrait` on the path says a <name>-portrait.mp4 cut (and .jpg poster) exists.
+        // Chosen once at render time on a phone held upright; the build's pre-render has
+        // no matchMedia and keeps the wide cut.
+        const portrait = /#portrait$/i.test(src);
+        src = src.replace(/#portrait$/i, '');
+        if (portrait && typeof matchMedia === 'function' &&
+            matchMedia('(max-width: 640px) and (orientation: portrait)').matches)
+          src = src.replace(/\.(mp4|webm)$/i, '-portrait.$1');
         const poster = src.replace(/\.(mp4|webm)$/i, '.jpg');
         return '<figure><video controls playsinline preload="metadata" poster="' + poster +
                '"><source src="' + src + '" type="video/' + (/\.webm$/i.test(src) ? 'webm' : 'mp4') +

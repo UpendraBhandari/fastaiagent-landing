@@ -112,6 +112,18 @@ from the video with ffmpeg rather than using LinkedIn's thumbnail, which has a
 play-button overlay burned in. Re-encode large files (`-vf scale=1280:-2 -crf
 24 -movflags +faststart`).
 
+**Portrait cut for phones.** A 1440-wide screen recording shrinks to about a
+quarter size on a phone held upright, so table text is unreadable. A video can
+ship a second, 4:5 cut as `<name>-portrait.mp4` + `<name>-portrait.jpg`;
+reference it as `<name>.mp4#portrait` and `markdown.js` picks it on a narrow
+portrait screen. Desktop and the pre-rendered copy keep the wide cut. The demo
+videos are not hand-edited: they come from Playwright recorders in
+`fastaiagent-enterprise/files_claude/articles/video/<topic>/` (gitignored),
+and `guardrails-portrait/` is the portrait variant — app filmed at 600×750,
+browser scale factor 1.8 so frames come out 1080×1350, cards re-flowed. Setting
+Playwright's `device_scale_factor` does **not** work for this: video is
+captured in CSS pixels and only ever scaled down.
+
 ## Analytics
 
 `analytics.js` holds the measurement ID once and is loaded from the native

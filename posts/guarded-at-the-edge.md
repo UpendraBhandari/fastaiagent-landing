@@ -19,7 +19,7 @@ In the FastAIAgent SDK a guardrail is one line — PII detection, model-judged t
 
 ## Governed from the plane
 
-![Guardrails authored centrally and enforced at the edge](/posts/videos/guarded-at-the-edge.mp4 "Activity, filtered to blocked: the wire-transfer request stopped at the edge by block_wire_requests, before it ever reached the model.")
+![Guardrails authored centrally and enforced at the edge](/posts/videos/guarded-at-the-edge.mp4#portrait "Activity, filtered to blocked: the wire-transfer request stopped at the edge by block_wire_requests, before it ever reached the model.")
 
 On the plane, the rules are a catalog: kind, action, severity, fail policy, and where each one is enforced. Author a rule there and every connected agent picks it up. Test it against sample text before it ships — PII masking rewrites the reply and records counts, never the values themselves.
 
