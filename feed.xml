@@ -6,7 +6,16 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sun, 11 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 14 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Every Eval Trusts an LLM Judge. Who Checks the Judge?</title>
+      <link>https://fastaiagent.net/blog/calibrate-your-llm-judge/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/calibrate-your-llm-judge/</guid>
+      <pubDate>Wed, 14 Oct 2026 12:00:00 GMT</pubDate>
+      <description>A naive LLM judge passes a warm reply that promises a refund support can&apos;t grant, and fails a blunt one that&apos;s exactly right. Calibrate the judge against your reviewers first — then let it tune your agent.</description>
+      <category>AutoLLM · SDK</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
     <item>
       <title>Your Labels Already Know the Better Prompt</title>
       <link>https://fastaiagent.net/blog/labels-know-the-better-prompt/</link>
