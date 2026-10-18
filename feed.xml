@@ -6,7 +6,16 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Wed, 14 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 18 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Everyone in the room said yes.</title>
+      <link>https://fastaiagent.net/blog/everyone-in-the-room-said-yes/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/everyone-in-the-room-said-yes/</guid>
+      <pubDate>Sun, 18 Oct 2026 12:00:00 GMT</pubDate>
+      <description>How AI risk and compliance actually runs inside a large European enterprise today — an inventory kept by asking around, evidence as attachments, verification as a &quot;yes&quot; in a meeting — and what a record would look like instead.</description>
+      <category>Compliance</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
     <item>
       <title>Every Eval Trusts an LLM Judge. Who Checks the Judge?</title>
       <link>https://fastaiagent.net/blog/calibrate-your-llm-judge/</link>
