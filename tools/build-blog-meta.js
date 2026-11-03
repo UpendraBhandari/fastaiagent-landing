@@ -107,7 +107,7 @@ posts.forEach(p => {
 <h1>${esc2(meta.title)}</h1>
 <p>${esc2(desc)}</p>
 <p>${esc2(meta.date)} · ${esc2(meta.author || '')}${meta.tag ? ' · ' + esc2(meta.tag) : ''}</p>
-${meta.cover ? `<img src="${esc2(meta.cover.replace(/^\./, ''))}" alt="">` : ''}
+${meta.cover && meta.hero !== 'false' ? `<img src="${esc2(meta.cover.replace(/^\./, ''))}" alt="">` : ''}
 ${renderMarkdown(body)}
 </article>
 </div>`;

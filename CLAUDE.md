@@ -94,7 +94,11 @@ Conversions that are always applied:
 `title`, `date` (`Sep 12, 2026`, display only), `tag` (topic), `summary`
 (the card blurb *and* the og:description — it is the first thing a reader
 sees), `author`, `minutes`, `cover`. Optional: `kind: video` for a ▶ Video
-badge, and `series` + `part` for the Agent Debugging Manifesto.
+badge; `series` + `part` to join a series (the Agent Debugging Manifesto, The
+Evaluation Series), plus `parts: 3` while a series is still being published so
+part 1 reads "Part 1 of 3" rather than "of 1"; and `hero: false` to keep the
+cover for the blog card and link preview but not show it above the post — use it
+when the cover would duplicate the post's first image or video.
 
 Manifest order in `posts/index.js` is display order, and must be newest-first.
 The build fails loudly if it is not — this silently drifted twice before the

@@ -28,6 +28,8 @@ Upload the contents of this folder to the root of the GitHub Pages branch.
    kind: video                            (optional; shows a Video badge)
    series: The Agent Debugging Manifesto  (optional, with part:)
    part: 5                                (optional, with series:)
+   parts: 3                               (optional; declared series length while unfinished)
+   hero: false                            (optional; cover used for card + preview only, not on the page)
    ---
 
    Markdown body. Headings (##), **bold**, *italic*, [links](https://…),

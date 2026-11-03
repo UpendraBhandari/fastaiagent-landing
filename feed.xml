@@ -6,7 +6,16 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sun, 18 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 03 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Keep your LangChain and CrewAI agents. Govern them anyway.</title>
+      <link>https://fastaiagent.net/blog/frameworks-on-the-plane/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/frameworks-on-the-plane/</guid>
+      <pubDate>Tue, 03 Nov 2026 12:00:00 GMT</pubDate>
+      <description>You don&apos;t have to rewrite an agent to put it under central control. LangChain, LangGraph and CrewAI agents on the FastAIAgent plane, observed with stock OpenTelemetry and governed with the SDK as a library — in screenshots from a real run.</description>
+      <category>Integrations</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
     <item>
       <title>Everyone in the room said yes.</title>
       <link>https://fastaiagent.net/blog/everyone-in-the-room-said-yes/</link>
