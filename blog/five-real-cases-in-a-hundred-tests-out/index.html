@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.FA_POST_SLUG="five-real-cases-in-a-hundred-tests-out"</script>
+<title>Five real cases in. A hundred tests out. — FastAIAgent</title>
+<meta name="description" content="Your best test data is already in production. Here is how FastAIAgent Enterprise turns a handful of real traces into a test set, in screenshots from a real run.">
+<link rel="canonical" href="https://fastaiagent.net/blog/five-real-cases-in-a-hundred-tests-out/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Five real cases in. A hundred tests out.">
+<meta property="og:description" content="Your best test data is already in production. Here is how FastAIAgent Enterprise turns a handful of real traces into a test set, in screenshots from a real run.">
+<meta property="og:url" content="https://fastaiagent.net/blog/five-real-cases-in-a-hundred-tests-out/">
+<meta property="og:image" content="https://fastaiagent.net/posts/images/synthetic-cover.jpg">
+<meta property="og:site_name" content="FastAIAgent">
+<meta property="article:published_time" content="2026-11-06T12:00:00.000Z">
+<meta property="article:author" content="Upendra Bhandari">
+<meta property="article:tag" content="Evaluation">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Five real cases in. A hundred tests out.">
+<meta name="twitter:description" content="Your best test data is already in production. Here is how FastAIAgent Enterprise turns a handful of real traces into a test set, in screenshots from a real run.">
+<meta name="twitter:image" content="https://fastaiagent.net/posts/images/synthetic-cover.jpg">
+<style>.js #prerender{display:none}</style>
+<script>document.documentElement.className+=' js'</script>
+<script src="/support.js"></script>
+<script>window.FA_DEFER_PAGEVIEW=1</script>
+<script src="/analytics.js"></script>
+</head>
+<body>
+<div id="prerender">
+<article>
+<h1>Five real cases in. A hundred tests out.</h1>
+<p>Your best test data is already in production. Here is how FastAIAgent Enterprise turns a handful of real traces into a test set, in screenshots from a real run.</p>
+<p>Nov 6, 2026 · Upendra Bhandari · Evaluation</p>
+
+<p>Ask a team shipping an AI agent how many test cases it has. Usually someone wrote ten by hand, and the set has not grown since. Production has no such limit. Customers ask the same thing in a hundred ways, in other languages, about edge cases nobody wrote down.</p>
+<p>Synthetic data closes that gap: give a model a few real examples and let it write many more in the same shape. The question is where the examples come from. On FastAIAgent Enterprise, they come from the traces your agents already send to the plane.</p>
+<figure><video controls playsinline preload="metadata" poster="/posts/videos/synthetic-five-in-a-hundred-out.jpg"><source src="/posts/videos/synthetic-five-in-a-hundred-out.mp4" type="video/mp4">Five real cases in, a hundred tests out: synthetic test data generated from production traces on FastAIAgent Enterprise</video><figcaption>The whole run in 90 seconds: five production traces become the seed, a hundred cases are generated and run on the agent's own runner, and eight failures turn out to be one real bug.</figcaption></figure>
+<h3>Start from what really happened</h3>
+<p>Every connected agent reports its runs as traces: the question it was asked and the answer it gave. Those are the best examples you have. On the Traces page, tick the ones you want and choose <strong>Generate test data</strong>.</p>
+<figure><img src="/posts/images/synthetic-01-traces-five-ticked.png" alt="The traces of a support agent, with five real conversations ticked and the Generate test data button." loading="lazy"><figcaption>The traces of a support agent, with five real conversations ticked and the Generate test data button.</figcaption></figure>
+<p>The wizard opens with those traces already picked. Each one becomes a seed row: its question as the input, its recorded answer as the expected answer. That makes the choice matter, so the picker shows each trace's feedback and scores. Pick answers you would want again.</p>
+<figure><img src="/posts/images/synthetic-02-wizard-from-traces.png" alt="The wizard on its From traces source, five of ten picked, each trace's question and answer visible." loading="lazy"><figcaption>The wizard on its From traces source, five of ten picked, each trace's question and answer visible.</figcaption></figure>
+<h3>Say what to vary, in plain words</h3>
+<p>The plane reads the shape of the seeds, a question and its answer, and takes instructions per column. Ours: <em>a customer's question to Northwind, an online shoe store; vary the tone; refunds past the 30-day window; no order number; one in Spanish; never a real name.</em></p>
+<figure><img src="/posts/images/synthetic-03-schema-conditions.png" alt="The detected schema, input and expected_output, with the conditions written in plain words." loading="lazy"><figcaption>The detected schema, input and expected_output, with the conditions written in plain words.</figcaption></figure>
+<p>That condition is the main lever. On a first attempt we left out &quot;shoe store&quot;, and the model drifted to rugs and candles. Name the domain and the cases stay on it.</p>
+<h3>A hundred cases in half a minute</h3>
+<p>Generation runs in the background on the model already configured for the project, so no data goes to a service you did not choose. In this run, 100 cases took 34 seconds: refunds past the window, missing order numbers, frustrated customers, four in Spanish. The seeds and every generated row are encrypted at rest under the customer's own key. The model is told not to reuse personal details from the examples, and any row that copies a seed is dropped.</p>
+<figure><img src="/posts/images/synthetic-04-generated-rows.png" alt="The job: 100 generated rows, and the export form with input and expected_output preselected and the five seed cases included." loading="lazy"><figcaption>The job: 100 generated rows, and the export form with input and expected_output preselected and the five seed cases included.</figcaption></figure>
+<p>One click saves them as an eval dataset. The real cases are tagged <code>seed</code> and the new ones <code>synthetic</code>, so a run can use either.</p>
+<h3>Run it where the agent runs</h3>
+<p>The plane never runs agent code. The suite goes to a registered runner in the customer's environment, which executes the agent with its real tools and sends the results back. The plane scores every case centrally, here with a correctness judge and a helpfulness judge.</p>
+<figure><img src="/posts/images/synthetic-05-runs-seed-vs-synthetic.png" alt="Two runs of the same suite: the five seeds, 5 of 5 passed; the hundred generated cases, 92 of 100 passed and 8 failed." loading="lazy"><figcaption>Two runs of the same suite: the five seeds, 5 of 5 passed; the hundred generated cases, 92 of 100 passed and 8 failed.</figcaption></figure>
+<p>The five real questions passed, as they would: their expected answers are the agent's own. The hundred found eight failures the seed set never had.</p>
+<h3>What the hundred found</h3>
+<p>All eight are refund questions about the 30-day window. In most, the customer says the shoes arrived in September, and the agent replies &quot;yes, as long as you're still within 30 days&quot;. It never works out that September is already past the window: it does not know today's date.</p>
+<figure><img src="/posts/images/synthetic-06-run-failures.png" alt="The hundred-case run filtered to its eight failures, each with its answer and the two judges' scores." loading="lazy"><figcaption>The hundred-case run filtered to its eight failures, each with its answer and the two judges' scores.</figcaption></figure>
+<p>The same mistake was already in production. Asked on 5 November about shoes delivered on 4 October, the agent said they were still inside the window. No one had written that test, because no one had thought of it. The fix is a design decision: give the agent the date, or a tool that checks eligibility. Whichever the team picks, these hundred cases now gate it.</p>
+<h3>The honest edges</h3>
+<p>The generated expected answers are a model's best reading of the policy, so read them before you rely on them. And pick seeds whose answers are right: each one becomes the standard its cases are held to.</p>
+<h3>Tested, not assumed</h3>
+<p>Building this at a hundred real cases found problems no small test had shown. A job could read &quot;completed&quot; with no rows. Only three of five seeds reached the model. Seed text sat unencrypted. And cases written in the console reached the agent as raw JSON. All of it is fixed in release 0.19.6.</p>
+<p>How does your team grow its test set today: by hand, or from what production already tells you?</p>
+</article>
+</div>
+<x-dc>
+<helmet>
+  
+  <link rel="icon" href="/assets/logo-dark.svg">
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
+  <link rel="alternate" type="application/rss+xml" title="FastAIAgent Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/markdown.js"></script>
+  <script src="/posts/series.js"></script>
+  <style>
+    .post-body{font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .post-body>*+*{margin-top:22px}
+    .post-body h2,.post-body h3,.post-body h4{font-family:var(--display);font-weight:600;letter-spacing:-.025em;line-height:1.15;color:var(--ink);margin-top:40px}
+    .post-body h2{font-size:28px}.post-body h3{font-size:22px}.post-body h4{font-size:18px}
+    .post-body p{margin-bottom:0}
+    .post-body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+    .post-body strong{color:var(--ink);font-weight:600}
+    .post-body code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+    .post-body pre{margin:0;font-family:var(--mono);font-size:13px;line-height:1.65;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink)}
+    .post-body pre code{background:none;border:0;padding:0;font-size:inherit}
+    .post-body blockquote{margin:0;padding:6px 0 6px 24px;border-left:2px solid var(--accent);font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink)}
+    .post-body ul,.post-body ol{padding-left:24px;display:flex;flex-direction:column;gap:8px}
+    .post-body figure{margin:0}
+    .post-body img,.post-body video{display:block;max-width:100%;height:auto;margin-inline:auto;border-radius:12px;border:1px solid var(--line);background:var(--bg-2)}
+    .post-body figcaption{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:center}
+    .post-body hr{border:0;border-top:1px solid var(--line)}
+  </style>
+</helmet>
+<dc-import name="nav" active="blog" hint-size="100%,64px"></dc-import>
+
+<article data-screen-label="Post" style="padding:clamp(48px,7vw,90px) clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
+  <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
+    <a href="/blog.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">← All posts</a>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:24px;padding:14px 18px;border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;background:var(--bg-2);font-family:var(--mono);font-size:12px;color:var(--ink-3)">Part {{ seriesPart }} of {{ seriesTotal }} · <span style="color:var(--accent)">{{ seriesName }}</span> — <a href="{{ seriesFirstHref }}" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px">start at part 1</a></div>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"><span style="color:var(--accent)">{{ meta.tag }}</span><sc-if value="{{ isVideo }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 7px;border:1px solid var(--line-2);border-radius:999px;color:var(--ink-2)">▶ Video</span></sc-if><span>{{ meta.date }}</span><span>{{ meta.minutes }} min read</span></div>
+    <h1 style="font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.035em;line-height:1;margin:16px 0 0;text-wrap:balance">{{ meta.title }}</h1>
+    <p style="font-size:19px;line-height:1.55;color:var(--ink-2);margin:22px 0 0">{{ meta.summary }}</p>
+    <div style="display:flex;align-items:center;gap:12px;margin:28px 0 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)"><img src="/assets/logo-dark.svg" alt="" width="32" height="32" style="width:32px;height:32px;border-radius:8px">{{ meta.author }}</div>
+    <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ meta.cover }}" alt="" style="display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);margin-top:32px"></sc-if>
+    <div class="post-body" style="margin-top:36px">{{ body }}</div>
+    <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin-top:36px;color:var(--warn);font-family:var(--mono);font-size:13px">{{ error }}</p></sc-if>
+    <sc-if value="{{ inSeries }}" hint-placeholder-val="{{ false }}">
+      <nav style="margin-top:56px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ prevHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink)" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">← Part {{ prevPart }}</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ prevTitle }}</span></a>
+        </sc-if>
+        <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ nextHref }}" style="display:flex;flex-direction:column;gap:8px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2);color:var(--ink);text-align:right" style-hover="border-color:var(--accent)"><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Part {{ nextPart }} →</span><span style="font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.2">{{ nextTitle }}</span></a>
+        </sc-if>
+      </nav>
+    </sc-if>
+    <div style="margin-top:56px;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+      <div><div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Try it</div><div style="font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px">pip install fastaiagent</div></div>
+      <a href="https://docs.fastaiagent.net" style="padding:12px 20px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px">Read the docs →</a>
+    </div>
+  </div>
+</article>
+
+<dc-import name="footer" hint-size="100%,320px"></dc-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { meta: { title: '', summary: '', tag: '', date: '', minutes: '', author: 'FastAIFoundry team' }, html: '', error: '' };
+  async componentDidMount() {
+    // Generated per-post pages at /blog/<slug>/ declare FA_POST_SLUG; the
+    // legacy ?slug= form still works for links already shared.
+    const slug = window.FA_POST_SLUG || new URLSearchParams(location.search).get('slug') || (window.FA_POST_SLUGS || [])[0];
+    if (!slug) { this.setState({ error: 'No post selected.' }); return; }
+    try {
+      const { meta, html } = await window.FA_MD.load(slug);
+      meta.author = meta.author || 'FastAIFoundry team';
+      document.title = meta.title + ' — FastAIAgent';
+      this.setState({ meta, html });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug, post_tag: meta.tag });
+    } catch (e) {
+      this.setState({ error: e.message, meta: { ...this.state.meta, title: 'Post not found' } });
+      if (window.FA_ANALYTICS) window.FA_ANALYTICS.pageView({ post_slug: slug });
+    }
+  }
+  renderVals() {
+    const body = React.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.html } });
+    const meta = this.state.meta;
+    const href = s => '/blog/' + s + '/';
+    const list = (meta.series && (window.FA_SERIES || {})[meta.series]) || [];
+    const i = list.findIndex(p => p.slug === meta.slug);
+    const prev = i > 0 ? list[i - 1] : null;
+    const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+    return {
+      meta, body, hasCover: !!meta.cover && meta.hero !== 'false',   // hero: false keeps the cover for card/preview only error: this.state.error,
+      inSeries: i >= 0, isVideo: meta.kind === 'video',
+      seriesName: meta.series, seriesPart: i + 1, seriesTotal: (list[0] && list[0].of) || list.length,
+      seriesFirstHref: list.length ? href(list[0].slug) : '',
+      hasPrev: !!prev, prevHref: prev ? href(prev.slug) : '', prevPart: prev ? prev.part : '', prevTitle: prev ? prev.title : '',
+      hasNext: !!next, nextHref: next ? href(next.slug) : '', nextPart: next ? next.part : '', nextTitle: next ? next.title : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

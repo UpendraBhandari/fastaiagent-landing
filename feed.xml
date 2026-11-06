@@ -6,7 +6,16 @@
     <description>Notes from the harness: replay, guardrails, evaluation, and what it takes to operate agents in production.</description>
     <language>en</language>
     <atom:link href="https://fastaiagent.net/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Tue, 03 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 06 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Five real cases in. A hundred tests out.</title>
+      <link>https://fastaiagent.net/blog/five-real-cases-in-a-hundred-tests-out/</link>
+      <guid isPermaLink="true">https://fastaiagent.net/blog/five-real-cases-in-a-hundred-tests-out/</guid>
+      <pubDate>Fri, 06 Nov 2026 12:00:00 GMT</pubDate>
+      <description>Your best test data is already in production. Here is how FastAIAgent Enterprise turns a handful of real traces into a test set, in screenshots from a real run.</description>
+      <category>Evaluation</category>
+      <dc:creator>Upendra Bhandari</dc:creator>
+    </item>
     <item>
       <title>Keep your LangChain and CrewAI agents. Govern them anyway.</title>
       <link>https://fastaiagent.net/blog/frameworks-on-the-plane/</link>
