@@ -92,27 +92,33 @@
     <div style="display:flex;flex-direction:column;gap:18px">
       <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase"><span style="color:var(--accent)">Human in the loop</span><span style="color:var(--ink-3)">human harness</span></div>
       <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0;text-wrap:balance">Where the loop <span style="color:var(--accent)">meets people.</span></h2>
-      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">An autonomous loop without humans is a liability. "Human in the loop" here means approving a production action before it happens — not a labelling queue. Your people meet the agent in streaming chat, approval queues, and shared sessions, with full audit.</p>
+      <p style="margin:0;color:var(--ink-2);line-height:1.6;font-size:16px">An autonomous loop without humans is a liability. "Human in the loop" here means approving a production action before it happens — not a labelling queue. Your application asks the person and acts on the answer. The plane decides which actions must ask, records every request and every answer, and raises the alarm when one waits too long.</p>
       <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)">
-        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Approval queues</strong> — durable HITL with timer-based escalation; pause for hours or days and resume where you left off.</span></li>
-        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Approve, modify, reject or expire</strong> — every resolution recorded in an org-wide, append-only ledger.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Approval policies</strong> — choose which tool calls wait for a person, per agent, written in the console.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">An approval record</strong> — every pause and its outcome, approved, modified, rejected or expired, in an org-wide, append-only ledger.</span></li>
+        <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Overdue alerts</strong> — a request left waiting fires a signed webhook, so it reaches someone instead of stalling.</span></li>
         <li style="display:flex;gap:10px"><span style="color:var(--accent)">→</span><span><strong style="color:var(--ink);font-weight:600">Cost dashboards</strong> — tokens, runs, $ per role per agent, with quotas and hard caps.</span></li>
       </ul>
     </div>
     <div style="border:1px solid var(--line);border-radius:16px;background:var(--bg-2);overflow:hidden">
-      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-3)"><span>workspace — #ops · 4 online</span><span style="display:flex;gap:14px"><span>Inbox</span><span style="color:var(--ink)">Approvals · 3</span><span>Sessions</span><span>Audit</span></span></div>
-      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;font-size:14px;line-height:1.55">
-        <div style="align-self:flex-end;max-width:85%;padding:12px 14px;border-radius:12px 12px 4px 12px;background:var(--bg-3);color:var(--ink)">Refund order #2841 — customer says it never arrived.</div>
-        <div style="align-self:flex-start;max-width:85%;padding:12px 14px;border-radius:12px 12px 12px 4px;border:1px solid var(--line);color:var(--ink-2)">Found order. Status: <strong style="color:var(--ink);font-weight:600">delivered 2026-04-22</strong>. Customer claim is 11 days post-delivery.</div>
-        <div style="border:1px solid var(--warn);border-radius:12px;padding:16px;background:var(--bg);display:flex;flex-direction:column;gap:10px">
-          <div style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--warn)">⏸ APPROVAL REQUIRED · stripe.refund</div>
-          <div>Refund <strong style="color:var(--ink);font-weight:600">$184.50</strong> to •••4421 — outside auto-policy window.</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
-            <span style="padding:8px 14px;border-radius:6px;background:var(--ok);color:#06121a;font-weight:600;font-size:13px">Approve</span>
-            <span style="padding:8px 14px;border-radius:6px;border:1px solid var(--line-2);font-weight:600;font-size:13px">Modify</span>
-            <span style="padding:8px 14px;border-radius:6px;border:1px solid var(--line-2);font-weight:600;font-size:13px">Reject</span>
-          </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-3)"><span>approvals — production</span><span style="display:flex;gap:14px"><span>Policies</span><span style="color:var(--ink)">Record · 3</span><span>Alerts</span></span></div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.5">
+        <div style="border:1px solid var(--warn);border-radius:12px;padding:14px 16px;background:var(--bg);display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.1em"><span style="color:var(--warn)">⏸ WAITING · OVERDUE</span><span style="color:var(--ink-3)">stripe.refund</span></div>
+          <div style="color:var(--ink)">Refund <strong style="font-weight:600">$184.50</strong> to •••4421 — outside auto-policy window.</div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">support-bot · waiting 2h 14m · webhook sent to on-call</div>
         </div>
+        <div style="border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--bg);display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.1em"><span style="color:var(--ok)">✓ APPROVED</span><span style="color:var(--ink-3)">lookup_order</span></div>
+          <div style="color:var(--ink)">Look up order #2841 for a delivery claim.</div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">support-crewai · answered in the support app · 42s</div>
+        </div>
+        <div style="border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--bg);display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.1em"><span style="color:var(--ink-3)">✕ REJECTED</span><span style="color:var(--ink-3)">issue_credit</span></div>
+          <div style="color:var(--ink)">Credit $40 to account •••7731.</div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--ink-3)">billing-agent · answered in the support app · 3m</div>
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:center;padding-top:2px">Append-only · read-only here — the decision is made in your application</div>
       </div>
     </div>
   </div>
