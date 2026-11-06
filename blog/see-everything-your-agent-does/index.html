@@ -194,7 +194,8 @@ class Component extends DCLogic {
     const prev = i > 0 ? list[i - 1] : null;
     const next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
     return {
-      meta, body, hasCover: !!meta.cover && meta.hero !== 'false',   // hero: false keeps the cover for card/preview only error: this.state.error,
+      meta, body, error: this.state.error,
+      hasCover: !!meta.cover && meta.hero !== 'false',   // hero: false keeps the cover for card/preview only
       inSeries: i >= 0, isVideo: meta.kind === 'video',
       seriesName: meta.series, seriesPart: i + 1, seriesTotal: (list[0] && list[0].of) || list.length,
       seriesFirstHref: list.length ? href(list[0].slug) : '',
