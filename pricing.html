@@ -10,7 +10,7 @@
 <x-dc>
 <helmet>
   <title>Pricing — FastAIAgent</title>
-  <meta name="description" content="Start free. Scale when ready. The SDK is open-source and always free. The platform offers a generous free tier — upgrade for team features, higher limits, or enterprise compliance.">
+  <meta name="description" content="Start free. Scale when ready. The SDK is open-source and always free. The hosted platform is free to start, and Free is the whole product. Pro (coming soon) adds a Production environment and higher trace limits; Enterprise adds your own keys and servers.">
   <link rel="icon" href="./assets/logo-dark.svg">
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fa-theme')||'dark')}catch(e){}</script>
   <link rel="stylesheet" href="./theme.css">
@@ -21,13 +21,13 @@
   <div style="max-width:760px;margin:0 auto;animation:rise .7s ease both">
     <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Pricing</div>
     <h1 style="font-family:var(--display);font-size:clamp(42px,6vw,80px);font-weight:700;letter-spacing:-.04em;line-height:.96;margin:18px 0 0;text-wrap:balance">Start free. <span style="color:var(--accent)">Scale when ready.</span></h1>
-    <p style="font-size:clamp(17px,1.4vw,19px);line-height:1.55;color:var(--ink-2);margin:24px auto 0;max-width:56ch">The SDK is open-source and always free. The platform offers a generous free tier — upgrade when your agents need team features, higher limits, or enterprise compliance.</p>
+    <p style="font-size:clamp(17px,1.4vw,19px);line-height:1.55;color:var(--ink-2);margin:24px auto 0;max-width:56ch">The SDK is open-source and always free. The hosted platform is free to start, and Free is the whole product. Pro (coming soon) adds a Production environment and higher trace limits; Enterprise adds your own keys and servers.</p>
   </div>
 </section>
 
 <section data-screen-label="Tiers" style="padding:0 clamp(20px,4vw,56px) clamp(64px,9vw,110px)">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;align-items:stretch">
-    <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px;align-items:stretch">
+    <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="4">
       <div style="display:flex;flex-direction:column;gap:18px;border:1px solid {{ t.border }};border-radius:16px;background:var(--bg-2);padding:30px">
         <div style="display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)"><span>{{ t.n }}</span><span style="color:var(--accent)">{{ t.badge }}</span></div>
         <div>
@@ -51,11 +51,16 @@
     <div>
       <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">SDK vs. platform</div>
       <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.035em;line-height:1;margin:18px 0 0;text-wrap:balance">SDK works standalone. <span style="color:var(--accent)">Platform adds the team.</span></h2>
-      <p style="font-size:16px;line-height:1.6;color:var(--ink-2);max-width:56ch;margin:22px 0 0">Runs fully standalone with the Local UI — no Docker, no signup, nothing phones home. Connect to the platform for production observability, prompt management, evaluation dashboards, team collaboration, and HITL approval workflows.</p>
+      <p style="font-size:16px;line-height:1.6;color:var(--ink-2);max-width:56ch;margin:22px 0 0">Runs fully standalone with the Local UI — no Docker, no signup, nothing phones home. Connect to the platform for production observability, prompt management, evaluation dashboards, team collaboration, and an approval record for every human-in-the-loop pause.</p>
     </div>
     <pre style="margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.65;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;color:var(--ink-2)"><span style="color:var(--warn)">import</span> fastaiagent <span style="color:var(--warn)">as</span> fa
 
-fa.<span style="color:var(--accent)">connect</span>(api_key=<span style="color:var(--ok)">"fa-..."</span>, project=<span style="color:var(--ok)">"my-project"</span>)
+<span style="color:var(--ink-3)"># Your program address and key are in the console (Settings → API keys)</span>
+fa.<span style="color:var(--accent)">connect</span>(
+    api_key=<span style="color:var(--ok)">"fa_k_..."</span>,
+    target=<span style="color:var(--ok)">"https://&lt;your-id&gt;-dev.api.fastaiagent.net"</span>,
+    project=<span style="color:var(--ok)">"my-project"</span>,
+)
 
 <span style="color:var(--ink-3)"># Traces automatically sent to platform dashboard</span>
 result = agent.run(<span style="color:var(--ok)">"Help me"</span>)
@@ -92,15 +97,23 @@ class Component extends DCLogic {
       { n: 'T-01', badge: 'Apache 2.0', name: 'Open source', tagline: 'The SDK, the Local UI, and every feature on this site that runs in your process.', price: '$0', per: 'forever', cta: 'pip install fastaiagent', href: 'https://pypi.org/project/fastaiagent/',
         border: 'var(--line)', btnBg: 'transparent', btnColor: 'var(--ink)', btnBorder: 'var(--line-2)',
         items: ['Agents, chains, swarms, supervisors, memory', 'Guardrails, evaluation, simulation, AutoLLM', 'Agent Replay — fork, fix, rerun', 'Local UI: traces, evals, playground, topology', 'Durable HITL with SQLite or Postgres', '20+ LLM providers · LangGraph / CrewAI / PydanticAI harness'] },
-      { n: 'T-02', badge: 'Most teams', name: 'Platform', tagline: 'Hosted plane for teams that ship agents together. Free tier included.', price: 'Free', per: 'to start · usage-based beyond', cta: 'Start free →', href: 'https://login.fastaiagent.net/',
+      { n: 'T-02', badge: 'Start here', name: 'Free', tagline: 'The whole hosted platform, for one development environment. No card.', price: '$0', per: 'forever · capped by traces', cta: 'Start free →', href: 'https://login.fastaiagent.net/',
         border: 'var(--accent)', btnBg: 'var(--accent)', btnColor: 'var(--accent-ink)', btnBorder: 'var(--accent)',
-        items: ['Everything in open source', 'Production observability across projects', 'Prompt management with version lineage', 'Evaluation dashboards and Agent-CI verdicts', 'Team collaboration and session sharing', 'HITL approval workflows in the workspace'] },
-      { n: 'T-03', badge: 'Control plane', name: 'Enterprise', tagline: 'The control plane for AI agents. Governs, observes and evaluates — runs no agent code.', price: 'Custom', per: 'annual · talk to us', cta: 'Book a walkthrough', href: './enterprise.html#contact',
+        items: ['Every platform feature except SSO, Git sync and your own Key Vault', '10,000 traces a month · 7 days of history', '250 MB of built-in knowledge-base storage', 'Unlimited agents, prompts, evals, datasets, users and projects', 'Traces, replay, prompt registry, evals, guardrails, compliance', 'Your content encrypted at rest, a separate key per account, managed by us in the EU'] },
+      { n: 'T-03', badge: 'Coming soon', name: 'Pro', tagline: 'For teams in production: a Development and a Production environment, on separate servers.', price: '$49', per: 'a month · excl. VAT', cta: 'Request Pro →', href: 'https://login.fastaiagent.net/',
         border: 'var(--line)', btnBg: 'transparent', btnColor: 'var(--ink)', btnBorder: 'var(--line-2)',
-        items: ['Central Replay, guardrail verdicts and eval scores joined to traces', '22 guardrail templates across 9 types · POST /policy/decide in the decision path', 'Human approval of production actions with signed webhooks', 'EU AI Act module over 52 seeded controls · hash-chained ledger', 'Domain → Project RBAC, SAML/OIDC SSO, Azure Key Vault secrets', 'SaaS, Docker Compose or Helm — self-hosted opens every feature gate'] }
+        items: ['Everything in Free', 'Development + Production, each on its own server', '100,000 traces a month per environment · 30 days of history', '5 GB of built-in knowledge-base storage', 'Single sign-on, Git sync, and your own Azure Key Vault', 'A separate encryption key per environment, managed by us · overage $10 per 10K traces, capped by you'] },
+      { n: 'T-04', badge: 'Control plane', name: 'Enterprise', tagline: 'The control plane for AI agents. Governs, observes and evaluates — runs no agent code.', price: 'Custom', per: 'annual · talk to us', cta: 'Book a walkthrough', href: './enterprise.html#contact',
+        border: 'var(--line)', btnBg: 'transparent', btnColor: 'var(--ink)', btnBorder: 'var(--line-2)',
+        items: ['Every feature, including SSO and Git sync · no trace limit, 180 days of history', 'Dedicated servers, as many environments as you need', 'Your own key (BYOK) and the vault of your choice', 'EU AI Act module over 52 controls · hash-chained ledger', 'Approval policies and an approval record · POST /policy/decide in the decision path', 'SaaS, Docker Compose or Helm — self-hosted opens every feature gate'] }
     ];
     const faq = [
       { q: 'Is the SDK really free?', a: 'Yes. Apache 2.0, runs fully standalone, and nothing phones home. The Local UI ships inside the wheel — no Docker, no signup.' },
+      { q: 'What counts as a trace?', a: 'One run of your agent as the platform receives it: the SDK or any OpenTelemetry exporter sends it, with all its spans. Traces are counted once per UTC month.' },
+      { q: 'What happens at the trace limit?', a: 'Your agents keep running. New traces are not stored until the 1st of the next month (00:00 UTC). On Pro (coming soon), Production will keep accepting traces past 100,000 as overage, up to a cap you set.' },
+      { q: 'Do you provide the AI models?', a: 'No. You connect your own LLM and embedding endpoints with your own provider keys, and that cost is between you and your provider. The platform charges only for the plan.' },
+      { q: 'Is my data encrypted?', a: 'Yes. On Free your content is encrypted at rest with a separate key per account (on Pro, coming soon, per environment), which we create and manage in Azure Key Vault in the EU; your stored secrets are sealed with it too. Bringing your own key (BYOK) is Enterprise.' },
+      { q: 'When does Pro open?', a: 'Soon. Use “Request Pro” in the console and we will email you the day it opens.' },
       { q: 'What leaves my machine when I connect to the platform?', a: 'Metadata: aggregates, the gate outcome, thresholds, git provenance, and per-case verdicts with trace IDs. Case inputs and outputs never leave the machine. Preview the payload with fastaiagent eval export --dry-run, or turn it off with connect(export_evals=False) — that flag is final.' },
       { q: 'Can we self-host?', a: 'Yes. SaaS in the EU, self-hosted on your infrastructure, or air-gapped with standalone deployment bundles. Same binary, same contract.' },
       { q: 'Do you accept pull requests?', a: 'The SDK is open source but does not accept external pull requests — please file issues on GitHub instead.' }
